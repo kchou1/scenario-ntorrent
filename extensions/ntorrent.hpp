@@ -19,16 +19,16 @@
  * Author: Spyridon (Spyros) Mastorakis <mastorakis@cs.ucla.edu>
  */
 
-#include "src/socket.hpp"
-
 #include <ndn-cxx/face.hpp>
+
+#include <boost/random.hpp>
 
 namespace ndn {
 
-class ChronoSync
+class ntorrent
 {
 public:
-  ChronoSync(const int minNumberMessages, const int maxNumberMessages);
+  ntorrent(const int minNumberMessages, const int maxNumberMessages);
 
   void
   setSyncPrefix(const Name& syncPrefix);
@@ -46,10 +46,10 @@ public:
   publishDataPeriodically(int id);
 
   void
-  printData(const shared_ptr<const Data>& data);
+  printData(const Data& data);
 
   void
-  processSyncUpdate(const std::vector<chronosync::MissingDataInfo>& updates);
+  processSyncUpdate(const std::vector<ntorrent::MissingDataInfo>& updates);
 
   void
   initializeSync();
@@ -70,7 +70,7 @@ private:
   Name m_routingPrefix;
   Name m_routableUserPrefix;
 
-  shared_ptr<chronosync::Socket> m_socket;
+  shared_ptr<ntorrent::Socket> m_socket;
 
   boost::mt19937 m_randomGenerator;
   boost::variate_generator<boost::mt19937&, boost::uniform_int<> > m_rangeUniformRandom;

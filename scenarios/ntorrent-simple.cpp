@@ -44,7 +44,7 @@ namespace ndn {
  *
  * To run scenario and see what is happening, use the following command:
  *
- *     ./waf --run=chronosync-simple
+ *     ./waf --run=ntorrent-simple
  */
 
 int
@@ -53,7 +53,7 @@ main(int argc, char *argv[])
   // setting default parameters for PointToPoint links and channels
   Config::SetDefault("ns3::PointToPointNetDevice::DataRate", StringValue("1Mbps"));
   Config::SetDefault("ns3::PointToPointChannel::Delay", StringValue("10ms"));
-  Config::SetDefault("ns3::DropTailQueue::MaxPackets", StringValue("20"));
+  Config::SetDefault("ns3::QueueBase::MaxPackets", UintegerValue(20));
 
   // Read optional command-line parameters (e.g., enable visualizer with ./waf --run=<> --visualize
   CommandLine cmd;

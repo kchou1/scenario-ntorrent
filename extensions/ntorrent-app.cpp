@@ -24,7 +24,7 @@
 namespace ns3 {
 namespace ndn {
 
-NS_OBJECT_ENSURE_REGISTERED(ChronoSyncApp);
+NS_OBJECT_ENSURE_REGISTERED(ntorrentApp);
 
 } // namespace ndn
 } // namespace ns3

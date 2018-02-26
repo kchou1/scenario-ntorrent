@@ -29,27 +29,27 @@
 namespace ns3 {
 namespace ndn {
 
-class ChronoSyncApp : public Application
+class ntorrentApp : public Application
 {
 public:
   static TypeId
   GetTypeId()
   {
-    static TypeId tid = TypeId("ChronoSyncApp")
+    static TypeId tid = TypeId("ntorrentApp")
       .SetParent<Application>()
-      .AddConstructor<ChronoSyncApp>()
+      .AddConstructor<ntorrentApp>()
       .AddAttribute("SyncPrefix", "Sync Prefix", StringValue("/"),
-                    MakeNameAccessor(&ChronoSyncApp::m_syncPrefix), MakeNameChecker())
+                    MakeNameAccessor(&ntorrentApp::m_syncPrefix), MakeNameChecker())
       .AddAttribute("UserPrefix", "User Prefix", StringValue("/"),
-                    MakeNameAccessor(&ChronoSyncApp::m_userPrefix), MakeNameChecker())
+                    MakeNameAccessor(&ntorrentApp::m_userPrefix), MakeNameChecker())
       .AddAttribute("RoutingPrefix", "Routing Prefix", StringValue("/"),
-                    MakeNameAccessor(&ChronoSyncApp::m_routingPrefix), MakeNameChecker())
+                    MakeNameAccessor(&ntorrentApp::m_routingPrefix), MakeNameChecker())
       .AddAttribute("MinNumberMessages", "Minimum number of messages", IntegerValue(1),
-                    MakeIntegerAccessor(&ChronoSyncApp::m_minNumberMessages), MakeIntegerChecker<int32_t>())
+                    MakeIntegerAccessor(&ntorrentApp::m_minNumberMessages), MakeIntegerChecker<int32_t>())
       .AddAttribute("PeriodicPublishing", "Periodic data publishing", BooleanValue(false),
-                    MakeBooleanAccessor(&ChronoSyncApp::m_periodicPublishing), MakeBooleanChecker())
+                    MakeBooleanAccessor(&ntorrentApp::m_periodicPublishing), MakeBooleanChecker())
       .AddAttribute("MaxNumberMessages", "Maximum number of messages", IntegerValue(2),
-                    MakeIntegerAccessor(&ChronoSyncApp::m_maxNumberMessages), MakeIntegerChecker<int32_t>());
+                    MakeIntegerAccessor(&ntorrentApp::m_maxNumberMessages), MakeIntegerChecker<int32_t>());
 
     return tid;
   }
@@ -59,7 +59,7 @@ protected:
   virtual void
   StartApplication()
   {
-    m_instance.reset(new ::ndn::ChronoSync(m_minNumberMessages, m_maxNumberMessages));
+    m_instance.reset(new ::ndn::ntorrent(m_minNumberMessages, m_maxNumberMessages));
     m_instance->setSyncPrefix(m_syncPrefix);
     m_instance->setUserPrefix(m_userPrefix);
     m_instance->setRoutingPrefix(m_routingPrefix);
@@ -79,7 +79,7 @@ protected:
   }
 
 private:
-  std::unique_ptr<::ndn::ChronoSync> m_instance;
+  std::unique_ptr<::ndn::ntorrent> m_instance;
   Name m_syncPrefix;
   Name m_userPrefix;
   Name m_routingPrefix;

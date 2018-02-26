@@ -23,7 +23,7 @@
 
 namespace ndn {
 
-ChronoSync::ChronoSync(const int minNumberMessages, const int maxNumberMessages)
+ntorrent::ntorrent(const int minNumberMessages, const int maxNumberMessages)
   : m_face(m_ioService)
   , m_scheduler(m_ioService)
   , m_randomGenerator(static_cast<unsigned int>(std::time(0)))
@@ -34,25 +34,25 @@ ChronoSync::ChronoSync(const int minNumberMessages, const int maxNumberMessages)
 }
 
 void
-ChronoSync::setSyncPrefix(const Name& syncPrefix)
+ntorrent::setSyncPrefix(const Name& syncPrefix)
 {
   m_syncPrefix = syncPrefix;
 }
 
 void
-ChronoSync::setUserPrefix(const Name& userPrefix)
+ntorrent::setUserPrefix(const Name& userPrefix)
 {
   m_userPrefix = userPrefix;
 }
 
 void
-ChronoSync::setRoutingPrefix(const Name& routingPrefix)
+ntorrent::setRoutingPrefix(const Name& routingPrefix)
 {
   m_routingPrefix = routingPrefix;
 }
 
 void
-ChronoSync::delayedInterest(int id)
+ntorrent::delayedInterest(int id)
 {
   std::cout << "Delayed Interest with id: " << id << "\n";
   m_socket->publishData(reinterpret_cast<const uint8_t*>(std::to_string(id).c_str()),
@@ -61,34 +61,34 @@ ChronoSync::delayedInterest(int id)
 
   if (id < m_numberMessages)
     m_scheduler.scheduleEvent(ndn::time::milliseconds(m_rangeUniformRandom()),
-                              bind(&ChronoSync::delayedInterest, this, ++id));
+                              bind(&ntorrent::delayedInterest, this, ++id));
 }
 
 void
-ChronoSync::publishDataPeriodically(int id)
+ntorrent::publishDataPeriodically(int id)
 {
   m_scheduler.scheduleEvent(ndn::time::milliseconds(m_rangeUniformRandom()),
-                            bind(&ChronoSync::delayedInterest, this, 1));
+                            bind(&ntorrent::delayedInterest, this, 1));
 
   m_scheduler.scheduleEvent(ndn::time::milliseconds(m_rangeUniformRandom()),
-                            bind(&ChronoSync::publishDataPeriodically, this, 1));
+                            bind(&ntorrent::publishDataPeriodically, this, 1));
 }
 
 
 void
-ChronoSync::printData(const shared_ptr<const Data>& data)
+ntorrent::printData(const Data& data)
 {
-  Name::Component peerName = data->getName().at(3);
+  Name::Component peerName = data.getName().at(3);
 
-  std::string s (reinterpret_cast<const char*>(data->getContent().value()),
-                 data->getContent().value_size());
+  std::string s (reinterpret_cast<const char*>(data.getContent().value()),
+                 data.getContent().value_size());
 
   std::cout << "Data received from " << peerName.toUri() << " : " <<  s << "\n";
 }
 
 
 void
-ChronoSync::processSyncUpdate(const std::vector<chronosync::MissingDataInfo>& updates)
+ntorrent::processSyncUpdate(const std::vector<ntorrent::MissingDataInfo>& updates)
 {
   std::cout << "Process Sync Update \n";
   if (updates.empty()) {
@@ -96,9 +96,9 @@ ChronoSync::processSyncUpdate(const std::vector<chronosync::MissingDataInfo>& up
   }
 
   for (unsigned int i = 0; i < updates.size(); i++) {
-    for (chronosync::SeqNo seq = updates[i].low; seq <= updates[i].high; ++seq) {
+    for (ntorrent::SeqNo seq = updates[i].low; seq <= updates[i].high; ++seq) {
       m_socket->fetchData(updates[i].session, seq,
-                          bind(&ChronoSync::printData, this, _1),
+                          bind(&ntorrent::printData, this, _1),
                           2);
     }
 
@@ -106,32 +106,32 @@ ChronoSync::processSyncUpdate(const std::vector<chronosync::MissingDataInfo>& up
 }
 
 void
-ChronoSync::initializeSync()
+ntorrent::initializeSync()
 {
-  std::cout << "ChronoSync Instance Initialized \n";
+  std::cout << "ntorrent Instance Initialized \n";
   m_routableUserPrefix = Name();
   m_routableUserPrefix.clear();
   m_routableUserPrefix.append(m_routingPrefix).append(m_userPrefix);
 
-  m_socket = std::make_shared<chronosync::Socket>(m_syncPrefix,
+  m_socket = std::make_shared<ntorrent::Socket>(m_syncPrefix,
                                                   m_routableUserPrefix,
                                                   m_face,
-                                                  bind(&ChronoSync::processSyncUpdate, this, _1));
+                                                  bind(&ntorrent::processSyncUpdate, this, _1));
 
 }
 
 void
-ChronoSync::run()
+ntorrent::run()
 {
   m_scheduler.scheduleEvent(ndn::time::milliseconds(m_rangeUniformRandom()),
-                            bind(&ChronoSync::delayedInterest, this, 1));
+                            bind(&ntorrent::delayedInterest, this, 1));
 }
 
 void
-ChronoSync::runPeriodically()
+ntorrent::runPeriodically()
 {
   m_scheduler.scheduleEvent(ndn::time::milliseconds(m_rangeUniformRandom()),
-                            bind(&ChronoSync::publishDataPeriodically, this, 1));
+                            bind(&ntorrent::publishDataPeriodically, this, 1));
 }
 
 } // namespace ndn
