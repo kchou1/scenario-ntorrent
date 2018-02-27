@@ -79,7 +79,7 @@ main(int argc, char *argv[])
   // Installing applications
 
   // Peer 1
-  ndn::AppHelper peer1("ntorrentApp");
+  ndn::AppHelper peer1("NTorrentApp");
   peer1.SetAttribute("SyncPrefix", StringValue("/ndn/broadcast/sync"));
   peer1.SetAttribute("UserPrefix", StringValue("/peer1"));
   peer1.SetAttribute("RoutingPrefix", StringValue("/ndn"));
@@ -89,7 +89,7 @@ main(int argc, char *argv[])
   peer1.Install(nodes.Get(0)).Start(Seconds(2));
 
   // Peer 2
-  ndn::AppHelper peer2("ntorrentApp");
+  ndn::AppHelper peer2("NTorrentApp");
   peer2.SetAttribute("SyncPrefix", StringValue("/ndn/broadcast/sync"));
   peer2.SetAttribute("UserPrefix", StringValue("/peer2"));
   peer2.SetAttribute("RoutingPrefix", StringValue("/ndn"));

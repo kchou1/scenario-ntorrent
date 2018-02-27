@@ -25,10 +25,10 @@
 
 namespace ndn {
 
-class ntorrent
+class NTorrent
 {
 public:
-  ntorrent(const int minNumberMessages, const int maxNumberMessages);
+  NTorrent(const int minNumberMessages, const int maxNumberMessages);
 
   void
   setSyncPrefix(const Name& syncPrefix);
@@ -69,8 +69,6 @@ private:
   Name m_userPrefix;
   Name m_routingPrefix;
   Name m_routableUserPrefix;
-
-  shared_ptr<ntorrent::Socket> m_socket;
 
   boost::mt19937 m_randomGenerator;
   boost::variate_generator<boost::mt19937&, boost::uniform_int<> > m_rangeUniformRandom;

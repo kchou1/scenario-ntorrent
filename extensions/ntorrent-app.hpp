@@ -29,27 +29,27 @@
 namespace ns3 {
 namespace ndn {
 
-class ntorrentApp : public Application
+class NTorrentApp : public Application
 {
 public:
   static TypeId
   GetTypeId()
   {
-    static TypeId tid = TypeId("ntorrentApp")
+    static TypeId tid = TypeId("NTorrentApp")
       .SetParent<Application>()
-      .AddConstructor<ntorrentApp>()
+      .AddConstructor<NTorrentApp>()
       .AddAttribute("SyncPrefix", "Sync Prefix", StringValue("/"),
-                    MakeNameAccessor(&ntorrentApp::m_syncPrefix), MakeNameChecker())
+                    MakeNameAccessor(&NTorrentApp::m_syncPrefix), MakeNameChecker())
       .AddAttribute("UserPrefix", "User Prefix", StringValue("/"),
-                    MakeNameAccessor(&ntorrentApp::m_userPrefix), MakeNameChecker())
+                    MakeNameAccessor(&NTorrentApp::m_userPrefix), MakeNameChecker())
       .AddAttribute("RoutingPrefix", "Routing Prefix", StringValue("/"),
-                    MakeNameAccessor(&ntorrentApp::m_routingPrefix), MakeNameChecker())
+                    MakeNameAccessor(&NTorrentApp::m_routingPrefix), MakeNameChecker())
       .AddAttribute("MinNumberMessages", "Minimum number of messages", IntegerValue(1),
-                    MakeIntegerAccessor(&ntorrentApp::m_minNumberMessages), MakeIntegerChecker<int32_t>())
+                    MakeIntegerAccessor(&NTorrentApp::m_minNumberMessages), MakeIntegerChecker<int32_t>())
       .AddAttribute("PeriodicPublishing", "Periodic data publishing", BooleanValue(false),
-                    MakeBooleanAccessor(&ntorrentApp::m_periodicPublishing), MakeBooleanChecker())
+                    MakeBooleanAccessor(&NTorrentApp::m_periodicPublishing), MakeBooleanChecker())
       .AddAttribute("MaxNumberMessages", "Maximum number of messages", IntegerValue(2),
-                    MakeIntegerAccessor(&ntorrentApp::m_maxNumberMessages), MakeIntegerChecker<int32_t>());
+                    MakeIntegerAccessor(&NTorrentApp::m_maxNumberMessages), MakeIntegerChecker<int32_t>());
 
     return tid;
   }
@@ -59,7 +59,7 @@ protected:
   virtual void
   StartApplication()
   {
-    m_instance.reset(new ::ndn::ntorrent(m_minNumberMessages, m_maxNumberMessages));
+    m_instance.reset(new ::ndn::NTorrent(m_minNumberMessages, m_maxNumberMessages));
     m_instance->setSyncPrefix(m_syncPrefix);
     m_instance->setUserPrefix(m_userPrefix);
     m_instance->setRoutingPrefix(m_routingPrefix);
@@ -79,7 +79,7 @@ protected:
   }
 
 private:
-  std::unique_ptr<::ndn::ntorrent> m_instance;
+  std::unique_ptr<::ndn::NTorrent> m_instance;
   Name m_syncPrefix;
   Name m_userPrefix;
   Name m_routingPrefix;

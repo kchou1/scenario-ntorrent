@@ -24,7 +24,7 @@
 namespace ns3 {
 namespace ndn {
 
-NS_OBJECT_ENSURE_REGISTERED(ntorrentApp);
+NS_OBJECT_ENSURE_REGISTERED(NTorrentApp);
 
 } // namespace ndn
 } // namespace ns3
