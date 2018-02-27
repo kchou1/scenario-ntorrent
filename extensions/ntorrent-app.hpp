@@ -37,19 +37,7 @@ public:
   {
     static TypeId tid = TypeId("NTorrentApp")
       .SetParent<Application>()
-      .AddConstructor<NTorrentApp>()
-      .AddAttribute("SyncPrefix", "Sync Prefix", StringValue("/"),
-                    MakeNameAccessor(&NTorrentApp::m_syncPrefix), MakeNameChecker())
-      .AddAttribute("UserPrefix", "User Prefix", StringValue("/"),
-                    MakeNameAccessor(&NTorrentApp::m_userPrefix), MakeNameChecker())
-      .AddAttribute("RoutingPrefix", "Routing Prefix", StringValue("/"),
-                    MakeNameAccessor(&NTorrentApp::m_routingPrefix), MakeNameChecker())
-      .AddAttribute("MinNumberMessages", "Minimum number of messages", IntegerValue(1),
-                    MakeIntegerAccessor(&NTorrentApp::m_minNumberMessages), MakeIntegerChecker<int32_t>())
-      .AddAttribute("PeriodicPublishing", "Periodic data publishing", BooleanValue(false),
-                    MakeBooleanAccessor(&NTorrentApp::m_periodicPublishing), MakeBooleanChecker())
-      .AddAttribute("MaxNumberMessages", "Maximum number of messages", IntegerValue(2),
-                    MakeIntegerAccessor(&NTorrentApp::m_maxNumberMessages), MakeIntegerChecker<int32_t>());
+      .AddConstructor<NTorrentApp>();
 
     return tid;
   }
@@ -59,17 +47,8 @@ protected:
   virtual void
   StartApplication()
   {
-    m_instance.reset(new ::ndn::NTorrent(m_minNumberMessages, m_maxNumberMessages));
-    m_instance->setSyncPrefix(m_syncPrefix);
-    m_instance->setUserPrefix(m_userPrefix);
-    m_instance->setRoutingPrefix(m_routingPrefix);
-    m_instance->initializeSync();
-    if (m_periodicPublishing) {
-      m_instance->runPeriodically();
-    }
-    else {
-      m_instance->run();
-    }
+    m_instance.reset(new ::ndn::NTorrent());
+    m_instance->run();
   }
 
   virtual void

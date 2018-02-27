@@ -28,28 +28,28 @@ namespace ndn {
 class NTorrent
 {
 public:
-  NTorrent(const int minNumberMessages, const int maxNumberMessages);
+  NTorrent();
 
   void
-  setSyncPrefix(const Name& syncPrefix);
+  setSyncPrefix();
 
   void
-  setUserPrefix(const Name& userPrefix);
+  setUserPrefix();
 
   void
-  setRoutingPrefix(const Name& routingPrefix);
+  setRoutingPrefix();
 
   void
-  delayedInterest(int id);
+  delayedInterest();
 
   void
-  publishDataPeriodically(int id);
+  publishDataPeriodically();
 
   void
-  printData(const Data& data);
+  printData();
 
   void
-  processSyncUpdate(const std::vector<ntorrent::MissingDataInfo>& updates);
+  processSyncUpdate();
 
   void
   initializeSync();
@@ -61,18 +61,18 @@ public:
   runPeriodically();
 
 private:
-  boost::asio::io_service m_ioService;
+  //boost::asio::io_service m_ioService;
   Face m_face;
-  Scheduler m_scheduler;
+  //Scheduler m_scheduler;
 
   Name m_syncPrefix;
   Name m_userPrefix;
   Name m_routingPrefix;
   Name m_routableUserPrefix;
 
-  boost::mt19937 m_randomGenerator;
-  boost::variate_generator<boost::mt19937&, boost::uniform_int<> > m_rangeUniformRandom;
-  boost::variate_generator<boost::mt19937&, boost::uniform_int<> > m_messagesUniformRandom;
+  //boost::mt19937 m_randomGenerator;
+  //boost::variate_generator<boost::mt19937&, boost::uniform_int<> > m_rangeUniformRandom;
+  //boost::variate_generator<boost::mt19937&, boost::uniform_int<> > m_messagesUniformRandom;
 
   int m_numberMessages;
 };
