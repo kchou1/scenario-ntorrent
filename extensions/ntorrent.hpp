@@ -61,20 +61,13 @@ public:
   runPeriodically();
 
 private:
-  //boost::asio::io_service m_ioService;
   Face m_face;
-  //Scheduler m_scheduler;
 
   Name m_syncPrefix;
   Name m_userPrefix;
   Name m_routingPrefix;
   Name m_routableUserPrefix;
 
-  //boost::mt19937 m_randomGenerator;
-  //boost::variate_generator<boost::mt19937&, boost::uniform_int<> > m_rangeUniformRandom;
-  //boost::variate_generator<boost::mt19937&, boost::uniform_int<> > m_messagesUniformRandom;
-
-  int m_numberMessages;
 };
 
 } // namespace ndn
