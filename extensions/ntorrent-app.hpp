@@ -37,8 +37,19 @@ public:
   {
     static TypeId tid = TypeId("NTorrentApp")
       .SetParent<Application>()
-      .AddConstructor<NTorrentApp>();
-
+      .AddConstructor<NTorrentApp>()
+      .AddAttribute("SyncPrefix", "Sync Prefix", StringValue("/test"),
+              MakeNameAccessor(&NTorrentApp::m_syncPrefix), MakeNameChecker())
+	  .AddAttribute("UserPrefix", "User Prefix", StringValue("/"),
+                    MakeNameAccessor(&NTorrentApp::m_userPrefix), MakeNameChecker())
+      .AddAttribute("RoutingPrefix", "Routing Prefix", StringValue("/"),
+                    MakeNameAccessor(&NTorrentApp::m_routingPrefix), MakeNameChecker())
+      .AddAttribute("MinNumberMessages", "Minimum number of messages", IntegerValue(1),
+                    MakeIntegerAccessor(&NTorrentApp::m_minNumberMessages), MakeIntegerChecker<int32_t>())
+      .AddAttribute("PeriodicPublishing", "Periodic data publishing", BooleanValue(false),
+                    MakeBooleanAccessor(&NTorrentApp::m_periodicPublishing), MakeBooleanChecker())
+      .AddAttribute("MaxNumberMessages", "Maximum number of messages", IntegerValue(2),
+                    MakeIntegerAccessor(&NTorrentApp::m_maxNumberMessages), MakeIntegerChecker<int32_t>());
     return tid;
   }
 
