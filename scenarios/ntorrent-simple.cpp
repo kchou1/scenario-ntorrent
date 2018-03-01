@@ -50,7 +50,7 @@ namespace ndn {
 int
 main(int argc, char *argv[])
 {
-  /*
+  
   // setting default parameters for PointToPoint links and channels
   Config::SetDefault("ns3::PointToPointNetDevice::DataRate", StringValue("1Mbps"));
   Config::SetDefault("ns3::PointToPointChannel::Delay", StringValue("10ms"));
@@ -108,7 +108,7 @@ main(int argc, char *argv[])
   Simulator::Stop(Seconds(20.0));
 
   Simulator::Run();
-  Simulator::Destroy();*/
+  Simulator::Destroy();
 
   return 0;
 }

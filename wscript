@@ -65,21 +65,21 @@ def configure(conf):
         conf.define('NS3_LOG_ENABLE', 1)
         conf.define('NS3_ASSERT_ENABLE', 1)
 
-    #conf.write_config_header('ntorrent/config.hpp', remove=False)
+    conf.write_config_header('ntorrent/config.hpp', remove=False)
 
 def build (bld):
     deps =  ' '.join (['ns3_'+dep for dep in MANDATORY_NS3_MODULES + OTHER_NS3_MODULES]).upper ()
 
     ntorrent = bld.objects (
         target = "ntorrent",
-        features = ["cxx"],
+        features = ["cxx", "cxxstlib"],
         source = bld.path.ant_glob(["ntorrent/src/**/*.cpp"],
                     excl=['ntorrent/src/main.cpp', 'ntorrent/src/util/io-util.cpp']),
-        includes = ["ntorrent", "ntorrent/src", "ntorrent/src/util"],
+        includes = ["ntorrent/src", "ntorrent/src/util"],
         export_includes = "ntorrent",
         use = deps
         )
-
+    
     common = bld.objects (
         target = "extensions",
         features = ["cxx"],
