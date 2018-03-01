@@ -96,7 +96,7 @@ main(int argc, char *argv[])
   peer2.SetAttribute("RoutingPrefix", StringValue("/ndn"));
   peer2.SetAttribute("MinNumberMessages", StringValue("1"));
   peer2.SetAttribute("MaxNumberMessages", StringValue("100"));
-  // peer2.SetAttribute("PeriodicPublishing", StringValue("true"));
+  peer2.SetAttribute("PeriodicPublishing", StringValue("true"));
   peer2.Install(nodes.Get(2)).Start(Seconds(2));
 
   // Manually configure FIB routes
