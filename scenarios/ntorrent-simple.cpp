@@ -82,12 +82,12 @@ main(int argc, char *argv[])
   // Installing applications
 
   // Consumer
-  ndn::AppHelper consumerHelper("PingClientApp");
+  ndn::AppHelper consumerHelper("NTorrentConsumerApp");
   consumerHelper.SetAttribute("Prefix", StringValue("/ping"));
   consumerHelper.Install(nodes.Get(0)).Start(Seconds(2));
 
   // Producer
-  ndn::AppHelper producerHelper("PingServerApp");
+  ndn::AppHelper producerHelper("NTorrentProducerApp");
   producerHelper.SetAttribute("Prefix", StringValue("/ping"));
   producerHelper.Install(nodes.Get(2)).Start(Seconds(0.1));
 
