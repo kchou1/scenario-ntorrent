@@ -40,7 +40,7 @@ public:
       .SetParent<Application>()
       .AddConstructor<NTorrentConsumerApp>()
       .AddAttribute("Prefix", "Name of the ntorrent Interest(s)", StringValue("/"),
-                    MakeNameAccessor(&NTorrentConsumerApp::m_prefix), MakeNameChecker());
+                    MakeNameAccessor(&NTorrentConsumerApp::torrent_prefix), MakeNameChecker());
     return tid;
   }
 
@@ -50,7 +50,7 @@ protected:
   StartApplication()
   {
     m_instance.reset(new ntorrent_namespace::NTorrentConsumer);
-    //m_instance.setPrefix(m_prefix);
+    //m_instance.setPrefix(torrent_prefix);
     //m_instance.run();
   }
 
@@ -62,7 +62,7 @@ protected:
 
 private:
   std::unique_ptr<ntorrent_namespace::NTorrentConsumer> m_instance;
-  Name m_prefix;
+  Name torrent_prefix;
 };
 
 } // namespace ndn
