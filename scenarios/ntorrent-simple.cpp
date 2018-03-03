@@ -56,7 +56,6 @@ main(int argc, char *argv[])
   // setting default parameters for PointToPoint links and channels
   Config::SetDefault("ns3::PointToPointNetDevice::DataRate", StringValue("1Mbps"));
   Config::SetDefault("ns3::PointToPointChannel::Delay", StringValue("10ms"));
-  //Config::SetDefault("ns3::DropTailQueue::MaxPackets", StringValue("20"));
 
   // Read optional command-line parameters (e.g., enable visualizer with ./waf --run=<> --visualize
   CommandLine cmd;
@@ -64,12 +63,12 @@ main(int argc, char *argv[])
 
   // Creating nodes
   NodeContainer nodes;
-  nodes.Create(3);
+  nodes.Create(2);
 
   // Connecting nodes using two links
   PointToPointHelper p2p;
   p2p.Install(nodes.Get(0), nodes.Get(1));
-  p2p.Install(nodes.Get(1), nodes.Get(2));
+  //p2p.Install(nodes.Get(1), nodes.Get(2));
 
   // Install NDN stack on all nodes
   StackHelper ndnHelper;
@@ -84,14 +83,14 @@ main(int argc, char *argv[])
   // Consumer
   ndn::AppHelper consumerHelper("NTorrentConsumerApp");
   consumerHelper.SetAttribute("Prefix", StringValue("/ping"));
-  consumerHelper.Install(nodes.Get(0)).Start(Seconds(2));
+  consumerHelper.Install(nodes.Get(0)).Start(Seconds(2.5));
 
   // Producer
   ndn::AppHelper producerHelper("NTorrentProducerApp");
   producerHelper.SetAttribute("Prefix", StringValue("/ping"));
-  producerHelper.Install(nodes.Get(2)).Start(Seconds(0.1));
+  producerHelper.Install(nodes.Get(1)).Start(Seconds(2.0));
 
-  ndnGlobalRoutingHelper.AddOrigins("/ping", nodes.Get(2));
+  //ndnGlobalRoutingHelper.AddOrigins("/ping", nodes.Get(2));
 
   // Calculate and install FIBs
   ndn::GlobalRoutingHelper::CalculateRoutes();
