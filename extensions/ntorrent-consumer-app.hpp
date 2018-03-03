@@ -50,8 +50,8 @@ protected:
   StartApplication()
   {
     m_instance.reset(new ntorrent_namespace::NTorrentConsumer);
-    //m_instance.setPrefix(torrent_prefix);
-    //m_instance.run();
+    m_instance.setPrefix(torrent_prefix);
+    m_instance.run();
   }
 
   virtual void

@@ -33,26 +33,19 @@ namespace ntorrent_namespace = ::ndn::ntorrent;
 class NTorrentProducer
 {
 public:
-  NTorrentProducer()
-  {
-  }
+  NTorrentProducer();
 
-  ~NTorrentProducer()
-  {
-  }
+  ~NTorrentProducer();
 
   void
-  setPrefix(Name name)
-  {
-  }
+  setPrefix(Name name);
 
   void
-  run()
-  {
-  }
+  run();
 
 private:
   ::ndn::Face m_face;
+  Name torrent_prefix;
 };
 
 } // namespace ntorrent

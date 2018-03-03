@@ -33,22 +33,19 @@ namespace ntorrent_namespace = ::ndn::ntorrent;
 class NTorrentConsumer
 {
 public:
-  NTorrentConsumer()
-  {
-  }
+  NTorrentConsumer();
+  
+  ~NTorrentConsumer();
 
   void
-  setPrefix(Name name)
-  {
-  }
+  setPrefix(Name name);
 
   void
-  run()
-  {
-  }
+  run();
 
 private:
   ::ndn::Face m_face;
+  Name torrent_prefix;
 };
 
 } // namespace ntorrent
