@@ -26,9 +26,6 @@
 #include <ndn-cxx/face.hpp>
 
 namespace ndn {
-//namespace ntorrent {
-
-//namespace ntorrent_namespace = ::ndn::ntorrent;
 
 class NTorrentProducer
 {
@@ -46,7 +43,7 @@ public:
 private:
   ::ndn::Face m_face;
   Name torrent_prefix;
+  ntorrent::TorrentFile tf;
 };
 
-//} // namespace ntorrent
 } // namespace ndn

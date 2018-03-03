@@ -22,7 +22,6 @@
 #include "ntorrent-consumer.hpp"
 
 namespace ndn {
-//namespace ntorrent{
 
 NTorrentConsumer::NTorrentConsumer()
 {
@@ -43,5 +42,4 @@ NTorrentConsumer::run()
 {
 }
 
-//} // namespace ntorrent
 } // namespace ndn

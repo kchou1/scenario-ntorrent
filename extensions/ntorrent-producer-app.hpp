@@ -28,8 +28,6 @@
 namespace ns3 {
 namespace ndn {
 
-//namespace ntorrent_namespace = ::ndn::ntorrent;
-
 class NTorrentProducerApp : public Application
 {
 public:
