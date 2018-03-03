@@ -63,7 +63,13 @@ protected:
 
 private:
   std::unique_ptr<ntorrent_namespace::NTorrentProducer> m_instance;
+  
   Name torrent_prefix;
+  uint32_t m_nFiles;
+  uint32_t m_nSegmentsPerFile;
+
+  void createTorrentFile();
+  void createManifests();
 };
 
 } // namespace ndn
