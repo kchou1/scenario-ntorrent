@@ -28,7 +28,7 @@
 namespace ndn {
 namespace ntorrent {
 
-namespace ntorrentProducer = ::ndn::ntorrent;
+namespace ntorrent_namespace = ::ndn::ntorrent;
 
 class NTorrentProducer
 {

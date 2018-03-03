@@ -28,7 +28,7 @@
 namespace ns3 {
 namespace ndn {
 
-namespace ntorrentProducer = ::ndn::ntorrent;
+namespace ntorrent_namespace = ::ndn::ntorrent;
 
 class NTorrentProducerApp : public Application
 {
@@ -50,7 +50,7 @@ protected:
   virtual void
   StartApplication()
   {
-    m_instance.reset(new ntorrentProducer::NTorrentProducer);
+    m_instance.reset(new ntorrent_namespace::NTorrentProducer);
     //m_instance.setPrefix(m_prefix);
     //m_instance.run();
   }
@@ -62,7 +62,7 @@ protected:
   }
 
 private:
-  std::unique_ptr<ntorrentProducer::NTorrentProducer> m_instance;
+  std::unique_ptr<ntorrent_namespace::NTorrentProducer> m_instance;
   Name m_prefix;
 };
 
