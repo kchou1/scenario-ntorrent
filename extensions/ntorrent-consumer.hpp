@@ -26,9 +26,9 @@
 #include <ndn-cxx/face.hpp>
 
 namespace ndn {
-namespace ntorrent {
+//namespace ntorrent {
 
-namespace ntorrent_namespace = ::ndn::ntorrent;
+//namespace ntorrent_namespace = ::ndn::ntorrent;
 
 class NTorrentConsumer
 {
@@ -48,5 +48,5 @@ private:
   Name torrent_prefix;
 };
 
-} // namespace ntorrent
+//} // namespace ntorrent
 } // namespace ndn

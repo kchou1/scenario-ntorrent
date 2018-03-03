@@ -22,7 +22,7 @@
 #include "ntorrent-producer.hpp"
 
 namespace ndn {
-namespace ntorrent{
+//namespace ntorrent{
 
 NTorrentProducer::NTorrentProducer()
 {
@@ -43,5 +43,5 @@ NTorrentProducer::run()
 {
 }
 
-} // namespace ntorrent
+//} // namespace ntorrent
 } // namespace ndn
