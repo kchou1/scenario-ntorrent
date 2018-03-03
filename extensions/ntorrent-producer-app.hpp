@@ -39,8 +39,12 @@ public:
     static TypeId tid = TypeId("NTorrentProducerApp")
       .SetParent<Application>()
       .AddConstructor<NTorrentProducerApp>()
-      .AddAttribute("Prefix", "Name of the Interest(s) to be satisfied", StringValue("/"),
-                    MakeNameAccessor(&NTorrentProducerApp::torrent_prefix), MakeNameChecker());
+      .AddAttribute("Prefix", "Torrent prefix", StringValue("/"),
+                    MakeNameAccessor(&NTorrentProducerApp::torrent_prefix), MakeNameChecker())
+      .AddAttribute("nFiles", "Number of files in the torrent", IntegerValue(5),
+                    MakeIntegerAccessor(&NTorrentProducerApp::m_nFiles), MakeIntegerChecker<int32_t>())
+      .AddAttribute("nSegments", "Number of segments per file", IntegerValue(5),
+                    MakeIntegerAccessor(&NTorrentProducerApp::m_nSegmentsPerFile), MakeIntegerChecker<int32_t>());
 
     return tid;
   }

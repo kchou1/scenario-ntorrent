@@ -82,12 +82,14 @@ main(int argc, char *argv[])
 
   // Consumer
   ndn::AppHelper consumerHelper("NTorrentConsumerApp");
-  consumerHelper.SetAttribute("Prefix", StringValue("/ping"));
+  consumerHelper.SetAttribute("Prefix", StringValue("/somerandomtorrentprefix"));
   consumerHelper.Install(nodes.Get(0)).Start(Seconds(2.5));
 
   // Producer
   ndn::AppHelper producerHelper("NTorrentProducerApp");
-  producerHelper.SetAttribute("Prefix", StringValue("/ping"));
+  producerHelper.SetAttribute("Prefix", StringValue("/somerandomtorrentprefix"));
+  producerHelper.SetAttribute("nFiles", IntegerValue(4));
+  producerHelper.SetAttribute("nSegments", IntegerValue(4));
   producerHelper.Install(nodes.Get(1)).Start(Seconds(2.0));
 
   //ndnGlobalRoutingHelper.AddOrigins("/ping", nodes.Get(2));

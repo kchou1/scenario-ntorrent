@@ -39,7 +39,7 @@ public:
     static TypeId tid = TypeId("NTorrentConsumerApp")
       .SetParent<Application>()
       .AddConstructor<NTorrentConsumerApp>()
-      .AddAttribute("Prefix", "Name of the ntorrent Interest(s)", StringValue("/"),
+      .AddAttribute("Prefix", "Torrent prefix", StringValue("/"),
                     MakeNameAccessor(&NTorrentConsumerApp::torrent_prefix), MakeNameChecker());
     return tid;
   }
