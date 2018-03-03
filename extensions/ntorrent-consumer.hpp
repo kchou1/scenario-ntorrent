@@ -45,12 +45,10 @@ public:
   void
   run()
   {
-    //m_ntorrentConsumer.start();
   }
 
 private:
   ::ndn::Face m_face;
-  //shared_ptr<ntorrentConsumer::NTorrentConsumer> m_ntorrentConsumer;
 };
 
 } // namespace ntorrent

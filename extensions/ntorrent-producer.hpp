@@ -49,12 +49,10 @@ public:
   void
   run()
   {
-    //m_ntorrentProducer.start();
   }
 
 private:
   ::ndn::Face m_face;
-  //shared_ptr<ntorrentProducer::NTorrentProducer> m_ntorrentProducer;
 };
 
 } // namespace ntorrent
