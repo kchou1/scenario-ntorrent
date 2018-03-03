@@ -21,10 +21,14 @@
 
 #include "ns3/ndnSIM-module.h"
 
+#include "src/torrent-file.hpp"
+
 #include <ndn-cxx/face.hpp>
 
 namespace ndn {
 namespace ntorrent {
+
+namespace ntorrentConsumer = ::ndn::ntorrent;
 
 class NTorrentConsumer
 {
@@ -41,12 +45,12 @@ public:
   void
   run()
   {
-    m_ntorrentConsumer.start();
+    //m_ntorrentConsumer.start();
   }
 
 private:
   ::ndn::Face m_face;
-  shared_ptr<ndn::ntorrent::NTorrentConsumer> m_ntorrentConsumer;
+  //shared_ptr<ntorrentConsumer::NTorrentConsumer> m_ntorrentConsumer;
 };
 
 } // namespace ntorrent
