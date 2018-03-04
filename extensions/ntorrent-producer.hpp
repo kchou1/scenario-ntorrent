@@ -22,6 +22,7 @@
 #include "ns3/ndnSIM-module.h"
 
 #include "src/torrent-file.hpp"
+#include "src/util/shared-constants.hpp"
 
 #include <ndn-cxx/face.hpp>
 

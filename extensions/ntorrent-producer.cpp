@@ -22,7 +22,7 @@
 #include "ntorrent-producer.hpp"
 
 namespace ndn {
-
+namespace ndn_ntorrent = ::ndn::ntorrent;
 NTorrentProducer::NTorrentProducer()
 {
 }
@@ -45,6 +45,8 @@ NTorrentProducer::run()
 void
 NTorrentProducer::createTorrentFile()
 {
+    const auto& content = tf.generate("/var/tmp/test",
+            1024, 1024, 1024);
 }
 
 void
