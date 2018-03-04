@@ -57,8 +57,16 @@ main(int argc, char *argv[])
   Config::SetDefault("ns3::PointToPointNetDevice::DataRate", StringValue("1Mbps"));
   Config::SetDefault("ns3::PointToPointChannel::Delay", StringValue("10ms"));
 
+  //defaults for command line arguments
+  std::string torrentPrefix ("/somerandomtorrentprefix");
+  uint32_t nFiles = 4;
+  uint32_t nSegments = 4;
+  
   // Read optional command-line parameters (e.g., enable visualizer with ./waf --run=<> --visualize
   CommandLine cmd;
+  cmd.AddValue("torrentPrefix", "Torrent prefix", torrentPrefix);
+  cmd.AddValue("nFiles", "Number of files", nFiles);
+  cmd.AddValue("nSegments", "Number of segments per file", nSegments);
   cmd.Parse(argc, argv);
 
   // Creating nodes
@@ -68,7 +76,6 @@ main(int argc, char *argv[])
   // Connecting nodes using two links
   PointToPointHelper p2p;
   p2p.Install(nodes.Get(0), nodes.Get(1));
-  //p2p.Install(nodes.Get(1), nodes.Get(2));
 
   // Install NDN stack on all nodes
   StackHelper ndnHelper;
@@ -80,17 +87,18 @@ main(int argc, char *argv[])
 
   // Installing applications
 
-  // Consumer
-  ndn::AppHelper consumerHelper("NTorrentConsumerApp");
-  consumerHelper.SetAttribute("Prefix", StringValue("/somerandomtorrentprefix"));
-  consumerHelper.Install(nodes.Get(0)).Start(Seconds(2.5));
-
   // Producer
   ndn::AppHelper producerHelper("NTorrentProducerApp");
   producerHelper.SetAttribute("Prefix", StringValue("/somerandomtorrentprefix"));
-  producerHelper.SetAttribute("nFiles", IntegerValue(4));
-  producerHelper.SetAttribute("nSegments", IntegerValue(4));
-  producerHelper.Install(nodes.Get(1)).Start(Seconds(2.0));
+  producerHelper.SetAttribute("nFiles", IntegerValue(nFiles));
+  producerHelper.SetAttribute("nSegments", IntegerValue(nSegments));
+  producerHelper.Install(nodes.Get(0)).Start(Seconds(2.0));
+  
+  // Consumer
+  ndn::AppHelper consumerHelper("NTorrentConsumerApp");
+  consumerHelper.SetAttribute("Prefix", StringValue("/somerandomtorrentprefix"));
+  consumerHelper.Install(nodes.Get(1)).Start(Seconds(2.5));
+
 
   //ndnGlobalRoutingHelper.AddOrigins("/ping", nodes.Get(2));
 
