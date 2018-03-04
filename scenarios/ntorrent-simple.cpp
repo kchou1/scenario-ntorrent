@@ -58,13 +58,11 @@ main(int argc, char *argv[])
   Config::SetDefault("ns3::PointToPointChannel::Delay", StringValue("10ms"));
 
   //defaults for command line arguments
-  std::string torrentPrefix ("/somerandomtorrentprefix");
   uint32_t nFiles = 4;
   uint32_t nSegments = 4;
   
   // Read optional command-line parameters (e.g., enable visualizer with ./waf --run=<> --visualize
   CommandLine cmd;
-  cmd.AddValue("torrentPrefix", "Torrent prefix", torrentPrefix);
   cmd.AddValue("nFiles", "Number of files", nFiles);
   cmd.AddValue("nSegments", "Number of segments per file", nSegments);
   cmd.Parse(argc, argv);
