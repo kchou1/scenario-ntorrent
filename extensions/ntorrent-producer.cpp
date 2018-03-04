@@ -42,4 +42,14 @@ NTorrentProducer::run()
 {
 }
 
+void
+NTorrentProducer::createTorrentFile()
+{
+}
+
+void
+NTorrentProducer::createFileManifests()
+{
+}
+
 } // namespace ndn

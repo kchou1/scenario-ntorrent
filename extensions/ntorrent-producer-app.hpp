@@ -69,9 +69,6 @@ private:
   Name torrent_prefix;
   uint32_t m_nFiles;
   uint32_t m_nSegmentsPerFile;
-
-  void createTorrentFile();
-  void createManifests();
 };
 
 } // namespace ndn

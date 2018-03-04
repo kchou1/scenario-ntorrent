@@ -40,6 +40,12 @@ public:
   void
   run();
 
+  void 
+  createTorrentFile();
+
+  void
+  createFileManifests();
+
 private:
   ::ndn::Face m_face;
   Name torrent_prefix;
