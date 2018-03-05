@@ -56,7 +56,7 @@ NTorrentProducer::createTorrentFile()
     
     const auto& torrentSegments = content.first;
     for (const ndn_ntorrent::TorrentFile& t : torrentSegments) {
-        std::cout << "Write: " << t.getName() << std::endl;
+        std::cout << "Torrent Name: " << t.getName() << std::endl;
     }
 
     std::vector<ndn_ntorrent::FileManifest> manifests;
