@@ -43,7 +43,8 @@ NTorrentProducer::setPrefix(Name prefix)
 void
 NTorrentProducer::run()
 {
-    m_producer->createTorrentFile();
+    std::cout << "PRODUCER " << endl;
+    //m_producer->createTorrentFile();
 }
 
 void

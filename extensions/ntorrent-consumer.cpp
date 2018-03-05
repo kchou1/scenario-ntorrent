@@ -40,6 +40,7 @@ NTorrentConsumer::setPrefix(Name prefix)
 void
 NTorrentConsumer::run()
 {
+    std::cout << "CONSUMER " << endl;
 }
 
 } // namespace ndn
