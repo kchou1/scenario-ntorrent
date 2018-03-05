@@ -21,8 +21,11 @@
 
 #include "ntorrent-producer.hpp"
 
-namespace ndn {
 namespace ndn_ntorrent = ::ndn::ntorrent;
+namespace ndn {
+
+const char * ndn_ntorrent::SharedConstants::commonPrefix = "/ndn/nTorrent";
+
 NTorrentProducer::NTorrentProducer()
 {
 }
@@ -40,6 +43,7 @@ NTorrentProducer::setPrefix(Name prefix)
 void
 NTorrentProducer::run()
 {
+    createTorrentFile();
 }
 
 void
