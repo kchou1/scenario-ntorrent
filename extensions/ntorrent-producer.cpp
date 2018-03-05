@@ -43,14 +43,26 @@ NTorrentProducer::setPrefix(Name prefix)
 void
 NTorrentProducer::run()
 {
-    createTorrentFile();
+    m_producer->createTorrentFile();
 }
 
 void
 NTorrentProducer::createTorrentFile()
 {
-    const auto& content = tf.generate("/var/tmp/test",
+    //directory needs 777 permission!
+    auto dataPath = "/var/tmp/test/";
+    const auto& content = ndn_ntorrent::TorrentFile::generate(dataPath,
             1024, 1024, 1024);
+    
+    const auto& torrentSegments = content.first;
+    for (const ndn_ntorrent::TorrentFile& t : torrentSegments) {
+        std::cout << "Write: " << t.getName() << std::endl;
+    }
+
+    std::vector<ndn_ntorrent::FileManifest> manifests;
+    for (const auto& ms : content.second) {
+        manifests.insert(manifests.end(), ms.first.begin(), ms.first.end());
+    }
 }
 
 void

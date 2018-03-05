@@ -50,7 +50,7 @@ public:
 private:
   ::ndn::Face m_face;
   Name torrent_prefix;
-  ntorrent::TorrentFile tf;
+  shared_ptr<ndn::NTorrentProducer> m_producer;
 };
 
 } // namespace ndn
