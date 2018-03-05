@@ -21,6 +21,7 @@
 
 #include "ntorrent-consumer.hpp"
 
+namespace ndn_ntorrent = ::ndn::ntorrent;
 namespace ndn {
 
 NTorrentConsumer::NTorrentConsumer()
