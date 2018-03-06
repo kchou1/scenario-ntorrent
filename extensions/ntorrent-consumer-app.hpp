@@ -22,46 +22,46 @@
 #include "ns3/ndnSIM-module.h"
 #include "ns3/integer.h"
 #include "ns3/string.h"
+#include "apps/ndn-app.hpp"
 
 #include "ntorrent-consumer.hpp"
 
 namespace ns3 {
 namespace ndn {
 
-class NTorrentConsumerApp : public Application
+class NTorrentConsumerApp : public App
 {
 public:
   static TypeId
-  GetTypeId()
-  {
-    static TypeId tid = TypeId("NTorrentConsumerApp")
-      .SetParent<Application>()
-      .AddConstructor<NTorrentConsumerApp>()
-      .AddAttribute("Prefix", "Name of the Interest", StringValue("/"),
-            MakeNameAccessor(&NTorrentConsumerApp::m_prefix), MakeNameChecker());
+  GetTypeId(void);
+  
+  NTorrentConsumerApp();
+  ~NTorrentConsumerApp();
 
-    return tid;
-  }
+  virtual void
+  OnInterest(shared_ptr<const Interest> interest);
+
+  virtual void
+  OnData(shared_ptr<const Data> data);
+
+  virtual void
+  OnNack(shared_ptr<const lp::Nack> nack);
 
 protected:
-  // inherited from Application base class.
   virtual void
-  StartApplication()
-  {
-    m_instance.reset(new ::ndn::NTorrentConsumer);
-    m_instance->setPrefix(m_prefix);
-    m_instance->run();
-  }
+  StartApplication();
 
   virtual void
-  StopApplication()
-  {
-    m_instance.reset();
-  }
+  StopApplication();
 
 private:
   std::unique_ptr<::ndn::NTorrentConsumer> m_instance;
   Name m_prefix;
+  Name m_postfix;
+  uint32_t m_virtualPayloadSize;
+  Time m_freshness;
+  uint32_t m_signature;
+  Name m_keyLocator;
 
 };
 
