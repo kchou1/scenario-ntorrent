@@ -26,5 +26,48 @@ namespace ndn {
 
 NS_OBJECT_ENSURE_REGISTERED(NTorrentProducerApp);
 
+TypeId
+NTorrentProducerApp::GetTypeId(void)
+{
+    static TypeId tid = TypeId("NTorrentProducerApp")
+      .SetParent<Application>()
+      .AddConstructor<NTorrentProducerApp>()
+      .AddAttribute("Prefix", "Prefix, for which producer has the data", StringValue("/"),
+                    MakeNameAccessor(&NTorrentProducerApp::m_prefix), MakeNameChecker())
+      .AddAttribute("nFiles", "Number of files in the torrent", IntegerValue(5),
+                    MakeIntegerAccessor(&NTorrentProducerApp::m_nFiles), MakeIntegerChecker<int32_t>())
+      .AddAttribute("nSegments", "Number of segments per file", IntegerValue(5),
+                    MakeIntegerAccessor(&NTorrentProducerApp::m_nSegmentsPerFile), MakeIntegerChecker<int32_t>());
+
+    return tid;
+}
+
+NTorrentProducerApp::NTorrentProducerApp()
+{
+}
+
+NTorrentProducerApp::~NTorrentProducerApp()
+{
+}
+
+void
+NTorrentProducerApp::StartApplication()
+{
+    m_instance.reset(new ::ndn::NTorrentProducer);
+    m_instance->setPrefix(m_prefix);
+    m_instance->run();
+}
+
+void
+NTorrentProducerApp::StopApplication()
+{
+    m_instance.reset();
+}
+
+void
+NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
+{
+}
+
 } // namespace ndn
 } // namespace ns3

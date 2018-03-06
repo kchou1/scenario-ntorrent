@@ -32,41 +32,31 @@ class NTorrentProducerApp : public Application
 {
 public:
   static TypeId
-  GetTypeId()
-  {
-    static TypeId tid = TypeId("NTorrentProducerApp")
-      .SetParent<Application>()
-      .AddConstructor<NTorrentProducerApp>()
-      .AddAttribute("Prefix", "Prefix, for which producer has the data", StringValue("/"),
-                    MakeNameAccessor(&NTorrentProducerApp::m_prefix), MakeNameChecker())
-      .AddAttribute("nFiles", "Number of files in the torrent", IntegerValue(5),
-                    MakeIntegerAccessor(&NTorrentProducerApp::m_nFiles), MakeIntegerChecker<int32_t>())
-      .AddAttribute("nSegments", "Number of segments per file", IntegerValue(5),
-                    MakeIntegerAccessor(&NTorrentProducerApp::m_nSegmentsPerFile), MakeIntegerChecker<int32_t>());
+  GetTypeId(void);
+  
+  NTorrentProducerApp();
+  ~NTorrentProducerApp();
 
-    return tid;
-  }
+  virtual void
+  OnInterest(shared_ptr<const Interest> interest);
 
 protected:
-  // inherited from Application base class.
   virtual void
-  StartApplication()
-  {
-    m_instance.reset(new ::ndn::NTorrentProducer);
-    m_instance->setPrefix(m_prefix);
-    m_instance->run();
-  }
+  StartApplication();
 
   virtual void
-  StopApplication()
-  {
-    m_instance.reset();
-  }
+  StopApplication();
 
 private:
   std::unique_ptr<::ndn::NTorrentProducer> m_instance;
-
   Name m_prefix;
+  Name m_postfix;
+  uint32_t m_virtualPayloadSize;
+  Time m_freshness;
+
+  uint32_t m_signature;
+  Name m_keyLocator;
+
   uint32_t m_nFiles;
   uint32_t m_nSegmentsPerFile;
 
