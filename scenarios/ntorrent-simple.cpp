@@ -97,7 +97,7 @@ main(int argc, char *argv[])
   consumerHelper.SetAttribute("Prefix", StringValue("/"));
   consumerHelper.Install(nodes.Get(1)).Start(Seconds(2.5));
 
-  //ndnGlobalRoutingHelper.AddOrigins("/ping", nodes.Get(2));
+  ndnGlobalRoutingHelper.AddOrigins("/", nodes.Get(0));
 
   // Calculate and install FIBs
   ndn::GlobalRoutingHelper::CalculateRoutes();

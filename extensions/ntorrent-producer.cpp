@@ -44,7 +44,7 @@ void
 NTorrentProducer::run()
 {
     std::cout << "PRODUCER " << endl;
-    m_producer->createTorrentFile();
+    //m_producer->createTorrentFile();
 }
 
 void

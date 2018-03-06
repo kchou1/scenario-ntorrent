@@ -83,6 +83,7 @@ NTorrentProducerApp::StopApplication()
 void
 NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
 {
+    std::cout << "OnInterest" << std::endl;
     Name dataName(interest->getName());
     // dataName.append(m_postfix);
     // dataName.appendVersion();

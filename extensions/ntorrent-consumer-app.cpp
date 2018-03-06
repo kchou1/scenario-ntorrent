@@ -32,25 +32,29 @@ NTorrentConsumerApp::GetTypeId(void)
     static TypeId tid = TypeId("NTorrentConsumerApp")
       .SetParent<Application>()
       .AddConstructor<NTorrentConsumerApp>()
-      .AddAttribute("Prefix", "Prefix, for which producer has the data", StringValue("/"),
-                    MakeNameAccessor(&NTorrentConsumerApp::m_prefix), MakeNameChecker())
-      .AddAttribute("Postfix",
-              "Postfix that is added to the output data (e.g., for adding producer-uniqueness)",
-              StringValue("/"), MakeNameAccessor(&NTorrentConsumerApp::m_postfix), MakeNameChecker())
-      .AddAttribute("PayloadSize", "Virtual payload size for Content packets", IntegerValue(1024),
-              MakeIntegerAccessor(&NTorrentConsumerApp::m_virtualPayloadSize),
-              MakeIntegerChecker<uint32_t>())
-      .AddAttribute("Freshness", "Freshness of data packets, if 0, then unlimited freshness",
-              TimeValue(Seconds(0)), MakeTimeAccessor(&NTorrentConsumerApp::m_freshness),
-              MakeTimeChecker())
-      .AddAttribute("Signature",
-              "Fake signature, 0 valid signature (default), other values application-specific",
-              IntegerValue(0), MakeIntegerAccessor(&NTorrentConsumerApp::m_signature),
-              MakeIntegerChecker<uint32_t>())
-      .AddAttribute("KeyLocator",
-              "Name to be used for key locator.  If root, then key locator is not used",
-              NameValue(), MakeNameAccessor(&NTorrentConsumerApp::m_keyLocator), MakeNameChecker());
+      .AddAttribute("StartSeq", "Initial sequence number", IntegerValue(0),
+                    MakeIntegerAccessor(&NTorrentConsumerApp::m_seq), MakeIntegerChecker<int32_t>())
 
+      .AddAttribute("Prefix", "Name of the Interest", StringValue("/"),
+                    MakeNameAccessor(&NTorrentConsumerApp::m_interestName), MakeNameChecker())
+      .AddAttribute("LifeTime", "LifeTime for interest packet", StringValue("2s"),
+                    MakeTimeAccessor(&NTorrentConsumerApp::m_interestLifeTime), MakeTimeChecker())
+
+      .AddAttribute("RetxTimer",
+                    "Timeout defining how frequent retransmission timeouts should be checked",
+                    StringValue("50ms"),
+                    MakeTimeAccessor(&NTorrentConsumerApp::GetRetxTimer, &NTorrentConsumerApp::SetRetxTimer),
+                    MakeTimeChecker())
+
+      .AddTraceSource("LastRetransmittedInterestDataDelay",
+                      "Delay between last retransmitted Interest and received Data",
+                      MakeTraceSourceAccessor(&NTorrentConsumerApp::m_lastRetransmittedInterestDataDelay),
+                      "ns3::ndn::NTorrentConsumerApp::LastRetransmittedInterestDataDelayCallback")
+
+      .AddTraceSource("FirstInterestDataDelay",
+                      "Delay between first transmitted Interest and received Data",
+                      MakeTraceSourceAccessor(&NTorrentConsumerApp::m_firstInterestDataDelay),
+					  "ns3::ndn::NTorrentConsumerApp::FirstInterestDataDelayCallback");
     return tid;
 }
 
@@ -66,7 +70,6 @@ void
 NTorrentConsumerApp::StartApplication()
 {
     m_instance.reset(new ::ndn::NTorrentConsumer);
-    m_instance->setPrefix(m_prefix);
     m_instance->run();
 }
 
@@ -99,6 +102,49 @@ NTorrentConsumerApp::WillSendOutInterest(uint32_t sequenceNumber)
 void
 NTorrentConsumerApp::SendPacket()
 {
+    if(!m_active)
+        return;
+    //NS_LOG_FUNCTION_NOARGS();
+    uint32_t seq = std::numeric_limits<uint32_t>::max(); // invalid
+    
+    while (m_retxSeqs.size()) {
+        seq = *m_retxSeqs.begin();
+        m_retxSeqs.erase(m_retxSeqs.begin());
+        break;
+    }
+   if (seq == std::numeric_limits<uint32_t>::max()) {
+       if (m_seqMax != std::numeric_limits<uint32_t>::max()) {
+         if (m_seq >= m_seqMax) {
+           return; // we are totally done
+         }
+       }
+   
+       seq = m_seq++;
+     } 
+
+}
+
+void
+NTorrentConsumerApp::ScheduleNextPacket()
+{
+    m_sendEvent = Simulator::Schedule(Seconds(0.0), &NTorrentConsumerApp::SendPacket, this);
+}
+
+Time
+NTorrentConsumerApp::GetRetxTimer() const
+{
+    return m_retxTimer;
+}
+
+void
+NTorrentConsumerApp::CheckRetxTimeout()
+{
+}
+
+void
+NTorrentConsumerApp::SetRetxTimer(Time retxTimer)
+{
+
 }
 
 } // namespace ndn
