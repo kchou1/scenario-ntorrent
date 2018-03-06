@@ -42,7 +42,7 @@ public:
 
 private:
   ::ndn::Face m_face;
-  Name m_prefix;
+  Name m_interestName;
 };
 
 } // namespace ndn

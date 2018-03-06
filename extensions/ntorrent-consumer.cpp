@@ -35,7 +35,7 @@ NTorrentConsumer::~NTorrentConsumer()
 void
 NTorrentConsumer::setPrefix(Name prefix)
 {
-  m_prefix = prefix;
+  m_interestName = prefix;
 }
 
 void

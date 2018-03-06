@@ -121,7 +121,27 @@ NTorrentConsumerApp::SendPacket()
    
        seq = m_seq++;
      } 
+  
+  shared_ptr<Name> nameWithSequence = make_shared<Name>(m_interestName);
+  nameWithSequence->appendSequenceNumber(seq);
+  //
 
+  // shared_ptr<Interest> interest = make_shared<Interest> ();
+  shared_ptr<Interest> interest = make_shared<Interest>();
+  interest->setNonce(m_rand->GetValue(0, std::numeric_limits<uint32_t>::max()));
+  interest->setName(*nameWithSequence);
+  time::milliseconds interestLifeTime(m_interestLifeTime.GetMilliSeconds());
+  interest->setInterestLifetime(interestLifeTime);
+
+  // NS_LOG_INFO ("Requesting Interest: \n" << *interest);
+  //NS_LOG_INFO("> Interest for " << seq);
+
+  WillSendOutInterest(seq);
+
+  m_transmittedInterests(interest, this, m_face);
+  m_appLink->onReceiveInterest(*interest);
+
+  ScheduleNextPacket(); 
 }
 
 void
