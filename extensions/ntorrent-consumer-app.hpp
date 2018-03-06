@@ -44,6 +44,15 @@ public:
   virtual void
   OnNack(shared_ptr<const lp::Nack> nack);
 
+  virtual void
+  OnTimeout(uint32_t sequenceNumber);
+
+  void
+  SendPacket();
+
+  virtual void
+  WillSendOutInterest(uint32_t sequenceNumber);
+
 protected:
   virtual void
   StartApplication();

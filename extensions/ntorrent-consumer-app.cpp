@@ -86,6 +86,20 @@ NTorrentConsumerApp::OnNack(shared_ptr<const lp::Nack> nack)
 {
 }
 
+void
+NTorrentConsumerApp::OnTimeout(uint32_t sequenceNumber)
+{
+}
+
+void
+NTorrentConsumerApp::WillSendOutInterest(uint32_t sequenceNumber)
+{
+}
+
+void
+NTorrentConsumerApp::SendPacket()
+{
+}
 
 } // namespace ndn
 } // namespace ns3
