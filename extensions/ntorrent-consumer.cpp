@@ -35,7 +35,7 @@ NTorrentConsumer::~NTorrentConsumer()
 void
 NTorrentConsumer::setPrefix(Name prefix)
 {
-  torrent_prefix = prefix;
+  m_prefix = prefix;
 }
 
 void

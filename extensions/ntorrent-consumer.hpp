@@ -31,7 +31,7 @@ class NTorrentConsumer
 {
 public:
   NTorrentConsumer();
-  
+
   ~NTorrentConsumer();
 
   void
@@ -42,7 +42,7 @@ public:
 
 private:
   ::ndn::Face m_face;
-  Name torrent_prefix;
+  Name m_prefix;
 };
 
 } // namespace ndn

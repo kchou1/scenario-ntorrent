@@ -37,8 +37,8 @@ public:
     static TypeId tid = TypeId("NTorrentProducerApp")
       .SetParent<Application>()
       .AddConstructor<NTorrentProducerApp>()
-      .AddAttribute("Prefix", "Torrent prefix", StringValue("/"),
-                    MakeNameAccessor(&NTorrentProducerApp::torrent_prefix), MakeNameChecker())
+      .AddAttribute("Prefix", "Prefix, for which producer has the data", StringValue("/"),
+                    MakeNameAccessor(&NTorrentProducerApp::m_prefix), MakeNameChecker())
       .AddAttribute("nFiles", "Number of files in the torrent", IntegerValue(5),
                     MakeIntegerAccessor(&NTorrentProducerApp::m_nFiles), MakeIntegerChecker<int32_t>())
       .AddAttribute("nSegments", "Number of segments per file", IntegerValue(5),
@@ -53,7 +53,7 @@ protected:
   StartApplication()
   {
     m_instance.reset(new ::ndn::NTorrentProducer);
-    m_instance->setPrefix(torrent_prefix);
+    m_instance->setPrefix(m_prefix);
     m_instance->run();
   }
 
@@ -65,10 +65,11 @@ protected:
 
 private:
   std::unique_ptr<::ndn::NTorrentProducer> m_instance;
-  
-  Name torrent_prefix;
+
+  Name m_prefix;
   uint32_t m_nFiles;
   uint32_t m_nSegmentsPerFile;
+
 };
 
 } // namespace ndn

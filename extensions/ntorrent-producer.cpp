@@ -37,14 +37,14 @@ NTorrentProducer::~NTorrentProducer()
 void
 NTorrentProducer::setPrefix(Name prefix)
 {
-  torrent_prefix = prefix;
+  m_prefix = prefix;
 }
 
 void
 NTorrentProducer::run()
 {
     std::cout << "PRODUCER " << endl;
-    //m_producer->createTorrentFile();
+    m_producer->createTorrentFile();
 }
 
 void
@@ -54,7 +54,7 @@ NTorrentProducer::createTorrentFile()
     auto dataPath = "/var/tmp/test/";
     const auto& content = ndn_ntorrent::TorrentFile::generate(dataPath,
             1024, 1024, 1024);
-    
+
     const auto& torrentSegments = content.first;
     for (const ndn_ntorrent::TorrentFile& t : torrentSegments) {
         std::cout << "Torrent Name: " << t.getName() << std::endl;

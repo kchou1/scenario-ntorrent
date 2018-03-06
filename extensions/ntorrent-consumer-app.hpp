@@ -37,8 +37,9 @@ public:
     static TypeId tid = TypeId("NTorrentConsumerApp")
       .SetParent<Application>()
       .AddConstructor<NTorrentConsumerApp>()
-      .AddAttribute("Prefix", "Torrent prefix", StringValue("/"),
-                    MakeNameAccessor(&NTorrentConsumerApp::torrent_prefix), MakeNameChecker());
+      .AddAttribute("Prefix", "Name of the Interest", StringValue("/"),
+            MakeNameAccessor(&NTorrentConsumerApp::m_prefix), MakeNameChecker());
+
     return tid;
   }
 
@@ -48,7 +49,7 @@ protected:
   StartApplication()
   {
     m_instance.reset(new ::ndn::NTorrentConsumer);
-    m_instance->setPrefix(torrent_prefix);
+    m_instance->setPrefix(m_prefix);
     m_instance->run();
   }
 
@@ -60,7 +61,8 @@ protected:
 
 private:
   std::unique_ptr<::ndn::NTorrentConsumer> m_instance;
-  Name torrent_prefix;
+  Name m_prefix;
+
 };
 
 } // namespace ndn

@@ -49,7 +49,7 @@ public:
 
 private:
   ::ndn::Face m_face;
-  Name torrent_prefix;
+  Name m_prefix;
   shared_ptr<ndn::NTorrentProducer> m_producer;
 };
 
