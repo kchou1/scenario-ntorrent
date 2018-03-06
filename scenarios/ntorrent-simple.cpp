@@ -97,7 +97,6 @@ main(int argc, char *argv[])
   consumerHelper.SetAttribute("Prefix", StringValue("/somerandomtorrentprefix"));
   consumerHelper.Install(nodes.Get(1)).Start(Seconds(2.5));
 
-
   //ndnGlobalRoutingHelper.AddOrigins("/ping", nodes.Get(2));
 
   // Calculate and install FIBs
