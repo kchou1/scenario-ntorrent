@@ -39,9 +39,6 @@ public:
   ~NTorrentConsumerApp();
 
   virtual void
-  OnInterest(shared_ptr<const Interest> interest);
-
-  virtual void
   OnData(shared_ptr<const Data> data);
 
   virtual void

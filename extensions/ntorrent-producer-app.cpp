@@ -111,16 +111,5 @@ NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
     m_appLink->onReceiveData(*data);
 }
 
-void
-NTorrentProducerApp::OnData(shared_ptr<const Data> data)
-{
-}
-
-void
-NTorrentProducerApp::OnNack(shared_ptr<const lp::Nack> nack)
-{
-}
-
-
 } // namespace ndn
 } // namespace ns3
