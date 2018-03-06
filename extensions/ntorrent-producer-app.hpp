@@ -22,13 +22,14 @@
 #include "ns3/ndnSIM-module.h"
 #include "ns3/integer.h"
 #include "ns3/string.h"
+#include "apps/ndn-app.hpp"
 
 #include "ntorrent-producer.hpp"
 
 namespace ns3 {
 namespace ndn {
 
-class NTorrentProducerApp : public Application
+class NTorrentProducerApp : public App
 {
 public:
   static TypeId
@@ -40,6 +41,12 @@ public:
   virtual void
   OnInterest(shared_ptr<const Interest> interest);
 
+  virtual void
+  OnData(shared_ptr<const Data> data);
+
+  virtual void
+  OnNack(shared_ptr<const lp::Nack> nack);
+
 protected:
   virtual void
   StartApplication();
@@ -49,11 +56,11 @@ protected:
 
 private:
   std::unique_ptr<::ndn::NTorrentProducer> m_instance;
+
   Name m_prefix;
   Name m_postfix;
   uint32_t m_virtualPayloadSize;
   Time m_freshness;
-
   uint32_t m_signature;
   Name m_keyLocator;
 
