@@ -37,7 +37,7 @@ NTorrentConsumerApp::GetTypeId(void)
       .AddAttribute("StartSeq", "Initial sequence number", IntegerValue(0),
                     MakeIntegerAccessor(&NTorrentConsumerApp::m_seq), MakeIntegerChecker<int32_t>())
 
-      .AddAttribute("Prefix", "Name of the Interest", StringValue("/prefix/sub/"),
+      .AddAttribute("Prefix", "Name of the Interest", StringValue("/"),
                     MakeNameAccessor(&NTorrentConsumerApp::m_interestName), MakeNameChecker())
       .AddAttribute("LifeTime", "LifeTime for interest packet", StringValue("2s"),
                     MakeTimeAccessor(&NTorrentConsumerApp::m_interestLifeTime), MakeTimeChecker());
@@ -56,7 +56,7 @@ void
 NTorrentConsumerApp::StartApplication()
 {
     ndn::App::StartApplication();
-    ndn::FibHelper::AddRoute(GetNode(), "/prefix/sub", m_face, 0);
+    ndn::FibHelper::AddRoute(GetNode(), "/", m_face, 0);
     Simulator::Schedule(Seconds(1.0), &NTorrentConsumerApp::SendInterest, this);
 }
 

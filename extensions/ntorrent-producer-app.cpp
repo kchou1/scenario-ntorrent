@@ -34,7 +34,7 @@ NTorrentProducerApp::GetTypeId(void)
     static TypeId tid = TypeId("NTorrentProducerApp")
       .SetParent<Application>()
       .AddConstructor<NTorrentProducerApp>()
-      .AddAttribute("Prefix", "Prefix, for which producer has the data", StringValue("/prefix/sub/"),
+      .AddAttribute("Prefix", "Prefix, for which producer has the data", StringValue("/"),
                     MakeNameAccessor(&NTorrentProducerApp::m_prefix), MakeNameChecker())
       .AddAttribute("nFiles", "Number of files in the torrent", IntegerValue(5),
                     MakeIntegerAccessor(&NTorrentProducerApp::m_nFiles), MakeIntegerChecker<int32_t>())
@@ -72,7 +72,7 @@ void
 NTorrentProducerApp::StartApplication()
 {
     App::StartApplication();
-    ndn::FibHelper::AddRoute(GetNode(), "/prefix/sub", m_face, 0);
+    ndn::FibHelper::AddRoute(GetNode(), "/", m_face, 0);
 }
 
 void

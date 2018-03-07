@@ -82,7 +82,7 @@ main(int argc, char *argv[])
   ndnHelper.InstallAll();
 
   // Choosing forwarding strategy
-  //ndn::StrategyChoiceHelper::InstallAll("/prefix", "/localhost/nfd/strategy/multicast");
+  ndn::StrategyChoiceHelper::InstallAll("/", "/localhost/nfd/strategy/multicast");
 
   // Installing applications
 
@@ -96,9 +96,7 @@ main(int argc, char *argv[])
   // Consumer
   ndn::AppHelper consumerHelper("NTorrentConsumerApp");
   consumerHelper.SetAttribute("Prefix", StringValue("/"));
-  consumerHelper.Install(nodes.Get(0)).Start(Seconds(2.5));
-
-  //ndnGlobalRoutingHelper.AddOrigins("/", nodes.Get(0));
+  consumerHelper.Install(nodes.Get(1)).Start(Seconds(2.5));
 
   Simulator::Stop(Seconds(20.0));
 
