@@ -24,8 +24,6 @@
 #include "ns3/string.h"
 #include "apps/ndn-app.hpp"
 
-#include "ntorrent-producer.hpp"
-
 namespace ns3 {
 namespace ndn {
 
@@ -49,8 +47,6 @@ protected:
   StopApplication();
 
 private:
-  std::unique_ptr<::ndn::NTorrentProducer> m_instance;
-
   Name m_prefix;
   Name m_postfix;
   uint32_t m_virtualPayloadSize;

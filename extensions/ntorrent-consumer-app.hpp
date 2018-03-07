@@ -25,8 +25,6 @@
 #include "apps/ndn-app.hpp"
 #include "utils/ndn-rtt-estimator.hpp"
 
-#include "ntorrent-consumer.hpp"
-
 namespace ns3 {
 namespace ndn {
 
@@ -74,70 +72,68 @@ protected:
   GetRetxTimer() const;
 
 private:
-  std::unique_ptr<::ndn::NTorrentConsumer> m_instance;
-  
   Ptr<UniformRandomVariable> m_rand; 
 
-uint32_t m_seq; 
-uint32_t m_seqMax;
-EventId m_sendEvent;
-Time m_retxTimer;
-EventId m_retxEvent;
+  uint32_t m_seq; 
+  uint32_t m_seqMax;
+  EventId m_sendEvent;
+  Time m_retxTimer;
+  EventId m_retxEvent;
 
-Ptr<RttEstimator> m_rtt;
+  Ptr<RttEstimator> m_rtt;
 
-Time m_offTime; 
-Name m_interestName;
-Time m_interestLifeTime;
+  Time m_offTime; 
+  Name m_interestName;
+  Time m_interestLifeTime;
 
-struct RetxSeqsContainer : public std::set<uint32_t> {
-}; 
+  struct RetxSeqsContainer : public std::set<uint32_t> {
+  }; 
 
-RetxSeqsContainer m_retxSeqs; 
+  RetxSeqsContainer m_retxSeqs; 
 
-struct SeqTimeout {
-    SeqTimeout(uint32_t _seq, Time _time)
-      : seq(_seq)
-      , time(_time)
-    {
-    }
+  struct SeqTimeout {
+      SeqTimeout(uint32_t _seq, Time _time)
+        : seq(_seq)
+        , time(_time)
+      {
+      }
 
-    uint32_t seq;
-    Time time;
-};
-
-class i_seq {
+      uint32_t seq;
+      Time time;
   };
-  class i_timestamp {
-};
 
-struct SeqTimeoutsContainer
-    : public boost::multi_index::
-        multi_index_container<SeqTimeout,
-                              boost::multi_index::
-                                indexed_by<boost::multi_index::
-                                             ordered_unique<boost::multi_index::tag<i_seq>,
-                                                            boost::multi_index::
-                                                              member<SeqTimeout, uint32_t,
-                                                                     &SeqTimeout::seq>>,
-                                           boost::multi_index::
-                                             ordered_non_unique<boost::multi_index::
-                                                                  tag<i_timestamp>,
-                                                                boost::multi_index::
-                                                                  member<SeqTimeout, Time,
-                                                                         &SeqTimeout::time>>>> {
-};
+  class i_seq {
+    };
+    class i_timestamp {
+  };
 
-SeqTimeoutsContainer m_seqTimeouts; ///< \brief multi-index for the set of SeqTimeout structs
+  struct SeqTimeoutsContainer
+      : public boost::multi_index::
+          multi_index_container<SeqTimeout,
+                                boost::multi_index::
+                                  indexed_by<boost::multi_index::
+                                               ordered_unique<boost::multi_index::tag<i_seq>,
+                                                              boost::multi_index::
+                                                                member<SeqTimeout, uint32_t,
+                                                                       &SeqTimeout::seq>>,
+                                             boost::multi_index::
+                                               ordered_non_unique<boost::multi_index::
+                                                                    tag<i_timestamp>,
+                                                                  boost::multi_index::
+                                                                    member<SeqTimeout, Time,
+                                                                           &SeqTimeout::time>>>> {
+  };
 
-  SeqTimeoutsContainer m_seqLastDelay;
-  SeqTimeoutsContainer m_seqFullDelay;
-  std::map<uint32_t, uint32_t> m_seqRetxCounts;
+  SeqTimeoutsContainer m_seqTimeouts; ///< \brief multi-index for the set of SeqTimeout structs
 
-  TracedCallback<Ptr<App> /* app */, uint32_t /* seqno */, Time /* delay */, int32_t /*hop count*/>
-    m_lastRetransmittedInterestDataDelay;
-  TracedCallback<Ptr<App> /* app */, uint32_t /* seqno */, Time /* delay */,
-uint32_t /*retx count*/, int32_t /*hop count*/> m_firstInterestDataDelay;
+    SeqTimeoutsContainer m_seqLastDelay;
+    SeqTimeoutsContainer m_seqFullDelay;
+    std::map<uint32_t, uint32_t> m_seqRetxCounts;
+
+    TracedCallback<Ptr<App> /* app */, uint32_t /* seqno */, Time /* delay */, int32_t /*hop count*/>
+      m_lastRetransmittedInterestDataDelay;
+    TracedCallback<Ptr<App> /* app */, uint32_t /* seqno */, Time /* delay */,
+  uint32_t /*retx count*/, int32_t /*hop count*/> m_firstInterestDataDelay;
 
 };
 

@@ -69,15 +69,11 @@ NTorrentProducerApp::~NTorrentProducerApp()
 void
 NTorrentProducerApp::StartApplication()
 {
-    m_instance.reset(new ::ndn::NTorrentProducer);
-    m_instance->setPrefix(m_prefix);
-    m_instance->run();
 }
 
 void
 NTorrentProducerApp::StopApplication()
 {
-    m_instance.reset();
 }
 
 void

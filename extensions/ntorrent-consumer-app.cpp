@@ -69,15 +69,11 @@ NTorrentConsumerApp::~NTorrentConsumerApp()
 void
 NTorrentConsumerApp::StartApplication()
 {
-    m_instance.reset(new ::ndn::NTorrentConsumer);
-    m_instance->run();
-    SendPacket();
 }
 
 void
 NTorrentConsumerApp::StopApplication()
 {
-    m_instance.reset();
 }
 
 void
