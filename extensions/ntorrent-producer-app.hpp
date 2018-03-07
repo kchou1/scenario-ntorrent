@@ -24,6 +24,8 @@
 #include "ns3/string.h"
 #include "apps/ndn-app.hpp"
 
+#include "src/torrent-file.hpp"
+
 namespace ns3 {
 namespace ndn {
 
