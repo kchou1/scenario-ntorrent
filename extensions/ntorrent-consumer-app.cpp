@@ -71,6 +71,7 @@ NTorrentConsumerApp::StartApplication()
 {
     m_instance.reset(new ::ndn::NTorrentConsumer);
     m_instance->run();
+    SendPacket();
 }
 
 void
@@ -102,8 +103,10 @@ NTorrentConsumerApp::WillSendOutInterest(uint32_t sequenceNumber)
 void
 NTorrentConsumerApp::SendPacket()
 {
-    if(!m_active)
-        return;
+    /*TODO: Fix m_active..
+     * if(!m_active)
+        return;*/
+
     //NS_LOG_FUNCTION_NOARGS();
     uint32_t seq = std::numeric_limits<uint32_t>::max(); // invalid
     
@@ -122,6 +125,7 @@ NTorrentConsumerApp::SendPacket()
        seq = m_seq++;
      } 
   
+  std::cout << "SendPacket" << std::endl;
   shared_ptr<Name> nameWithSequence = make_shared<Name>(m_interestName);
   nameWithSequence->appendSequenceNumber(seq);
   //
