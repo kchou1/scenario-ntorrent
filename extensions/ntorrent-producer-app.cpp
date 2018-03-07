@@ -84,6 +84,7 @@ NTorrentProducerApp::StopApplication()
 void
 NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
 {
+    //TODO use ntorrent code here
     ndn::App::OnInterest(interest); 
     NS_LOG_DEBUG("Received interest for" << interest->getName());
 

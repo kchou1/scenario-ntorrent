@@ -58,7 +58,7 @@ NTorrentConsumerApp::StartApplication()
     ndn::App::StartApplication();
     ndn::FibHelper::AddRoute(GetNode(), "/", m_face, 0);
     for(int i=0;i<100;i++)
-        Simulator::Schedule(Seconds(i+2.0), &NTorrentConsumerApp::SendInterest, this);
+        Simulator::Schedule(Seconds(i+1.0), &NTorrentConsumerApp::SendInterest, this);
 }
 
 void
@@ -70,10 +70,9 @@ NTorrentConsumerApp::StopApplication()
 void
 NTorrentConsumerApp::SendInterest()
 {
-  Ptr<UniformRandomVariable> rand = CreateObject<UniformRandomVariable>();
   
-  int r = rand->GetValue(0, std::numeric_limits<uint32_t>::max());
-  auto interest = std::make_shared<Interest>("/blahblah/" + to_string(r));
+  auto interest = std::make_shared<Interest>("/blahblah/" + to_string(m_seq++));
+  Ptr<UniformRandomVariable> rand = CreateObject<UniformRandomVariable>();
   interest->setNonce(rand->GetValue(0, std::numeric_limits<uint32_t>::max()));
   interest->setInterestLifetime(ndn::time::seconds(1));
 
@@ -113,8 +112,8 @@ NTorrentConsumerApp::OnInterest(std::shared_ptr<const Interest> interest)
 void
 NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
 {
+    //TODO: Use ntorrent code here
     NS_LOG_DEBUG("Receiving Data packet for " << data->getName());
-    //std::cout << "DATA received for name " << data->getName() << std::endl;
 }
 
 } // namespace ndn
