@@ -39,7 +39,7 @@ NTorrentConsumerApp::GetTypeId(void)
 
       .AddAttribute("Prefix", "Name of the Interest", StringValue("/"),
                     MakeNameAccessor(&NTorrentConsumerApp::m_interestName), MakeNameChecker())
-      .AddAttribute("LifeTime", "LifeTime for interest packet", StringValue("2s"),
+      .AddAttribute("LifeTime", "LifeTime for interest packet", StringValue("1s"),
                     MakeTimeAccessor(&NTorrentConsumerApp::m_interestLifeTime), MakeTimeChecker());
     return tid;
 }
@@ -58,7 +58,7 @@ NTorrentConsumerApp::StartApplication()
     ndn::App::StartApplication();
     ndn::FibHelper::AddRoute(GetNode(), "/", m_face, 0);
     for(int i=0;i<100;i++)
-    Simulator::Schedule(Seconds(i+1.0), &NTorrentConsumerApp::SendInterest, this);
+        Simulator::Schedule(Seconds(i+2.0), &NTorrentConsumerApp::SendInterest, this);
 }
 
 void
@@ -70,8 +70,10 @@ NTorrentConsumerApp::StopApplication()
 void
 NTorrentConsumerApp::SendInterest()
 {
-  auto interest = std::make_shared<Interest>("/blahblah");
   Ptr<UniformRandomVariable> rand = CreateObject<UniformRandomVariable>();
+  
+  int r = rand->GetValue(0, std::numeric_limits<uint32_t>::max());
+  auto interest = std::make_shared<Interest>("/blahblah/" + to_string(r));
   interest->setNonce(rand->GetValue(0, std::numeric_limits<uint32_t>::max()));
   interest->setInterestLifetime(ndn::time::seconds(1));
 

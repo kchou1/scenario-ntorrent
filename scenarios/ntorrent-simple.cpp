@@ -23,6 +23,7 @@
 #include "ns3/network-module.h"
 #include "ns3/point-to-point-module.h"
 #include "ns3/ndnSIM-module.h"
+#include "ns3/netanim-module.h"
 
 #include "../extensions/ntorrent-consumer-app.hpp"
 #include "../extensions/ntorrent-producer-app.hpp"
@@ -54,8 +55,8 @@ int
 main(int argc, char *argv[])
 {
   // setting default parameters for PointToPoint links and channels
-  Config::SetDefault("ns3::PointToPointNetDevice::DataRate", StringValue("1Kbps"));
-  Config::SetDefault("ns3::PointToPointChannel::Delay", StringValue("80ms"));
+  Config::SetDefault("ns3::PointToPointNetDevice::DataRate", StringValue("32kbps"));
+  Config::SetDefault("ns3::PointToPointChannel::Delay", StringValue("10ms"));
 
   //defaults for command line arguments
   uint32_t nFiles = 4;
@@ -70,12 +71,21 @@ main(int argc, char *argv[])
   // Creating nodes
   NodeContainer nodes;
   nodes.Create(2);
+  
+  AnimationInterface::SetConstantPosition (nodes.Get(0), 20, 20);
+  AnimationInterface::SetConstantPosition (nodes.Get(1), 60, 60);
+  
+  //TODO: Why doesn't this work???
+  //AnimationInterface anim ("/var/tmp/test.xml");
+  //anim.UpdateNodeDescription (nodes.Get (0), "Producer"); 
+  //anim.UpdateNodeDescription (nodes.Get (1), "Consumer");
+  //anim.UpdateNodeColor (nodes.Get (1), 255, 0, 0);
+  //anim.UpdateNodeColor (nodes.Get (0), 10, 100, 10); 
 
   // Connecting nodes using two links
   PointToPointHelper p2p;
   p2p.Install(nodes.Get(0), nodes.Get(1));
-  //p2p.Install(nodes.Get(1), nodes.Get(2));
-
+  
   // Install NDN stack on all nodes
   StackHelper ndnHelper;
   ndnHelper.SetDefaultRoutes(true);
@@ -85,14 +95,13 @@ main(int argc, char *argv[])
   ndn::StrategyChoiceHelper::InstallAll("/", "/localhost/nfd/strategy/multicast");
 
   // Installing applications
-
   // Producer
   ndn::AppHelper producerHelper("NTorrentProducerApp");
   producerHelper.SetAttribute("Prefix", StringValue("/"));
   producerHelper.SetAttribute("nFiles", IntegerValue(nFiles));
   producerHelper.SetAttribute("nSegments", IntegerValue(nSegments));
   producerHelper.Install(nodes.Get(0)).Start(Seconds(1.0));
-  
+
   // Consumer
   ndn::AppHelper consumerHelper("NTorrentConsumerApp");
   consumerHelper.SetAttribute("Prefix", StringValue("/"));
@@ -102,7 +111,7 @@ main(int argc, char *argv[])
 
   Simulator::Run();
   Simulator::Destroy();
-
+  
   return 0;
 }
 
