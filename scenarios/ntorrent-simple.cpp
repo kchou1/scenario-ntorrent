@@ -91,14 +91,14 @@ main(int argc, char *argv[])
   producerHelper.SetAttribute("Prefix", StringValue("/"));
   producerHelper.SetAttribute("nFiles", IntegerValue(nFiles));
   producerHelper.SetAttribute("nSegments", IntegerValue(nSegments));
-  producerHelper.Install(nodes.Get(0)).Start(Seconds(2.0));
+  producerHelper.Install(nodes.Get(0)).Start(Seconds(1.0));
   
   // Consumer
   ndn::AppHelper consumerHelper("NTorrentConsumerApp");
   consumerHelper.SetAttribute("Prefix", StringValue("/"));
-  consumerHelper.Install(nodes.Get(1)).Start(Seconds(2.5));
+  consumerHelper.Install(nodes.Get(1)).Start(Seconds(1.5));
 
-  Simulator::Stop(Seconds(20.0));
+  Simulator::Stop(Seconds(150.0));
 
   Simulator::Run();
   Simulator::Destroy();
