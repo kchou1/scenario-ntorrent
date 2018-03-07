@@ -69,12 +69,12 @@ main(int argc, char *argv[])
 
   // Creating nodes
   NodeContainer nodes;
-  nodes.Create(3);
+  nodes.Create(2);
 
   // Connecting nodes using two links
   PointToPointHelper p2p;
   p2p.Install(nodes.Get(0), nodes.Get(1));
-  p2p.Install(nodes.Get(1), nodes.Get(2));
+  //p2p.Install(nodes.Get(1), nodes.Get(2));
 
   // Install NDN stack on all nodes
   StackHelper ndnHelper;

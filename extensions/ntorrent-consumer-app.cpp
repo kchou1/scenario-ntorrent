@@ -57,7 +57,8 @@ NTorrentConsumerApp::StartApplication()
 {
     ndn::App::StartApplication();
     ndn::FibHelper::AddRoute(GetNode(), "/", m_face, 0);
-    Simulator::Schedule(Seconds(1.0), &NTorrentConsumerApp::SendInterest, this);
+    for(int i=0;i<100;i++)
+    Simulator::Schedule(Seconds(i+1.0), &NTorrentConsumerApp::SendInterest, this);
 }
 
 void
@@ -69,7 +70,7 @@ NTorrentConsumerApp::StopApplication()
 void
 NTorrentConsumerApp::SendInterest()
 {
-  auto interest = std::make_shared<Interest>("/prefix/sub");
+  auto interest = std::make_shared<Interest>("/blahblah");
   Ptr<UniformRandomVariable> rand = CreateObject<UniformRandomVariable>();
   interest->setNonce(rand->GetValue(0, std::numeric_limits<uint32_t>::max()));
   interest->setInterestLifetime(ndn::time::seconds(1));
@@ -85,6 +86,9 @@ NTorrentConsumerApp::SendInterest()
 void
 NTorrentConsumerApp::OnInterest(std::shared_ptr<const Interest> interest)
 {
+  //We don't have to process interests on the consumer-end for now
+  
+  /*
   ndn::App::OnInterest(interest);
 
   NS_LOG_DEBUG("Received Interest packet for " << interest->getName());
@@ -101,14 +105,14 @@ NTorrentConsumerApp::OnInterest(std::shared_ptr<const Interest> interest)
   // Call trace (for logging purposes)
   m_transmittedDatas(data, this, m_face);
 
-  m_appLink->onReceiveData(*data);
+  m_appLink->onReceiveData(*data);*/
 }
 
 void
 NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
 {
     NS_LOG_DEBUG("Receiving Data packet for " << data->getName());
-    std::cout << "DATA received for name " << data->getName() << std::endl;
+    //std::cout << "DATA received for name " << data->getName() << std::endl;
 }
 
 } // namespace ndn
