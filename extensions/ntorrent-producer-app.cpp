@@ -21,6 +21,8 @@
 
 #include "ntorrent-producer-app.hpp"
 
+NS_LOG_COMPONENT_DEFINE("NTorrentProducerApp");
+
 namespace ns3 {
 namespace ndn {
 
@@ -32,15 +34,15 @@ NTorrentProducerApp::GetTypeId(void)
     static TypeId tid = TypeId("NTorrentProducerApp")
       .SetParent<Application>()
       .AddConstructor<NTorrentProducerApp>()
-      .AddAttribute("Prefix", "Prefix, for which producer has the data", StringValue("/"),
+      .AddAttribute("Prefix", "Prefix, for which producer has the data", StringValue("/prefix/sub/"),
                     MakeNameAccessor(&NTorrentProducerApp::m_prefix), MakeNameChecker())
       .AddAttribute("nFiles", "Number of files in the torrent", IntegerValue(5),
                     MakeIntegerAccessor(&NTorrentProducerApp::m_nFiles), MakeIntegerChecker<int32_t>())
       .AddAttribute("nSegments", "Number of segments per file", IntegerValue(5),
                     MakeIntegerAccessor(&NTorrentProducerApp::m_nSegmentsPerFile), MakeIntegerChecker<int32_t>())
-      .AddAttribute("Postfix",
-              "Postfix that is added to the output data (e.g., for adding producer-uniqueness)",
-              StringValue("/"), MakeNameAccessor(&NTorrentProducerApp::m_postfix), MakeNameChecker())
+      //.AddAttribute("Postfix",
+      //        "Postfix that is added to the output data (e.g., for adding producer-uniqueness)",
+      //        StringValue("/prefix/sub/"), MakeNameAccessor(&NTorrentProducerApp::m_postfix), MakeNameChecker())
       .AddAttribute("PayloadSize", "Virtual payload size for Content packets", IntegerValue(1024),
               MakeIntegerAccessor(&NTorrentProducerApp::m_virtualPayloadSize),
               MakeIntegerChecker<uint32_t>())
@@ -69,43 +71,21 @@ NTorrentProducerApp::~NTorrentProducerApp()
 void
 NTorrentProducerApp::StartApplication()
 {
+    App::StartApplication();
+    ndn::FibHelper::AddRoute(GetNode(), "/prefix/sub", m_face, 0);
 }
 
 void
 NTorrentProducerApp::StopApplication()
 {
+    App::StopApplication();
 }
 
 void
 NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
 {
-    std::cout << "OnInterest" << std::endl;
-    Name dataName(interest->getName());
-    // dataName.append(m_postfix);
-    // dataName.appendVersion();
-
-    auto data = make_shared<Data>();
-    data->setName(dataName);
-    data->setFreshnessPeriod(::ndn::time::milliseconds(m_freshness.GetMilliSeconds()));
-
-    data->setContent(make_shared< ::ndn::Buffer>(m_virtualPayloadSize));
-
-    Signature signature;
-    SignatureInfo signatureInfo(static_cast< ::ndn::tlv::SignatureTypeValue>(255));
-
-    if (m_keyLocator.size() > 0) {
-        signatureInfo.setKeyLocator(m_keyLocator);
-    }
-
-    signature.setInfo(signatureInfo);
-    signature.setValue(::ndn::makeNonNegativeIntegerBlock(::ndn::tlv::SignatureValue, m_signature));
-
-    data->setSignature(signature);
-    std::cout << "node(" << GetNode()->GetId() << ") responding with Data: " << data->getName() << std::endl;
-    data->wireEncode();
-
-    m_transmittedDatas(data, this, m_face);
-    m_appLink->onReceiveData(*data);
+    NS_LOG_DEBUG("Do nothing for incoming interest for" << interest->getName());
+    ndn::App::OnInterest(interest); 
 }
 
 } // namespace ndn

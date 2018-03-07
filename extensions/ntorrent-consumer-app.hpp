@@ -38,40 +38,21 @@ public:
   ~NTorrentConsumerApp();
 
   virtual void
-  OnData(shared_ptr<const Data> data);
-
-  virtual void
-  OnNack(shared_ptr<const lp::Nack> nack);
-
-  virtual void
-  OnTimeout(uint32_t sequenceNumber);
-
-  void
-  SendPacket();
-
-  virtual void
-  WillSendOutInterest(uint32_t sequenceNumber);
-
-protected:
-  virtual void
   StartApplication();
 
   virtual void
   StopApplication();
 
   virtual void
-  ScheduleNextPacket();
+  OnInterest(std::shared_ptr<const Interest> interest);
 
-  void
-  CheckRetxTimeout();
-
-  void
-  SetRetxTimer(Time retxTimer);
-
-  Time
-  GetRetxTimer() const;
+  virtual void
+  OnData(std::shared_ptr<const Data> contentObject);
 
 private:
+  void
+  SendInterest();
+
   Ptr<UniformRandomVariable> m_rand; 
 
   uint32_t m_seq; 

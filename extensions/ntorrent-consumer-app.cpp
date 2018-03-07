@@ -21,6 +21,8 @@
 
 #include "ntorrent-consumer-app.hpp"
 
+NS_LOG_COMPONENT_DEFINE("NTorrentConsumerApp");
+
 namespace ns3 {
 namespace ndn {
 
@@ -35,26 +37,10 @@ NTorrentConsumerApp::GetTypeId(void)
       .AddAttribute("StartSeq", "Initial sequence number", IntegerValue(0),
                     MakeIntegerAccessor(&NTorrentConsumerApp::m_seq), MakeIntegerChecker<int32_t>())
 
-      .AddAttribute("Prefix", "Name of the Interest", StringValue("/"),
+      .AddAttribute("Prefix", "Name of the Interest", StringValue("/prefix/sub/"),
                     MakeNameAccessor(&NTorrentConsumerApp::m_interestName), MakeNameChecker())
       .AddAttribute("LifeTime", "LifeTime for interest packet", StringValue("2s"),
-                    MakeTimeAccessor(&NTorrentConsumerApp::m_interestLifeTime), MakeTimeChecker())
-
-      .AddAttribute("RetxTimer",
-                    "Timeout defining how frequent retransmission timeouts should be checked",
-                    StringValue("50ms"),
-                    MakeTimeAccessor(&NTorrentConsumerApp::GetRetxTimer, &NTorrentConsumerApp::SetRetxTimer),
-                    MakeTimeChecker())
-
-      .AddTraceSource("LastRetransmittedInterestDataDelay",
-                      "Delay between last retransmitted Interest and received Data",
-                      MakeTraceSourceAccessor(&NTorrentConsumerApp::m_lastRetransmittedInterestDataDelay),
-                      "ns3::ndn::NTorrentConsumerApp::LastRetransmittedInterestDataDelayCallback")
-
-      .AddTraceSource("FirstInterestDataDelay",
-                      "Delay between first transmitted Interest and received Data",
-                      MakeTraceSourceAccessor(&NTorrentConsumerApp::m_firstInterestDataDelay),
-					  "ns3::ndn::NTorrentConsumerApp::FirstInterestDataDelayCallback");
+                    MakeTimeAccessor(&NTorrentConsumerApp::m_interestLifeTime), MakeTimeChecker());
     return tid;
 }
 
@@ -69,102 +55,60 @@ NTorrentConsumerApp::~NTorrentConsumerApp()
 void
 NTorrentConsumerApp::StartApplication()
 {
+    ndn::App::StartApplication();
+    ndn::FibHelper::AddRoute(GetNode(), "/prefix/sub", m_face, 0);
+    Simulator::Schedule(Seconds(1.0), &NTorrentConsumerApp::SendInterest, this);
 }
 
 void
 NTorrentConsumerApp::StopApplication()
 {
+    ndn::App::StopApplication();
 }
 
 void
-NTorrentConsumerApp::OnData(shared_ptr<const Data> data)
+NTorrentConsumerApp::SendInterest()
 {
-}
+  auto interest = std::make_shared<Interest>("/prefix/sub");
+  Ptr<UniformRandomVariable> rand = CreateObject<UniformRandomVariable>();
+  interest->setNonce(rand->GetValue(0, std::numeric_limits<uint32_t>::max()));
+  interest->setInterestLifetime(ndn::time::seconds(1));
 
-void
-NTorrentConsumerApp::OnNack(shared_ptr<const lp::Nack> nack)
-{
-}
+  NS_LOG_DEBUG("Sending Interest packet for " << *interest);
 
-void
-NTorrentConsumerApp::OnTimeout(uint32_t sequenceNumber)
-{
-}
-
-void
-NTorrentConsumerApp::WillSendOutInterest(uint32_t sequenceNumber)
-{
-}
-
-void
-NTorrentConsumerApp::SendPacket()
-{
-    /*TODO: Fix m_active..
-     * if(!m_active)
-        return;*/
-
-    //NS_LOG_FUNCTION_NOARGS();
-    uint32_t seq = std::numeric_limits<uint32_t>::max(); // invalid
-    
-    while (m_retxSeqs.size()) {
-        seq = *m_retxSeqs.begin();
-        m_retxSeqs.erase(m_retxSeqs.begin());
-        break;
-    }
-   if (seq == std::numeric_limits<uint32_t>::max()) {
-       if (m_seqMax != std::numeric_limits<uint32_t>::max()) {
-         if (m_seq >= m_seqMax) {
-           return; // we are totally done
-         }
-       }
-   
-       seq = m_seq++;
-     } 
-  
-  std::cout << "SendPacket" << std::endl;
-  shared_ptr<Name> nameWithSequence = make_shared<Name>(m_interestName);
-  nameWithSequence->appendSequenceNumber(seq);
-  //
-
-  // shared_ptr<Interest> interest = make_shared<Interest> ();
-  shared_ptr<Interest> interest = make_shared<Interest>();
-  interest->setNonce(m_rand->GetValue(0, std::numeric_limits<uint32_t>::max()));
-  interest->setName(*nameWithSequence);
-  time::milliseconds interestLifeTime(m_interestLifeTime.GetMilliSeconds());
-  interest->setInterestLifetime(interestLifeTime);
-
-  // NS_LOG_INFO ("Requesting Interest: \n" << *interest);
-  //NS_LOG_INFO("> Interest for " << seq);
-
-  WillSendOutInterest(seq);
-
+  // Call trace (for logging purposes)
   m_transmittedInterests(interest, this, m_face);
+
   m_appLink->onReceiveInterest(*interest);
-
-  ScheduleNextPacket(); 
 }
 
 void
-NTorrentConsumerApp::ScheduleNextPacket()
+NTorrentConsumerApp::OnInterest(std::shared_ptr<const Interest> interest)
 {
-    m_sendEvent = Simulator::Schedule(Seconds(0.0), &NTorrentConsumerApp::SendPacket, this);
-}
+  ndn::App::OnInterest(interest);
 
-Time
-NTorrentConsumerApp::GetRetxTimer() const
-{
-    return m_retxTimer;
+  NS_LOG_DEBUG("Received Interest packet for " << interest->getName());
+
+  // Note that Interests send out by the app will not be sent back to the app !
+
+  auto data = std::make_shared<ndn::Data>(interest->getName());
+  data->setFreshnessPeriod(ndn::time::milliseconds(1000));
+  data->setContent(std::make_shared< ::ndn::Buffer>(1024));
+  ndn::StackHelper::getKeyChain().sign(*data);
+
+  NS_LOG_DEBUG("Sending Data packet for " << data->getName());
+
+  // Call trace (for logging purposes)
+  m_transmittedDatas(data, this, m_face);
+
+  m_appLink->onReceiveData(*data);
 }
 
 void
-NTorrentConsumerApp::CheckRetxTimeout()
+NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
 {
-}
-
-void
-NTorrentConsumerApp::SetRetxTimer(Time retxTimer)
-{
-
+    NS_LOG_DEBUG("Receiving Data packet for " << data->getName());
+    std::cout << "DATA received for name " << data->getName() << std::endl;
 }
 
 } // namespace ndn

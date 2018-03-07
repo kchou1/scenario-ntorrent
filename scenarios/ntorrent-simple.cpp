@@ -69,19 +69,20 @@ main(int argc, char *argv[])
 
   // Creating nodes
   NodeContainer nodes;
-  nodes.Create(2);
+  nodes.Create(3);
 
   // Connecting nodes using two links
   PointToPointHelper p2p;
   p2p.Install(nodes.Get(0), nodes.Get(1));
+  p2p.Install(nodes.Get(1), nodes.Get(2));
 
   // Install NDN stack on all nodes
   StackHelper ndnHelper;
+  ndnHelper.SetDefaultRoutes(true);
   ndnHelper.InstallAll();
 
-  // Installing global routing interface on all nodes
-  ndn::GlobalRoutingHelper ndnGlobalRoutingHelper;
-  ndnGlobalRoutingHelper.InstallAll();
+  // Choosing forwarding strategy
+  //ndn::StrategyChoiceHelper::InstallAll("/prefix", "/localhost/nfd/strategy/multicast");
 
   // Installing applications
 
@@ -95,12 +96,9 @@ main(int argc, char *argv[])
   // Consumer
   ndn::AppHelper consumerHelper("NTorrentConsumerApp");
   consumerHelper.SetAttribute("Prefix", StringValue("/"));
-  consumerHelper.Install(nodes.Get(1)).Start(Seconds(2.5));
+  consumerHelper.Install(nodes.Get(0)).Start(Seconds(2.5));
 
-  ndnGlobalRoutingHelper.AddOrigins("/", nodes.Get(0));
-
-  // Calculate and install FIBs
-  ndn::GlobalRoutingHelper::CalculateRoutes();
+  //ndnGlobalRoutingHelper.AddOrigins("/", nodes.Get(0));
 
   Simulator::Stop(Seconds(20.0));
 

@@ -36,7 +36,7 @@ public:
   NTorrentProducerApp();
   ~NTorrentProducerApp();
 
-  virtual void
+  void
   OnInterest(shared_ptr<const Interest> interest);
 
 protected:
