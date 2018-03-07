@@ -74,7 +74,8 @@ def build (bld):
         target = "ntorrent",
         features = ["cxx", "cxxstlib"],
         source = bld.path.ant_glob(["ntorrent/src/**/*.cpp"],
-                    excl=['ntorrent/src/main.cpp', 'ntorrent/src/util/io-util.cpp']),
+                    excl=['ntorrent/src/main.cpp', 'ntorrent/src/util/io-util.cpp',
+                    'ntorrent/src/file-manifest.cpp', 'ntorrent/src/torrent-file.cpp', 'ntorrent/src/torrent-manager.cpp']),
         includes = ["ntorrent/src", "ntorrent/src/util"],
         export_includes = "ntorrent",
         use = deps
