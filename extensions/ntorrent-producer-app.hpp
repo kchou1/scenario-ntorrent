@@ -28,6 +28,8 @@
 #include "src/file-manifest.hpp"
 #include "src/util/shared-constants.hpp"
 
+namespace ndn_ntorrent = ndn::ntorrent;
+
 namespace ns3 {
 namespace ndn {
 
@@ -64,8 +66,8 @@ private:
   uint32_t m_nFiles;
   uint32_t m_nSegmentsPerFile;
     
-  //const auto& torrentSegments;
-  //std::vector<ndn_ntorrent::FileManifest> manifests;
+  std::vector<ndn_ntorrent::TorrentFile> torrentSegments;
+  std::vector<ndn_ntorrent::FileManifest> manifests;
 
 };
 

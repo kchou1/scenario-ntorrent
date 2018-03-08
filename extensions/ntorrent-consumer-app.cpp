@@ -72,7 +72,7 @@ void
 NTorrentConsumerApp::SendInterest()
 {
   
-  auto interest = std::make_shared<Interest>("/blahblah/" + to_string(m_seq++));
+  auto interest = std::make_shared<Interest>(std::string(ndn_ntorrent::SharedConstants::commonPrefix) + "/NTORRENT/" + to_string(m_seq++));
   Ptr<UniformRandomVariable> rand = CreateObject<UniformRandomVariable>();
   interest->setNonce(rand->GetValue(0, std::numeric_limits<uint32_t>::max()));
   interest->setInterestLifetime(ndn::time::seconds(1));
