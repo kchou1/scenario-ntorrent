@@ -37,13 +37,12 @@ NTorrentProducerApp::GetTypeId(void)
       .AddConstructor<NTorrentProducerApp>()
       .AddAttribute("Prefix", "Prefix, for which producer has the data", StringValue("/"),
                     MakeNameAccessor(&NTorrentProducerApp::m_prefix), MakeNameChecker())
-      .AddAttribute("nFiles", "Number of files in the torrent", IntegerValue(5),
-                    MakeIntegerAccessor(&NTorrentProducerApp::m_nFiles), MakeIntegerChecker<int32_t>())
-      .AddAttribute("nSegments", "Number of segments per file", IntegerValue(5),
-                    MakeIntegerAccessor(&NTorrentProducerApp::m_nSegmentsPerFile), MakeIntegerChecker<int32_t>())
-      //.AddAttribute("Postfix",
-      //        "Postfix that is added to the output data (e.g., for adding producer-uniqueness)",
-      //        StringValue("/prefix/sub/"), MakeNameAccessor(&NTorrentProducerApp::m_postfix), MakeNameChecker())
+      .AddAttribute("namesPerSegment", "Number of names (files) per segment", IntegerValue(2),
+                    MakeIntegerAccessor(&NTorrentProducerApp::m_namesPerSegment), MakeIntegerChecker<int32_t>())
+      .AddAttribute("namesPerManifest", "Number of names per manifest", IntegerValue(64),
+                    MakeIntegerAccessor(&NTorrentProducerApp::m_namesPerManifest), MakeIntegerChecker<int32_t>())
+      .AddAttribute("dataPacketSize", "Size of each data packet", IntegerValue(64),
+                    MakeIntegerAccessor(&NTorrentProducerApp::m_dataPacketSize), MakeIntegerChecker<int32_t>())
       .AddAttribute("PayloadSize", "Virtual payload size for Content packets", IntegerValue(1024),
               MakeIntegerAccessor(&NTorrentProducerApp::m_virtualPayloadSize),
               MakeIntegerChecker<uint32_t>())

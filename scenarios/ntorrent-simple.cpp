@@ -69,13 +69,15 @@ main(int argc, char *argv[])
   Config::SetDefault("ns3::PointToPointChannel::Delay", StringValue("10ms"));
 
   //defaults for command line arguments
-  uint32_t nFiles = 4;
-  uint32_t nSegments = 4;
+  uint32_t namesPerSegment = 2;
+  uint32_t namesPerManifest = 64;
+  uint32_t dataPacketSize = 64;
   
   // Read optional command-line parameters (e.g., enable visualizer with ./waf --run=<> --visualize
   CommandLine cmd;
-  cmd.AddValue("nFiles", "Number of files", nFiles);
-  cmd.AddValue("nSegments", "Number of segments per file", nSegments);
+  cmd.AddValue("namesPerSegment", "Number of names per segment", namesPerSegment);
+  cmd.AddValue("namesPerManifest", "Number of names per manifest", namesPerManifest);
+  cmd.AddValue("dataPacketSize", "Data Packet size", dataPacketSize);
   cmd.Parse(argc, argv);
 
   // Creating nodes
@@ -108,8 +110,9 @@ main(int argc, char *argv[])
   // Producer
   ndn::AppHelper producerHelper("NTorrentProducerApp");
   producerHelper.SetAttribute("Prefix", StringValue("/"));
-  producerHelper.SetAttribute("nFiles", IntegerValue(nFiles));
-  producerHelper.SetAttribute("nSegments", IntegerValue(nSegments));
+  producerHelper.SetAttribute("namesPerSegment", IntegerValue(namesPerSegment));
+  producerHelper.SetAttribute("namesPerManifest", IntegerValue(namesPerManifest));
+  producerHelper.SetAttribute("dataPacketSize", IntegerValue(dataPacketSize));
   producerHelper.Install(nodes.Get(0)).Start(Seconds(1.0));
 
   // Consumer

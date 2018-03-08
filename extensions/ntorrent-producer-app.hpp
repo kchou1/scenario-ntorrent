@@ -65,8 +65,9 @@ private:
   uint32_t m_signature;
   Name m_keyLocator;
 
-  uint32_t m_nFiles;
-  uint32_t m_nSegmentsPerFile;
+  uint32_t m_namesPerSegment;
+  uint32_t m_namesPerManifest;
+  uint32_t m_dataPacketSize;
     
   std::vector<ndn_ntorrent::TorrentFile> torrentSegments;
   std::vector<ndn_ntorrent::FileManifest> manifests;
