@@ -131,9 +131,9 @@ NTorrentProducerApp::generateTorrentFile()
     
     for(const auto& t : torrentSegments)
         NS_LOG_DEBUG("Torrent name: " << t.getFullName());
-    for(int i=0;i<manifests.size();i++)
+    for(uint32_t i=0;i<manifests.size();i++)
         NS_LOG_DEBUG("Manifest name: " << manifests.at(i));
-    for(int i=0;i<dataPackets.size();i++)
+    for(uint32_t i=0;i<dataPackets.size();i++)
         NS_LOG_DEBUG("Data: " << dataPackets.at(i));
 
     NS_LOG_DEBUG("Torrent segments: " << torrentSegments.size());
