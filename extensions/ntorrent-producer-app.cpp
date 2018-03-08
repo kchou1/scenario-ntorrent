@@ -120,7 +120,7 @@ NTorrentProducerApp::generateTorrentFile()
 {
     //TODO use ntorrent code here
     NS_LOG_DEBUG("Creating torrent file!");
-    const auto& content = ndn_ntorrent::TorrentFile::generate(ndn_ntorrent::DUMMY_FILE_PATH, 2, 64, 8, true);
+    const auto& content = ndn_ntorrent::TorrentFile::generate(ndn_ntorrent::DUMMY_FILE_PATH, 2, 64, 64, true);
     
     torrentSegments = content.first;
     
@@ -133,8 +133,8 @@ NTorrentProducerApp::generateTorrentFile()
         NS_LOG_DEBUG("Torrent name: " << t.getFullName());
     for(uint32_t i=0;i<manifests.size();i++)
         NS_LOG_DEBUG("Manifest name: " << manifests.at(i));
-    for(uint32_t i=0;i<dataPackets.size();i++)
-        NS_LOG_DEBUG("Data: " << dataPackets.at(i));
+    /*for(uint32_t i=0;i<dataPackets.size();i++)
+        NS_LOG_DEBUG("Data: " << dataPackets.at(i));*/
 
     NS_LOG_DEBUG("Torrent segments: " << torrentSegments.size());
     NS_LOG_DEBUG("Manifests: " << manifests.size());
