@@ -119,7 +119,8 @@ NTorrentProducerApp::generateTorrentFile()
 {
     //TODO use ntorrent code here
     NS_LOG_DEBUG("Creating torrent file!");
-    const auto& content = ndn_ntorrent::TorrentFile::generate(ndn_ntorrent::DUMMY_FILE_PATH, 2, 64, 64, true);
+    const auto& content = ndn_ntorrent::TorrentFile::generate(ndn_ntorrent::DUMMY_FILE_PATH, 
+            m_namesPerSegment, m_namesPerManifest, m_dataPacketSize, true);
     
     torrentSegments = content.first;
     
