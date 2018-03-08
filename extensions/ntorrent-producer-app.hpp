@@ -42,6 +42,9 @@ public:
   void
   OnInterest(shared_ptr<const Interest> interest);
 
+  void
+  generateTorrentFile();
+
 protected:
   virtual void
   StartApplication();

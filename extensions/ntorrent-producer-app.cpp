@@ -74,19 +74,19 @@ NTorrentProducerApp::StartApplication()
 {
     App::StartApplication();
     ndn::FibHelper::AddRoute(GetNode(), "/", m_face, 0);
+    generateTorrentFile();
 }
 
 void
 NTorrentProducerApp::StopApplication()
 {
     App::StopApplication();
+
 }
 
 void
 NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
 {
-    //TODO use ntorrent code here
-    ndn_ntorrent::TorrentFile::generate("/var/tmp/test",8,8,8,true);
     ndn::App::OnInterest(interest); 
     NS_LOG_DEBUG("Received interest for" << interest->getName());
 
@@ -113,6 +113,14 @@ NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
 
     m_transmittedDatas(data, this, m_face);
     m_appLink->onReceiveData(*data);
+}
+    
+void
+NTorrentProducerApp::generateTorrentFile()
+{
+    //TODO use ntorrent code here
+    NS_LOG_DEBUG("Creating torrent file!");
+    ndn_ntorrent::TorrentFile::generate("/var/tmp/test",8,8,8,true);
 }
 
 } // namespace ndn
