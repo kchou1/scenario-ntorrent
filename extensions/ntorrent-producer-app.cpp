@@ -22,6 +22,7 @@
 #include "ntorrent-producer-app.hpp"
 
 NS_LOG_COMPONENT_DEFINE("NTorrentProducerApp");
+namespace ndn_ntorrent = ndn::ntorrent;
 
 namespace ns3 {
 namespace ndn {
@@ -85,6 +86,7 @@ void
 NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
 {
     //TODO use ntorrent code here
+    ndn_ntorrent::TorrentFile::generate("/var/tmp/test",8,8,8,true);
     ndn::App::OnInterest(interest); 
     NS_LOG_DEBUG("Received interest for" << interest->getName());
 

@@ -25,8 +25,16 @@
 #include "ns3/ndnSIM-module.h"
 #include "ns3/netanim-module.h"
 
+#include "src/util/shared-constants.hpp"
 #include "../extensions/ntorrent-consumer-app.hpp"
 #include "../extensions/ntorrent-producer-app.hpp"
+
+namespace ndn_ntorrent = ndn::ntorrent;
+namespace ndn{
+namespace ntorrent{
+const char * ndn_ntorrent::SharedConstants::commonPrefix = "/ndn/nTorrent";
+}
+}
 
 namespace ns3 {
 namespace ndn {
@@ -51,9 +59,11 @@ namespace ndn {
  *     ./waf --run=ntorrent-simple
  */
 
+
 int
 main(int argc, char *argv[])
 {
+
   // setting default parameters for PointToPoint links and channels
   Config::SetDefault("ns3::PointToPointNetDevice::DataRate", StringValue("32kbps"));
   Config::SetDefault("ns3::PointToPointChannel::Delay", StringValue("10ms"));

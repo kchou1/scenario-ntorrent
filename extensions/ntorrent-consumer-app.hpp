@@ -25,6 +25,7 @@
 #include "apps/ndn-app.hpp"
 
 #include "src/torrent-file.hpp"
+#include "src/util/shared-constants.hpp"
 
 namespace ns3 {
 namespace ndn {

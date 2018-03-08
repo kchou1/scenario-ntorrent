@@ -22,6 +22,7 @@
 #include "ntorrent-consumer-app.hpp"
 
 NS_LOG_COMPONENT_DEFINE("NTorrentConsumerApp");
+namespace ndn_ntorrent = ndn::ntorrent;
 
 namespace ns3 {
 namespace ndn {
