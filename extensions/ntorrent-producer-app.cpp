@@ -128,11 +128,12 @@ NTorrentProducerApp::generateTorrentFile()
         manifests.insert(manifests.end(), ms.first.begin(), ms.first.end());
     }
     
-    
+    /*
     for(const auto& t : torrentSegments)
         NS_LOG_DEBUG("Torrent name: " << t.getFullName());
     for(int i=0;i<manifests.size();i++)
         NS_LOG_DEBUG("Manifest name: " << manifests.at(i));
+        */
 
     NS_LOG_DEBUG("Torrent segments: " << torrentSegments.size());
     NS_LOG_DEBUG("Manifests: " << manifests.size());
