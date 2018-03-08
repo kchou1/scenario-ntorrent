@@ -25,6 +25,7 @@
 #include "apps/ndn-app.hpp"
 
 #include "src/torrent-file.hpp"
+#include "src/file-manifest.hpp"
 #include "src/util/shared-constants.hpp"
 
 namespace ns3 {
@@ -62,6 +63,9 @@ private:
 
   uint32_t m_nFiles;
   uint32_t m_nSegmentsPerFile;
+    
+  //const auto& torrentSegments;
+  //std::vector<ndn_ntorrent::FileManifest> manifests;
 
 };
 
