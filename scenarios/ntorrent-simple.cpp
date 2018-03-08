@@ -117,7 +117,7 @@ main(int argc, char *argv[])
   consumerHelper.SetAttribute("Prefix", StringValue("/"));
   consumerHelper.Install(nodes.Get(1)).Start(Seconds(1.5));
 
-  Simulator::Stop(Seconds(150.0));
+  Simulator::Stop(Seconds(60.0));
 
   Simulator::Run();
   Simulator::Destroy();
