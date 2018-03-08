@@ -58,8 +58,9 @@ NTorrentConsumerApp::StartApplication()
 {
     ndn::App::StartApplication();
     ndn::FibHelper::AddRoute(GetNode(), "/", m_face, 0);
-    for(int i=0;i<5;i++)
-        Simulator::Schedule(Seconds(i+1.0), &NTorrentConsumerApp::SendInterest, this);
+    
+    /*for(int i=0;i<5;i++)
+        Simulator::Schedule(Seconds(i+1.0), &NTorrentConsumerApp::SendInterest, this);*/
 }
 
 void
@@ -89,25 +90,6 @@ void
 NTorrentConsumerApp::OnInterest(std::shared_ptr<const Interest> interest)
 {
   //We don't have to process interests on the consumer-end for now
-  
-  /*
-  ndn::App::OnInterest(interest);
-
-  NS_LOG_DEBUG("Received Interest packet for " << interest->getName());
-
-  // Note that Interests send out by the app will not be sent back to the app !
-
-  auto data = std::make_shared<ndn::Data>(interest->getName());
-  data->setFreshnessPeriod(ndn::time::milliseconds(1000));
-  data->setContent(std::make_shared< ::ndn::Buffer>(1024));
-  ndn::StackHelper::getKeyChain().sign(*data);
-
-  NS_LOG_DEBUG("Sending Data packet for " << data->getName());
-
-  // Call trace (for logging purposes)
-  m_transmittedDatas(data, this, m_face);
-
-  m_appLink->onReceiveData(*data);*/
 }
 
 void

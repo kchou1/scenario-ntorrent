@@ -19,6 +19,8 @@
  *          Alexander Afanasyev <alexander.afanasyev@ucla.edu>
  */
 
+#include <ndn-cxx/data.hpp>
+
 #include "ns3/ndnSIM-module.h"
 #include "ns3/integer.h"
 #include "ns3/string.h"

@@ -120,23 +120,25 @@ NTorrentProducerApp::generateTorrentFile()
 {
     //TODO use ntorrent code here
     NS_LOG_DEBUG("Creating torrent file!");
-    const auto& content = ndn_ntorrent::TorrentFile::generate("/var/tmp/test/", 8, 64, 1024, true);
+    const auto& content = ndn_ntorrent::TorrentFile::generate(ndn_ntorrent::DUMMY_FILE_PATH, 2, 64, 8, true);
     
     torrentSegments = content.first;
     
     for (const auto& ms : content.second) {
         manifests.insert(manifests.end(), ms.first.begin(), ms.first.end());
+        dataPackets.insert(dataPackets.end(), ms.second.begin(), ms.second.end());
     }
     
-    /*
     for(const auto& t : torrentSegments)
         NS_LOG_DEBUG("Torrent name: " << t.getFullName());
     for(int i=0;i<manifests.size();i++)
         NS_LOG_DEBUG("Manifest name: " << manifests.at(i));
-        */
+    for(int i=0;i<dataPackets.size();i++)
+        NS_LOG_DEBUG("Data: " << dataPackets.at(i));
 
     NS_LOG_DEBUG("Torrent segments: " << torrentSegments.size());
     NS_LOG_DEBUG("Manifests: " << manifests.size());
+    NS_LOG_DEBUG("Data Packets: " << dataPackets.size());
 }
 
 } // namespace ndn
