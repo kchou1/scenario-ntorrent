@@ -8,7 +8,7 @@ The code should also work with the latest version of ndnSIM, but it is not guara
     mkdir ndnSIM
     cd ndnSIM
 
-    git clone -b ndnSIM-2.5 https://github.com/named-data-ndnSIM/ns-3-dev.git ns-3
+    git clone -b ndnSIM-v2.5 https://github.com/named-data-ndnSIM/ns-3-dev.git ns-3
     git clone -b 0.18.0 https://github.com/named-data-ndnSIM/pybindgen.git pybindgen
     git clone -b ndnSIM-2.5 --recursive https://github.com/named-data-ndnSIM/ndnSIM ns-3/src/ndnSIM
 
@@ -58,23 +58,23 @@ Running
 
 Normally, you can run scenarios either directly
 
-    ./build/<scenario_name>
+    ./build/ntorrent-simple
 
 or using waf
 
-    ./waf --run <scenario_name>
+    ./waf --run ntorrent-simple
 
 If NS-3 is installed in a non-standard location, on some platforms (e.g., Linux) you need to specify ``LD_LIBRARY_PATH`` variable:
 
-    LD_LIBRARY_PATH=/usr/local/lib ./build/<scenario_name>
+    LD_LIBRARY_PATH=/usr/local/lib ./build/ntorrent-simple
 
 or
 
-    LD_LIBRARY_PATH=/usr/local/lib ./waf --run <scenario_name>
+    LD_LIBRARY_PATH=/usr/local/lib ./waf --run ntorrent-simple
 
 To run scenario using debugger, use the following command:
 
-    gdb --args ./build/<scenario_name>
+    gdb --args ./build/ntorrent-simple
 
 
 Running with visualizer
@@ -89,24 +89,24 @@ After these command, you will have complete environment to run the vizualizer.
 
 The following will run scenario with visualizer:
 
-    ./waf --run <scenario_name> --vis
+    ./waf --run ntorrent-simple --vis
 
 or
 
-    PKG_LIBRARY_PATH=/usr/local/lib ./waf --run <scenario_name> --vis
+    PKG_LIBRARY_PATH=/usr/local/lib ./waf --run ntorrent-simple --vis
 
 If you want to request automatic node placement, set up additional environment variable:
 
-    NS_VIS_ASSIGN=1 ./waf --run <scenario_name> --vis
+    NS_VIS_ASSIGN=1 ./waf --run ntorrent-simple --vis
 
 or
 
-    PKG_LIBRARY_PATH=/usr/local/lib NS_VIS_ASSIGN=1 ./waf --run <scenario_name> --vis
+    PKG_LIBRARY_PATH=/usr/local/lib NS_VIS_ASSIGN=1 ./waf --run ntorrent-simple --vis
 
 Available simulations
 =====================
 
-<Scenario Name>
+ntorrent-simple
 ---------------
 
-Description
+A work in progress...

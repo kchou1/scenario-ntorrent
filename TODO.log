@@ -14,7 +14,6 @@ Vector of file manifests
 2s delay
 Check interest for torrent file/manifest/data packet
 
-
 Consumer:
 Pass torrent prefix
 2.2s delay
