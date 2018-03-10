@@ -71,7 +71,7 @@ main(int argc, char *argv[])
   //defaults for command line arguments
   uint32_t namesPerSegment = 2;
   uint32_t namesPerManifest = 64;
-  uint32_t dataPacketSize = 64;
+  uint32_t dataPacketSize = 1024;
   
   // Read optional command-line parameters (e.g., enable visualizer with ./waf --run=<> --visualize
   CommandLine cmd;
