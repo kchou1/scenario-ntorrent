@@ -27,7 +27,10 @@
 #include "apps/ndn-app.hpp"
 
 #include "src/torrent-file.hpp"
+#include "src/torrent-manager.hpp"
 #include "src/util/shared-constants.hpp"
+
+namespace ndn_ntorrent = ndn::ntorrent;
 
 namespace ns3 {
 namespace ndn {
@@ -66,6 +69,8 @@ private:
   Time m_offTime; 
   Name m_interestName;
   Time m_interestLifeTime;
+  
+  shared_ptr<ndn_ntorrent::TorrentManager> m_manager;
 
 };
 

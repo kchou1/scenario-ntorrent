@@ -61,6 +61,10 @@ NTorrentConsumerApp::StartApplication()
     
     /*for(int i=0;i<5;i++)
         Simulator::Schedule(Seconds(i+1.0), &NTorrentConsumerApp::SendInterest, this);*/
+
+    m_manager = make_shared<ndn_ntorrent::TorrentManager>("BLAH", "......", false);
+    m_manager->Initialize();
+    m_manager->downloadTorrentFile("");
 }
 
 void
