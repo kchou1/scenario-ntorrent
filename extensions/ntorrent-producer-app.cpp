@@ -93,6 +93,7 @@ NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
     auto data = make_shared<Data>();
     data->setName(dataName);
     data->setFreshnessPeriod(::ndn::time::milliseconds(m_freshness.GetMilliSeconds()));
+    //TODO: Send real content
     data->setContent(make_shared< ::ndn::Buffer>(m_virtualPayloadSize));
 
     Signature signature;
