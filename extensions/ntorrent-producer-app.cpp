@@ -87,7 +87,7 @@ void
 NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
 {
     ndn::App::OnInterest(interest); 
-    NS_LOG_DEBUG("Received interest for" << interest->getName());
+    NS_LOG_DEBUG("Received interest for " << interest->getName());
 
     Name dataName(interest->getName());
     auto data = make_shared<Data>();

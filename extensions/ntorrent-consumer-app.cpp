@@ -62,7 +62,9 @@ NTorrentConsumerApp::StartApplication()
     /*for(int i=0;i<5;i++)
         Simulator::Schedule(Seconds(i+1.0), &NTorrentConsumerApp::SendInterest, this);*/
 
-    std::string torrentName = ndn_ntorrent::DUMMY_FILE_PATH+"torrent-file";
+    std::string torrentName = std::string(ndn_ntorrent::SharedConstants::commonPrefix) + "/NTORRENT/" +
+        ndn_ntorrent::DUMMY_FILE_PATH+"torrent-file";
+    SendInterest(torrentName);
 }
 
 void
@@ -76,6 +78,23 @@ NTorrentConsumerApp::SendInterest()
 {
   
   auto interest = std::make_shared<Interest>(std::string(ndn_ntorrent::SharedConstants::commonPrefix) + "/NTORRENT/" + to_string(m_seq++));
+  Ptr<UniformRandomVariable> rand = CreateObject<UniformRandomVariable>();
+  interest->setNonce(rand->GetValue(0, std::numeric_limits<uint32_t>::max()));
+  interest->setInterestLifetime(ndn::time::seconds(1));
+
+  NS_LOG_DEBUG("Sending Interest packet for " << *interest);
+
+  // Call trace (for logging purposes)
+  m_transmittedInterests(interest, this, m_face);
+
+  m_appLink->onReceiveInterest(*interest);
+}
+
+void
+NTorrentConsumerApp::SendInterest(const string& interestName)
+{
+  
+  auto interest = std::make_shared<Interest>(interestName);
   Ptr<UniformRandomVariable> rand = CreateObject<UniformRandomVariable>();
   interest->setNonce(rand->GetValue(0, std::numeric_limits<uint32_t>::max()));
   interest->setInterestLifetime(ndn::time::seconds(1));

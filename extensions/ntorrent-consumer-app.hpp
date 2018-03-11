@@ -56,6 +56,9 @@ public:
   virtual void
   OnData(std::shared_ptr<const Data> contentObject);
 
+  virtual void
+  SendInterest(const string& interestName);
+
 private:
   void
   SendInterest();
@@ -69,6 +72,10 @@ private:
   Time m_offTime; 
   Name m_interestName;
   Time m_interestLifeTime;
+    
+  std::vector<ndn_ntorrent::TorrentFile> torrentSegments;
+  std::vector<ndn_ntorrent::FileManifest> manifests;
+  std::vector<Data> dataPackets;
 
 };
 
