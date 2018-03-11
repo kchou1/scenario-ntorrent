@@ -107,9 +107,9 @@ NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
             auto torrent_it =  std::find_if(m_torrentSegments.begin(), m_torrentSegments.end(), cmp);
             
             if (m_torrentSegments.end() != torrent_it) {
-                //TODO: Send manifests...
                 NS_LOG_INFO("WE HAVE IT!");
                 data = std::make_shared<Data>(*torrent_it);
+                //NS_LOG_INFO(torrent_it->getTorrentFilePtr());
             }
             else{
                 NS_LOG_INFO("Don't have this torrent...");

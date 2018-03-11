@@ -76,34 +76,25 @@ NTorrentConsumerApp::StopApplication()
 void
 NTorrentConsumerApp::SendInterest()
 {
-  
+  //Just for testing, not really going to be used.. 
   auto interest = std::make_shared<Interest>(std::string(ndn_ntorrent::SharedConstants::commonPrefix) + "/NTORRENT/" + to_string(m_seq++));
   Ptr<UniformRandomVariable> rand = CreateObject<UniformRandomVariable>();
   interest->setNonce(rand->GetValue(0, std::numeric_limits<uint32_t>::max()));
   interest->setInterestLifetime(ndn::time::seconds(1));
-
   NS_LOG_DEBUG("Sending Interest packet for " << *interest);
-
-  // Call trace (for logging purposes)
   m_transmittedInterests(interest, this, m_face);
-
   m_appLink->onReceiveInterest(*interest);
 }
 
 void
 NTorrentConsumerApp::SendInterest(const string& interestName)
 {
-  
   auto interest = std::make_shared<Interest>(interestName);
   Ptr<UniformRandomVariable> rand = CreateObject<UniformRandomVariable>();
   interest->setNonce(rand->GetValue(0, std::numeric_limits<uint32_t>::max()));
   interest->setInterestLifetime(ndn::time::seconds(1));
-
   NS_LOG_DEBUG("Sending Interest packet for " << *interest);
-
-  // Call trace (for logging purposes)
   m_transmittedInterests(interest, this, m_face);
-
   m_appLink->onReceiveInterest(*interest);
 }
 
@@ -117,7 +108,12 @@ void
 NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
 {
     //TODO: Use ntorrent code here
-    NS_LOG_DEBUG("Receiving Data packet for " << data->getName());
+    NS_LOG_DEBUG("Received: " << data->getName());
+    ndn_ntorrent::TorrentFile file(data->wireEncode());
+    shared_ptr<Name> nextSegmentPtr = file.getTorrentFilePtr();
+    if(nextSegmentPtr!=nullptr){
+        SendInterest(file.getTorrentFilePath());
+    }
 }
 
 } // namespace ndn
