@@ -70,7 +70,7 @@ private:
   uint32_t m_namesPerManifest;
   uint32_t m_dataPacketSize;
     
-  std::vector<ndn_ntorrent::TorrentFile> torrentSegments;
+  std::vector<ndn_ntorrent::TorrentFile> m_torrentSegments;
   std::vector<ndn_ntorrent::FileManifest> manifests;
   std::vector<Data> dataPackets;
 
