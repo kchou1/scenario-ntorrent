@@ -62,11 +62,7 @@ NTorrentConsumerApp::StartApplication()
     /*for(int i=0;i<5;i++)
         Simulator::Schedule(Seconds(i+1.0), &NTorrentConsumerApp::SendInterest, this);*/
 
-    std::string torrentName = ndn_ntorrent::SharedConstants::commonPrefix;
-    torrentName += "/NTORRENT/" + ndn_ntorrent::DUMMY_FILE_PATH + "torrent-file";
-    m_manager = make_shared<ndn_ntorrent::TorrentManager>(torrentName, ndn_ntorrent::DUMMY_FILE_PATH, false);
-    m_manager->Initialize();
-    //m_manager->downloadTorrentFile("");
+    std::string torrentName = ndn_ntorrent::DUMMY_FILE_PATH+"torrent-file";
 }
 
 void

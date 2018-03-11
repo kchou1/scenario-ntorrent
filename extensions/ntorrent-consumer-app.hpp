@@ -69,8 +69,6 @@ private:
   Time m_offTime; 
   Name m_interestName;
   Time m_interestLifeTime;
-  
-  shared_ptr<ndn_ntorrent::TorrentManager> m_manager;
 
 };
 
