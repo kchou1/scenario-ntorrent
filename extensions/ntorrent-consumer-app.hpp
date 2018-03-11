@@ -29,6 +29,7 @@
 #include "src/torrent-file.hpp"
 #include "src/torrent-manager.hpp"
 #include "src/util/shared-constants.hpp"
+#include "src/util/io-util.hpp"
 
 namespace ndn_ntorrent = ndn::ntorrent;
 
