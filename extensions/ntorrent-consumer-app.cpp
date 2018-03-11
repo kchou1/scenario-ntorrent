@@ -107,16 +107,19 @@ NTorrentConsumerApp::OnInterest(std::shared_ptr<const Interest> interest)
 void
 NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
 {
-    //TODO: Use ntorrent code here
+    //TODO: Use switch statement similar to that in the producer
     NS_LOG_DEBUG("Received: " << data->getName());
     ndn_ntorrent::TorrentFile file(data->wireEncode());
-     
+    std::vector<Name> manifestCatalog = file.getCatalog();
+    manifests.insert(manifests.end(), manifestCatalog.begin(), manifestCatalog.end());
+    NS_LOG_DEBUG("Manifests: " << manifests.size());
     /*shared_ptr<Name> nextSegmentPtr = file.getTorrentFilePtr();
     if(nextSegmentPtr!=nullptr){
 
     }
     else
     {
+        //TODO: Start requesting the data...
         NS_LOG_DEBUG("Torrent file is done!");
     }*/
 }
