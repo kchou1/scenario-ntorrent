@@ -110,10 +110,15 @@ NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
     //TODO: Use ntorrent code here
     NS_LOG_DEBUG("Received: " << data->getName());
     ndn_ntorrent::TorrentFile file(data->wireEncode());
-    shared_ptr<Name> nextSegmentPtr = file.getTorrentFilePtr();
+     
+    /*shared_ptr<Name> nextSegmentPtr = file.getTorrentFilePtr();
     if(nextSegmentPtr!=nullptr){
-        SendInterest(file.getTorrentFilePath());
+
     }
+    else
+    {
+        NS_LOG_DEBUG("Torrent file is done!");
+    }*/
 }
 
 } // namespace ndn

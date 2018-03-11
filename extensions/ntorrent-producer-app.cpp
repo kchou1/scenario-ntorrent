@@ -80,7 +80,6 @@ void
 NTorrentProducerApp::StopApplication()
 {
     App::StopApplication();
-
 }
 
 void
@@ -131,12 +130,11 @@ NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
         case ndn_ntorrent::IoUtil::UNKNOWN:
         {
             NS_LOG_DEBUG("Unknown interest: " << interestName);
-            data->setContent(make_shared< ::ndn::Buffer>(m_virtualPayloadSize));
             break;
         }
     }
 
-    if(nullptr != data)
+    if(nullptr != data && interestType!=ndn_ntorrent::IoUtil::UNKNOWN)
     {
         data->wireEncode();
         m_transmittedDatas(data, this, m_face);
