@@ -118,7 +118,7 @@ main(int argc, char *argv[])
   // Consumer
   ndn::AppHelper consumerHelper("NTorrentConsumerApp");
   consumerHelper.SetAttribute("Prefix", StringValue("/"));
-  consumerHelper.Install(nodes.Get(1)).Start(Seconds(1.5));
+  consumerHelper.Install(nodes.Get(1)).Start(Seconds(3.0));
 
   Simulator::Stop(Seconds(60.0));
 
