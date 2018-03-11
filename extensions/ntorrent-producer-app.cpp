@@ -87,14 +87,53 @@ void
 NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
 {
     ndn::App::OnInterest(interest); 
-    NS_LOG_DEBUG("Received interest for " << interest->getName());
-
-    Name dataName(interest->getName());
+    const auto& interestName = interest->getName();  
+    ndn_ntorrent::IoUtil::NAME_TYPE interestType = ndn_ntorrent::IoUtil::findType(interestName);
+    
+    Name dataName(interestName);
     auto data = make_shared<Data>();
-    data->setName(dataName);
-    data->setFreshnessPeriod(::ndn::time::milliseconds(m_freshness.GetMilliSeconds()));
-    //TODO: Send real content
-    data->setContent(make_shared< ::ndn::Buffer>(m_virtualPayloadSize));
+    //data->setName(dataName);
+    //data->setFreshnessPeriod(::ndn::time::milliseconds(m_freshness.GetMilliSeconds()));
+   
+    auto cmp = [&interestName](const Data& t){return t.getFullName() == interestName;};
+
+    switch(interestType)
+    {
+        case ndn_ntorrent::IoUtil::TORRENT_FILE:
+        {
+            NS_LOG_DEBUG("torrent-file interest " << interestName);
+            NS_LOG_DEBUG("torrent-file size " << torrentSegments.size());
+            auto torrent_it =  std::find_if(torrentSegments.begin(), torrentSegments.end(), cmp);
+            
+            if (torrentSegments.end() != torrent_it) {
+                NS_LOG_INFO("WE HAVE IT!");
+            }
+            else{
+                NS_LOG_INFO("We don't have it! :/");
+            }
+
+            data->setContent(make_shared< ::ndn::Buffer>(m_virtualPayloadSize));
+            break;
+        }
+        case ndn_ntorrent::IoUtil::FILE_MANIFEST:
+        {
+            NS_LOG_DEBUG("file-manifest interest " << interestName);
+            data->setContent(make_shared< ::ndn::Buffer>(m_virtualPayloadSize));
+            break;
+        }
+        case ndn_ntorrent::IoUtil::DATA_PACKET:
+        {
+            NS_LOG_DEBUG("data-packet interest " << interestName);
+            data->setContent(make_shared< ::ndn::Buffer>(m_virtualPayloadSize));
+            break;
+        }
+        case ndn_ntorrent::IoUtil::UNKNOWN:
+        {
+            NS_LOG_DEBUG("Unknown interest: " << interestName);
+            data->setContent(make_shared< ::ndn::Buffer>(m_virtualPayloadSize));
+            break;
+        }
+    }
 
     Signature signature;
     SignatureInfo signatureInfo(static_cast< ::ndn::tlv::SignatureTypeValue>(255));
@@ -130,9 +169,9 @@ NTorrentProducerApp::generateTorrentFile()
         dataPackets.insert(dataPackets.end(), ms.second.begin(), ms.second.end());
     }
     
-    /*for(const auto& t : torrentSegments)
+    for(const auto& t : torrentSegments)
         NS_LOG_DEBUG("Torrent name: " << t.getFullName());
-    for(uint32_t i=0;i<manifests.size();i++)
+    /*for(uint32_t i=0;i<manifests.size();i++)
         NS_LOG_DEBUG("Manifest name: " << manifests.at(i).catalog().at(0));
     for(uint32_t i=0;i<dataPackets.size();i++)
         NS_LOG_DEBUG("Data: " << dataPackets.at(i));*/

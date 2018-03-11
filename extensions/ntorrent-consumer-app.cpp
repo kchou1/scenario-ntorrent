@@ -62,8 +62,8 @@ NTorrentConsumerApp::StartApplication()
     /*for(int i=0;i<5;i++)
         Simulator::Schedule(Seconds(i+1.0), &NTorrentConsumerApp::SendInterest, this);*/
 
-    std::string torrentName = std::string(ndn_ntorrent::SharedConstants::commonPrefix) + "/NTORRENT/" +
-        ndn_ntorrent::DUMMY_FILE_PATH+"torrent-file";
+    //std::string torrentName = ndn_ntorrent::DUMMY_FILE_PATH+"torrent-file";
+    std::string torrentName = "/ndn/nTorrent/NTORRENT/dummy/torrent-file/sha256digest=10add2be3d0e56a239a78b56e3f676bf2c733c22d4c2a64ded64d9a22f4bd5ab";
     SendInterest(torrentName);
 }
 
