@@ -1,4 +1,0 @@
-[submodule "ntorrent"]
-	path = ntorrent
-	url = https://github.com/akshayraman/ntorrent
-	branch = ndnSIM-branch
