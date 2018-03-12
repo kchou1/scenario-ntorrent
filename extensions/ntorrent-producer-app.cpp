@@ -169,9 +169,9 @@ NTorrentProducerApp::generateTorrentFile()
         dataPackets.insert(dataPackets.end(), ms.second.begin(), ms.second.end());
     }
     
-    for(const auto& t : m_torrentSegments)
+    /*for(const auto& t : m_torrentSegments)
         NS_LOG_DEBUG("Torrent segment name: " << t.getFullName());
-    /*for(uint32_t i=0;i<manifests.size();i++)
+    for(uint32_t i=0;i<manifests.size();i++)
         NS_LOG_DEBUG("Manifest name: " << manifests.at(i).catalog().at(0));
     for(uint32_t i=0;i<dataPackets.size();i++)
         NS_LOG_DEBUG("Data: " << dataPackets.at(i));*/
