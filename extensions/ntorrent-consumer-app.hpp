@@ -68,15 +68,12 @@ private:
   SendInterest();
 
   uint32_t m_seq; 
-  uint32_t m_seqMax;
-  EventId m_sendEvent;
-  Time m_retxTimer;
-  EventId m_retxEvent;
-
-  Time m_offTime; 
   Name m_interestName;
   Time m_interestLifeTime;
   
+  //The 3 below variables aren't needed by the consumer
+  //They are just there to "generate" the torrent
+  //(to simulate copying in the real world)
   uint32_t m_namesPerSegment;
   uint32_t m_namesPerManifest;
   uint32_t m_dataPacketSize;
