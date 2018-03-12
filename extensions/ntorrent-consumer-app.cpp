@@ -65,6 +65,7 @@ NTorrentConsumerApp::StartApplication()
     //std::string torrentName = ndn_ntorrent::DUMMY_FILE_PATH+"torrent-file";
     std::string torrentName = "/NTORRENT/dummy/torrent-file/sha256digest=16dcb0d2de642941c0522515144c69300f50834fcba78fb5f4c54bd6ed8254ec";
     SendInterest(torrentName);
+    m_interestQueue = make_shared<ndn_ntorrent::InterestQueue>();
 }
 
 void
