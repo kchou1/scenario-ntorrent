@@ -113,15 +113,17 @@ NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
     std::vector<Name> manifestCatalog = file.getCatalog();
     manifests.insert(manifests.end(), manifestCatalog.begin(), manifestCatalog.end());
     NS_LOG_DEBUG("Manifests: " << manifests.size());
-    /*shared_ptr<Name> nextSegmentPtr = file.getTorrentFilePtr();
+    shared_ptr<Name> nextSegmentPtr = file.getTorrentFilePtr();
     if(nextSegmentPtr!=nullptr){
-
+        NS_LOG_DEBUG("Wait.. There's more...");
+        NS_LOG_DEBUG(*file.getTorrentFilePtr());
+        SendInterest(nextSegmentPtr.get()->toUri());
     }
     else
     {
         //TODO: Start requesting the data...
-        NS_LOG_DEBUG("Torrent file is done!");
-    }*/
+        NS_LOG_DEBUG("W00t! Torrent file is done!");
+    }
 }
 
 } // namespace ndn
