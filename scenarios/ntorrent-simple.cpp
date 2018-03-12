@@ -118,6 +118,9 @@ main(int argc, char *argv[])
   // Consumer
   ndn::AppHelper consumerHelper("NTorrentConsumerApp");
   consumerHelper.SetAttribute("Prefix", StringValue("/"));
+  consumerHelper.SetAttribute("namesPerSegment", IntegerValue(namesPerSegment));
+  consumerHelper.SetAttribute("namesPerManifest", IntegerValue(namesPerManifest));
+  consumerHelper.SetAttribute("dataPacketSize", IntegerValue(dataPacketSize));
   consumerHelper.Install(nodes.Get(1)).Start(Seconds(3.0));
 
   Simulator::Stop(Seconds(60.0));

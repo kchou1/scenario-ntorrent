@@ -40,6 +40,12 @@ NTorrentConsumerApp::GetTypeId(void)
 
       .AddAttribute("Prefix", "Name of the Interest", StringValue("/"),
                     MakeNameAccessor(&NTorrentConsumerApp::m_interestName), MakeNameChecker())
+      .AddAttribute("namesPerSegment", "Number of names (files) per segment", IntegerValue(2),
+                    MakeIntegerAccessor(&NTorrentConsumerApp::m_namesPerSegment), MakeIntegerChecker<int32_t>())
+      .AddAttribute("namesPerManifest", "Number of names per manifest", IntegerValue(64),
+                    MakeIntegerAccessor(&NTorrentConsumerApp::m_namesPerManifest), MakeIntegerChecker<int32_t>())
+      .AddAttribute("dataPacketSize", "Size of each data packet", IntegerValue(64),
+                    MakeIntegerAccessor(&NTorrentConsumerApp::m_dataPacketSize), MakeIntegerChecker<int32_t>())
       .AddAttribute("LifeTime", "LifeTime for interest packet", StringValue("1s"),
                     MakeTimeAccessor(&NTorrentConsumerApp::m_interestLifeTime), MakeTimeChecker());
     return tid;
@@ -62,9 +68,11 @@ NTorrentConsumerApp::StartApplication()
     /*for(int i=0;i<5;i++)
         Simulator::Schedule(Seconds(i+1.0), &NTorrentConsumerApp::SendInterest, this);*/
 
+    copyTorrentFile();
+
     //std::string torrentName = "/NTORRENT/"+ndn_ntorrent::DUMMY_FILE_PATH+"torrent-file";
-    std::string torrentName = "/NTORRENT/"+ndn_ntorrent::DUMMY_FILE_PATH+"torrent-file/sha256digest=16dcb0d2de642941c0522515144c69300f50834fcba78fb5f4c54bd6ed8254ec";
-    SendInterest(torrentName);
+    //std::string torrentName = "/NTORRENT/"+ndn_ntorrent::DUMMY_FILE_PATH+"torrent-file/sha256digest=16dcb0d2de642941c0522515144c69300f50834fcba78fb5f4c54bd6ed8254ec";
+    SendInterest(m_initialSegment.getFullName().toUri());
     m_interestQueue = make_shared<ndn_ntorrent::InterestQueue>();
 }
 
@@ -103,6 +111,22 @@ void
 NTorrentConsumerApp::OnInterest(std::shared_ptr<const Interest> interest)
 {
   //We don't have to process interests on the consumer-end for now
+}
+
+void
+NTorrentConsumerApp::copyTorrentFile()
+{
+    //This is "technically" the same as what the producer does
+    //In a real world application, both parties will have a torrent file
+    //Since that isn't possible here, just generate the same torrent file on producer and consumer
+    
+    NS_LOG_DEBUG("Copying torrent file!");
+    const auto& content = ndn_ntorrent::TorrentFile::generate(ndn_ntorrent::DUMMY_FILE_PATH, 
+            m_namesPerSegment, m_namesPerManifest, m_dataPacketSize, true);
+   
+    //Copy only initial segment...
+    //This will be used to make future requests
+    m_initialSegment = content.first.at(0);
 }
 
 void

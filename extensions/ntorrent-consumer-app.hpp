@@ -60,6 +60,9 @@ public:
   virtual void
   SendInterest(const string& interestName);
 
+  virtual void
+  copyTorrentFile();
+
 private:
   void
   SendInterest();
@@ -73,7 +76,12 @@ private:
   Time m_offTime; 
   Name m_interestName;
   Time m_interestLifeTime;
+  
+  uint32_t m_namesPerSegment;
+  uint32_t m_namesPerManifest;
+  uint32_t m_dataPacketSize;
     
+  ndn_ntorrent::TorrentFile m_initialSegment;
   std::vector<ndn_ntorrent::TorrentFile> m_torrentSegments;
   std::vector<Name> manifests;
   std::vector<Data> dataPackets;
