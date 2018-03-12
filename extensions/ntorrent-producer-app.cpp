@@ -138,20 +138,20 @@ NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
         data->wireEncode();
         m_transmittedDatas(data, this, m_face);
         m_appLink->onReceiveData(*data);
-    /*Signature signature;
-    SignatureInfo signatureInfo(static_cast< ::ndn::tlv::SignatureTypeValue>(255));
+        /*Signature signature;
+        SignatureInfo signatureInfo(static_cast< ::ndn::tlv::SignatureTypeValue>(255));
 
-    if (m_keyLocator.size() > 0) {
-        signatureInfo.setKeyLocator(m_keyLocator);
-    }
+        if (m_keyLocator.size() > 0) {
+            signatureInfo.setKeyLocator(m_keyLocator);
+        }
 
-    signature.setInfo(signatureInfo);
-    signature.setValue(::ndn::makeNonNegativeIntegerBlock(::ndn::tlv::SignatureValue, m_signature));
+        signature.setInfo(signatureInfo);
+        signature.setValue(::ndn::makeNonNegativeIntegerBlock(::ndn::tlv::SignatureValue, m_signature));
 
-    data->setSignature(signature);
-    NS_LOG_INFO("node(" << GetNode()->GetId() << ") responding with Data: " << data->getName());
-    
-    data->wireEncode();*/
+        data->setSignature(signature);
+        NS_LOG_INFO("node(" << GetNode()->GetId() << ") responding with Data: " << data->getName());
+        
+        data->wireEncode();*/
     }
 }
     

@@ -107,20 +107,14 @@ NTorrentConsumerApp::OnInterest(std::shared_ptr<const Interest> interest)
 void
 NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
 {
-    NS_LOG_DEBUG("Received: " << data->getName());
-    ndn_ntorrent::IoUtil::NAME_TYPE interestType = ndn_ntorrent::IoUtil::findType(data->getName());
-    //interestType = ndn_ntorrent::IoUtil::TORRENT_FILE;
-    //TODO: Fix interestType 
+    NS_LOG_DEBUG("Received: " << data->getFullName());
+    ndn_ntorrent::IoUtil::NAME_TYPE interestType = ndn_ntorrent::IoUtil::findType(data->getFullName());
     switch(interestType)
     {
         case ndn_ntorrent::IoUtil::TORRENT_FILE:
         {
             ndn_ntorrent::TorrentFile file(data->wireEncode());
             std::vector<Name> manifestCatalog = file.getCatalog();
-            for(uint8_t i=0; i<manifestCatalog.size(); i++)
-            {
-                SendInterest(manifestCatalog.at(i).toUri());
-            }
             manifests.insert(manifests.end(), manifestCatalog.begin(), manifestCatalog.end());
             shared_ptr<Name> nextSegmentPtr = file.getTorrentFilePtr();
             if(nextSegmentPtr!=nullptr){
@@ -134,6 +128,12 @@ NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
                 NS_LOG_DEBUG("These are the manifests:");
                 for(uint32_t i=0;i<manifests.size();i++)
                     NS_LOG_DEBUG(i << " " << manifests.at(i));
+            }
+            
+            //Send interests for the manifests..
+            for(uint8_t i=0; i<manifestCatalog.size(); i++)
+            {
+                SendInterest(manifestCatalog.at(i).toUri());
             }
             break;
         }
