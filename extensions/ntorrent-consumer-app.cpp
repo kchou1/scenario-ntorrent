@@ -63,7 +63,7 @@ NTorrentConsumerApp::StartApplication()
         Simulator::Schedule(Seconds(i+1.0), &NTorrentConsumerApp::SendInterest, this);*/
 
     //std::string torrentName = ndn_ntorrent::DUMMY_FILE_PATH+"torrent-file";
-    std::string torrentName = "/ndn/nTorrent/NTORRENT/dummy/torrent-file/sha256digest=10add2be3d0e56a239a78b56e3f676bf2c733c22d4c2a64ded64d9a22f4bd5ab";
+    std::string torrentName = "/NTORRENT/dummy/torrent-file/sha256digest=16dcb0d2de642941c0522515144c69300f50834fcba78fb5f4c54bd6ed8254ec";
     SendInterest(torrentName);
 }
 
@@ -109,6 +109,7 @@ NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
 {
     NS_LOG_DEBUG("Received: " << data->getName());
     ndn_ntorrent::IoUtil::NAME_TYPE interestType = ndn_ntorrent::IoUtil::findType(data->getName());
+    //interestType = ndn_ntorrent::IoUtil::TORRENT_FILE;
     //TODO: Fix interestType 
     switch(interestType)
     {
@@ -116,10 +117,14 @@ NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
         {
             ndn_ntorrent::TorrentFile file(data->wireEncode());
             std::vector<Name> manifestCatalog = file.getCatalog();
+            for(uint8_t i=0; i<manifestCatalog.size(); i++)
+            {
+                SendInterest(manifestCatalog.at(i).toUri());
+            }
             manifests.insert(manifests.end(), manifestCatalog.begin(), manifestCatalog.end());
             shared_ptr<Name> nextSegmentPtr = file.getTorrentFilePtr();
             if(nextSegmentPtr!=nullptr){
-                NS_LOG_DEBUG("Wait.. There's more...");
+                NS_LOG_DEBUG("Wait.. There are more torrent segments remaining!");
                 SendInterest(nextSegmentPtr.get()->toUri());
             }
             else

@@ -32,7 +32,7 @@
 namespace ndn_ntorrent = ndn::ntorrent;
 namespace ndn{
 namespace ntorrent{
-const char * ndn_ntorrent::SharedConstants::commonPrefix = "/ndn/nTorrent";
+const char * ndn_ntorrent::SharedConstants::commonPrefix = "";
 }
 }
 
