@@ -106,7 +106,6 @@ NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
             
             if (m_torrentSegments.end() != torrent_it) {
                 data = std::make_shared<Data>(*torrent_it);
-                //NS_LOG_INFO(torrent_it->getTorrentFilePtr());
             }
             else{
                 NS_LOG_INFO("Don't have this torrent...");
@@ -116,7 +115,13 @@ NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
         case ndn_ntorrent::IoUtil::FILE_MANIFEST:
         {
             NS_LOG_DEBUG("file-manifest interest " << interestName);
-            //data->setContent(make_shared< ::ndn::Buffer>(m_virtualPayloadSize));
+            auto manifest_it = std::find_if(manifests.begin(), manifests.end(), cmp);
+            if (manifests.end() != manifest_it) {
+                data = std::make_shared<Data>(*manifest_it) ;
+            }
+            else{
+                NS_LOG_INFO("Don't have this manifest...");
+            }
             break;
         }
         case ndn_ntorrent::IoUtil::DATA_PACKET:
@@ -171,10 +176,10 @@ NTorrentProducerApp::generateTorrentFile()
     
     for(const auto& t : m_torrentSegments)
         NS_LOG_DEBUG("Torrent segment name: " << t.getFullName());
-    /*for(uint32_t i=0;i<manifests.size();i++)
-        NS_LOG_DEBUG("Manifest name: " << manifests.at(i).catalog().at(0));
+    for(uint32_t i=0;i<manifests.size();i++)
+        NS_LOG_DEBUG("Manifest name: " << manifests.at(i).getFullName());
     for(uint32_t i=0;i<dataPackets.size();i++)
-        NS_LOG_DEBUG("Data: " << dataPackets.at(i));*/
+        NS_LOG_DEBUG("Data: " << dataPackets.at(i).getFullName());
 
     NS_LOG_DEBUG("Producer stats: ");
     NS_LOG_DEBUG("Torrent segments: " << m_torrentSegments.size());
