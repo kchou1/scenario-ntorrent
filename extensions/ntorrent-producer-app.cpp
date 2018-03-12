@@ -95,6 +95,12 @@ NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
     //data->setName(dataName);
     //data->setFreshnessPeriod(::ndn::time::milliseconds(m_freshness.GetMilliSeconds()));
    
+    //NOTE: disabling security: Terrible idea, but it's just a "hack" to prevent
+    //hardcoding on the consumer end
+    //In the real world application, the producer and consumer both have access
+    //to the torrent file. That's not the case here...
+    //TODO: Possibly "Disable" security here by using getName instead of getFullName?
+    //auto cmp = [&interestName](const Data& t){return t.getName() == interestName;};
     auto cmp = [&interestName](const Data& t){return t.getFullName() == interestName;};
 
     switch(interestType)
@@ -163,7 +169,10 @@ NTorrentProducerApp::generateTorrentFile()
             m_namesPerSegment, m_namesPerManifest, m_dataPacketSize, true);
     
     m_torrentSegments = content.first;
-    
+    for(uint8_t i=0;i<m_torrentSegments.size();i++)
+    {
+        //
+    }
     for (const auto& ms : content.second) {
         manifests.insert(manifests.end(), ms.first.begin(), ms.first.end());
         dataPackets.insert(dataPackets.end(), ms.second.begin(), ms.second.end());
