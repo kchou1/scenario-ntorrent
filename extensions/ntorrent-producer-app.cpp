@@ -116,13 +116,13 @@ NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
         case ndn_ntorrent::IoUtil::FILE_MANIFEST:
         {
             NS_LOG_DEBUG("file-manifest interest " << interestName);
-            data->setContent(make_shared< ::ndn::Buffer>(m_virtualPayloadSize));
+            //data->setContent(make_shared< ::ndn::Buffer>(m_virtualPayloadSize));
             break;
         }
         case ndn_ntorrent::IoUtil::DATA_PACKET:
         {
             NS_LOG_DEBUG("data-packet interest " << interestName);
-            data->setContent(make_shared< ::ndn::Buffer>(m_virtualPayloadSize));
+            //data->setContent(make_shared< ::ndn::Buffer>(m_virtualPayloadSize));
             break;
         }
         case ndn_ntorrent::IoUtil::UNKNOWN:

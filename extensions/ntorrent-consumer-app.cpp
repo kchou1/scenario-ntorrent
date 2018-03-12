@@ -130,10 +130,10 @@ NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
                     NS_LOG_DEBUG(i << " " << manifests.at(i));
             }
             
-            //Send interests for the manifests..
+            //TODO: Need to queue interests...
             for(uint8_t i=0; i<manifestCatalog.size(); i++)
             {
-                SendInterest(manifestCatalog.at(i).toUri());
+                //SendInterest(manifestCatalog.at(i).toUri());
             }
             break;
         }
