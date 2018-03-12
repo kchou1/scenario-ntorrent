@@ -70,7 +70,6 @@ NTorrentConsumerApp::StartApplication()
 
     copyTorrentFile();
 
-    //std::string torrentName = "/NTORRENT/"+ndn_ntorrent::DUMMY_FILE_PATH+"torrent-file";
     //std::string torrentName = "/NTORRENT/"+ndn_ntorrent::DUMMY_FILE_PATH+"torrent-file/sha256digest=16dcb0d2de642941c0522515144c69300f50834fcba78fb5f4c54bd6ed8254ec";
     SendInterest(m_initialSegment.getFullName().toUri());
     m_interestQueue = make_shared<ndn_ntorrent::InterestQueue>();
@@ -164,14 +163,17 @@ NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
         }
         case ndn_ntorrent::IoUtil::FILE_MANIFEST:
         {
+            //TODO: Handle incoming manifests
             break;
         }
         case ndn_ntorrent::IoUtil::DATA_PACKET:
         {
+            //TODO: Handle incoming data packets
             break;
         }
         case ndn_ntorrent::IoUtil::UNKNOWN:
         {
+            //This should never happen
             break;
         }
     }
