@@ -102,11 +102,9 @@ NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
         case ndn_ntorrent::IoUtil::TORRENT_FILE:
         {
             NS_LOG_DEBUG("torrent-file interest " << interestName);
-            NS_LOG_DEBUG("torrent-file size " << m_torrentSegments.size());
             auto torrent_it =  std::find_if(m_torrentSegments.begin(), m_torrentSegments.end(), cmp);
             
             if (m_torrentSegments.end() != torrent_it) {
-                NS_LOG_INFO("WE HAVE IT!");
                 data = std::make_shared<Data>(*torrent_it);
                 //NS_LOG_INFO(torrent_it->getTorrentFilePtr());
             }
@@ -129,6 +127,7 @@ NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
         }
         case ndn_ntorrent::IoUtil::UNKNOWN:
         {
+            //This should ideally never happen...
             NS_LOG_DEBUG("Unknown interest: " << interestName);
             break;
         }
@@ -172,15 +171,16 @@ NTorrentProducerApp::generateTorrentFile()
     }
     
     for(const auto& t : m_torrentSegments)
-        NS_LOG_DEBUG("Torrent name: " << t.getFullName());
+        NS_LOG_DEBUG("Torrent segment name: " << t.getFullName());
     /*for(uint32_t i=0;i<manifests.size();i++)
         NS_LOG_DEBUG("Manifest name: " << manifests.at(i).catalog().at(0));
     for(uint32_t i=0;i<dataPackets.size();i++)
         NS_LOG_DEBUG("Data: " << dataPackets.at(i));*/
 
-    //NS_LOG_DEBUG("Torrent segments: " << m_torrentSegments.size());
-    //NS_LOG_DEBUG("Manifests: " << manifests.size());
-    //NS_LOG_DEBUG("Data Packets: " << dataPackets.size());
+    NS_LOG_DEBUG("Producer stats: ");
+    NS_LOG_DEBUG("Torrent segments: " << m_torrentSegments.size());
+    NS_LOG_DEBUG("Manifests: " << manifests.size());
+    NS_LOG_DEBUG("Data Packets: " << dataPackets.size());
 }
 
 } // namespace ndn

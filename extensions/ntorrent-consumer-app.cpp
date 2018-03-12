@@ -108,15 +108,15 @@ void
 NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
 {
     //TODO: Use switch statement similar to that in the producer
+    
     NS_LOG_DEBUG("Received: " << data->getName());
     ndn_ntorrent::TorrentFile file(data->wireEncode());
     std::vector<Name> manifestCatalog = file.getCatalog();
     manifests.insert(manifests.end(), manifestCatalog.begin(), manifestCatalog.end());
-    NS_LOG_DEBUG("Manifests: " << manifests.size());
+    NS_LOG_DEBUG("Total number of file manifests: " << manifests.size());
     shared_ptr<Name> nextSegmentPtr = file.getTorrentFilePtr();
     if(nextSegmentPtr!=nullptr){
         NS_LOG_DEBUG("Wait.. There's more...");
-        NS_LOG_DEBUG(*file.getTorrentFilePtr());
         SendInterest(nextSegmentPtr.get()->toUri());
     }
     else
