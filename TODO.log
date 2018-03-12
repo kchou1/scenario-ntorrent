@@ -1,3 +1,7 @@
+===TODO==
+Try to generate sha256 on the consumer end to avoid hardcoding...
+
+===DONE===
 Producer: 
 torrent prefix
 number of files
