@@ -107,22 +107,43 @@ NTorrentConsumerApp::OnInterest(std::shared_ptr<const Interest> interest)
 void
 NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
 {
-    //TODO: Use switch statement similar to that in the producer
-    
     NS_LOG_DEBUG("Received: " << data->getName());
-    ndn_ntorrent::TorrentFile file(data->wireEncode());
-    std::vector<Name> manifestCatalog = file.getCatalog();
-    manifests.insert(manifests.end(), manifestCatalog.begin(), manifestCatalog.end());
-    NS_LOG_DEBUG("Total number of file manifests: " << manifests.size());
-    shared_ptr<Name> nextSegmentPtr = file.getTorrentFilePtr();
-    if(nextSegmentPtr!=nullptr){
-        NS_LOG_DEBUG("Wait.. There's more...");
-        SendInterest(nextSegmentPtr.get()->toUri());
-    }
-    else
+    ndn_ntorrent::IoUtil::NAME_TYPE interestType = ndn_ntorrent::IoUtil::findType(data->getName());
+    //TODO: Fix interestType 
+    switch(interestType)
     {
-        //TODO: Start requesting the data...
-        NS_LOG_DEBUG("W00t! Torrent file is done!");
+        case ndn_ntorrent::IoUtil::TORRENT_FILE:
+        {
+            ndn_ntorrent::TorrentFile file(data->wireEncode());
+            std::vector<Name> manifestCatalog = file.getCatalog();
+            manifests.insert(manifests.end(), manifestCatalog.begin(), manifestCatalog.end());
+            shared_ptr<Name> nextSegmentPtr = file.getTorrentFilePtr();
+            if(nextSegmentPtr!=nullptr){
+                NS_LOG_DEBUG("Wait.. There's more...");
+                SendInterest(nextSegmentPtr.get()->toUri());
+            }
+            else
+            {
+                NS_LOG_DEBUG("W00t! Torrent file is done!");
+                NS_LOG_DEBUG("Total number of file manifests: " << manifests.size());
+                NS_LOG_DEBUG("These are the manifests:");
+                for(uint32_t i=0;i<manifests.size();i++)
+                    NS_LOG_DEBUG(i << " " << manifests.at(i));
+            }
+            break;
+        }
+        case ndn_ntorrent::IoUtil::FILE_MANIFEST:
+        {
+            break;
+        }
+        case ndn_ntorrent::IoUtil::DATA_PACKET:
+        {
+            break;
+        }
+        case ndn_ntorrent::IoUtil::UNKNOWN:
+        {
+            break;
+        }
     }
 }
 
