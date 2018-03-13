@@ -64,11 +64,10 @@ NTorrentConsumerApp::StartApplication()
 {
     ndn::App::StartApplication();
     ndn::FibHelper::AddRoute(GetNode(), "/", m_face, 0);
+    copyTorrentFile();
     
     /*for(int i=0;i<5;i++)
         Simulator::Schedule(Seconds(i+1.0), &NTorrentConsumerApp::SendInterest, this);*/
-
-    copyTorrentFile();
 
     //std::string torrentName = "/NTORRENT/"+ndn_ntorrent::DUMMY_FILE_PATH+"torrent-file/sha256digest=16dcb0d2de642941c0522515144c69300f50834fcba78fb5f4c54bd6ed8254ec";
     SendInterest(m_initialSegment.getFullName().toUri());
@@ -84,12 +83,12 @@ NTorrentConsumerApp::StopApplication()
 void
 NTorrentConsumerApp::SendInterest()
 {
-  //Just for testing, not really going to be used.. 
+  //This function is just for testing for testing, not really going to be used.. 
   auto interest = std::make_shared<Interest>(std::string(ndn_ntorrent::SharedConstants::commonPrefix) + "/NTORRENT/" + to_string(m_seq++));
   Ptr<UniformRandomVariable> rand = CreateObject<UniformRandomVariable>();
   interest->setNonce(rand->GetValue(0, std::numeric_limits<uint32_t>::max()));
   interest->setInterestLifetime(ndn::time::seconds(1));
-  NS_LOG_DEBUG("Sending Interest packet for " << *interest);
+  NS_LOG_DEBUG("SEND INTEREST::: " << *interest);
   m_transmittedInterests(interest, this, m_face);
   m_appLink->onReceiveInterest(*interest);
 }
@@ -101,7 +100,7 @@ NTorrentConsumerApp::SendInterest(const string& interestName)
   Ptr<UniformRandomVariable> rand = CreateObject<UniformRandomVariable>();
   interest->setNonce(rand->GetValue(0, std::numeric_limits<uint32_t>::max()));
   interest->setInterestLifetime(ndn::time::seconds(1));
-  NS_LOG_DEBUG("Sending Interest packet for " << *interest);
+  NS_LOG_DEBUG("SEND INTEREST::: " << *interest);
   m_transmittedInterests(interest, this, m_face);
   m_appLink->onReceiveInterest(*interest);
 }
@@ -148,10 +147,6 @@ NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
             else
             {
                 NS_LOG_DEBUG("W00t! Torrent file is done!");
-                NS_LOG_DEBUG("Total number of file manifests: " << manifests.size());
-                NS_LOG_DEBUG("These are the manifests:");
-                for(uint32_t i=0;i<manifests.size();i++)
-                    NS_LOG_DEBUG(i << " " << manifests.at(i));
             }
             
             //TODO: Need to queue interests...
@@ -169,7 +164,6 @@ NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
             std::vector<Name> subManifestCatalog = fm.catalog();
             shared_ptr<Name> nextSegmentPtr = fm.submanifest_ptr();
             if(nextSegmentPtr!=nullptr){
-                NS_LOG_DEBUG("Wait.. There are more manifests remaining!");
                 SendInterest(nextSegmentPtr.get()->toUri());
             }
             
@@ -183,10 +177,8 @@ NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
         }
         case ndn_ntorrent::IoUtil::DATA_PACKET:
         {
-            //TODO: Handle incoming data packets
             Data d(data->wireEncode());
             Block content = d.getContent();
-            //std::vector<char> output(content.value_begin(), content.value_end());
             std::string output(content.value_begin(), content.value_end());
             NS_LOG_DEBUG("Got the data! ");
             NS_LOG_DEBUG(output);

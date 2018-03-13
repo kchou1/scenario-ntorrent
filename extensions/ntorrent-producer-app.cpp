@@ -90,10 +90,7 @@ NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
     ndn_ntorrent::IoUtil::NAME_TYPE interestType = ndn_ntorrent::IoUtil::findType(interestName);
     
     Name dataName(interestName);
-    //auto data = make_shared<Data>();
     std::shared_ptr<Data> data = nullptr;
-    //data->setName(dataName);
-    //data->setFreshnessPeriod(::ndn::time::milliseconds(m_freshness.GetMilliSeconds()));
    
     auto cmp = [&interestName](const Data& t){return t.getFullName() == interestName;};
 
@@ -101,7 +98,7 @@ NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
     {
         case ndn_ntorrent::IoUtil::TORRENT_FILE:
         {
-            NS_LOG_DEBUG("torrent-file interest " << interestName);
+            NS_LOG_DEBUG("RECIEVED INTEREST (torrent-file):::" << interestName);
             auto torrent_it =  std::find_if(m_torrentSegments.begin(), m_torrentSegments.end(), cmp);
             
             if (m_torrentSegments.end() != torrent_it) {
@@ -114,7 +111,7 @@ NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
         }
         case ndn_ntorrent::IoUtil::FILE_MANIFEST:
         {
-            NS_LOG_DEBUG("file-manifest interest " << interestName);
+            NS_LOG_DEBUG("RECIEVED INTEREST (file-manifest):::" << interestName);
             auto manifest_it = std::find_if(manifests.begin(), manifests.end(), cmp);
             if (manifests.end() != manifest_it) {
                 data = std::make_shared<Data>(*manifest_it) ;
@@ -126,7 +123,7 @@ NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
         }
         case ndn_ntorrent::IoUtil::DATA_PACKET:
         {
-            NS_LOG_DEBUG("data-packet interest " << interestName);
+            NS_LOG_DEBUG("RECIEVED INTEREST (data-packet):::" << interestName);
             auto data_it = std::find_if(dataPackets.begin(), dataPackets.end(), cmp);
             if (dataPackets.end() != data_it) {
                 data = std::make_shared<Data>(*data_it) ;
@@ -144,7 +141,7 @@ NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
         }
     }
 
-    if(nullptr != data && interestType!=ndn_ntorrent::IoUtil::UNKNOWN)
+    if(nullptr != data && interestType != ndn_ntorrent::IoUtil::UNKNOWN)
     {
         data->wireEncode();
         m_transmittedDatas(data, this, m_face);
@@ -162,7 +159,9 @@ NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
         data->setSignature(signature);
         NS_LOG_INFO("node(" << GetNode()->GetId() << ") responding with Data: " << data->getName());
         
-        data->wireEncode();*/
+        data->wireEncode();
+        m_transmittedDatas(data, this, m_face);
+        m_appLink->onReceiveData(*data);*/
     }
 }
     
