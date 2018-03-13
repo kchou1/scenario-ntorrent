@@ -1,14 +1,14 @@
 ===TODO==
-Try to generate sha256 on the consumer end to avoid hardcoding...
+Use interestQueue to support multiple interests at the same time...
 
 ===DONE===
 Producer: 
 torrent prefix
 number of files
 number of segments per file
-(Based on number of args above)
+(Based on args passed in scenario)
 
-private: 
+private variables: 
     Create torrent file (from torrent-file.cpp)
     Create a vector of manifests (file-manifest.cpp)
     Ignore data packets
@@ -25,6 +25,5 @@ Send interest for torrent file (with torrent file name) this will reach the prod
 After receving the torrent file content, cast it to a torrent file
 Use the torrent API file
 
-Refer to
-cxx library 0.6.1 (name.hpp)
+Try to generate sha256 on the consumer end to avoid hardcoding...
 
