@@ -1,5 +1,7 @@
 ===TODO==
-Use interestQueue to support multiple interests at the same time...
+Make "number of files" a command-line parameter instead of hardcoding it in sharedConstants.hpp
+Try adding more consumers/producers ?
+Use interestQueue to support multiple interests at the same time?
 
 ===DONE===
 Producer: 
