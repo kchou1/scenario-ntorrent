@@ -25,11 +25,11 @@ The code should also work with the latest version of ndnSIM, but it is not guara
     # sudo ldconfig -a
 
     cd ..
-    git clone https://github.com/named-data-ndnSIM/scenario-template.git my-simulations
-    cd my-simulations
+    git clone https://github.com/AkshayRaman/scenario-ntorrent.git scenario-ntorrent
+    cd scenario-ntorrent
 
     ./waf configure
-    ./waf --run scenario
+    ./waf
 
 After which you can proceed to compile and run the code
 
