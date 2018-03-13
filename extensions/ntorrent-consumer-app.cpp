@@ -84,7 +84,8 @@ void
 NTorrentConsumerApp::SendInterest()
 {
   //This function is just for testing for testing, not really going to be used.. 
-  auto interest = std::make_shared<Interest>(std::string(ndn_ntorrent::SharedConstants::commonPrefix) + "/NTORRENT/" + to_string(m_seq++));
+  std::string interestName = std::string(ndn_ntorrent::SharedConstants::commonPrefix) + "/NTORRENT/" + to_string(m_seq++);
+  auto interest = std::make_shared<Interest>(interestName);
   Ptr<UniformRandomVariable> rand = CreateObject<UniformRandomVariable>();
   interest->setNonce(rand->GetValue(0, std::numeric_limits<uint32_t>::max()));
   interest->setInterestLifetime(ndn::time::seconds(1));
@@ -150,7 +151,6 @@ NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
             }
             
             //TODO: Need to queue interests...
-            //This currently works for just one manifest
             for(uint8_t i=0; i<manifestCatalog.size(); i++)
             {
                 SendInterest(manifestCatalog.at(i).toUri());
@@ -168,7 +168,6 @@ NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
             }
             
             //TODO: Need to queue interests...
-            //This currently works for just one submanifest
             for(uint8_t i=0; i<subManifestCatalog.size(); i++)
             {
                 SendInterest(subManifestCatalog.at(i).toUri());
