@@ -20,6 +20,7 @@
  */
 
 #include <ndn-cxx/data.hpp>
+#include <ndn-cxx/encoding/tlv.hpp>
 
 #include "ns3/ndnSIM-module.h"
 #include "ns3/integer.h"

@@ -164,7 +164,6 @@ NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
         }
         case ndn_ntorrent::IoUtil::FILE_MANIFEST:
         {
-            //TODO: Handle incoming manifests
             ndn_ntorrent::FileManifest fm(data->wireEncode());
             
             std::vector<Name> subManifestCatalog = fm.catalog();
@@ -175,7 +174,7 @@ NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
             }
             
             //TODO: Need to queue interests...
-            //This currently works for just one manifest
+            //This currently works for just one submanifest
             for(uint8_t i=0; i<subManifestCatalog.size(); i++)
             {
                 SendInterest(subManifestCatalog.at(i).toUri());
@@ -185,6 +184,8 @@ NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
         case ndn_ntorrent::IoUtil::DATA_PACKET:
         {
             //TODO: Handle incoming data packets
+            Data d(data->wireEncode());
+            const Block& content = d.getContent();
             break;
         }
         case ndn_ntorrent::IoUtil::UNKNOWN:
