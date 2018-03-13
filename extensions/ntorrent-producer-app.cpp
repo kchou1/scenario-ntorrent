@@ -127,7 +127,13 @@ NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
         case ndn_ntorrent::IoUtil::DATA_PACKET:
         {
             NS_LOG_DEBUG("data-packet interest " << interestName);
-            //data->setContent(make_shared< ::ndn::Buffer>(m_virtualPayloadSize));
+            auto data_it = std::find_if(dataPackets.begin(), dataPackets.end(), cmp);
+            if (dataPackets.end() != data_it) {
+                data = std::make_shared<Data>(*data_it) ;
+            }
+            else{
+                NS_LOG_INFO("Don't have this data...");
+            }
             break;
         }
         case ndn_ntorrent::IoUtil::UNKNOWN:
