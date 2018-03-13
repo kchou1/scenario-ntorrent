@@ -155,15 +155,31 @@ NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
             }
             
             //TODO: Need to queue interests...
+            //This currently works for just one manifest
             for(uint8_t i=0; i<manifestCatalog.size(); i++)
             {
-                //SendInterest(manifestCatalog.at(i).toUri());
+                SendInterest(manifestCatalog.at(i).toUri());
             }
             break;
         }
         case ndn_ntorrent::IoUtil::FILE_MANIFEST:
         {
             //TODO: Handle incoming manifests
+            ndn_ntorrent::FileManifest fm(data->wireEncode());
+            
+            std::vector<Name> subManifestCatalog = fm.catalog();
+            shared_ptr<Name> nextSegmentPtr = fm.submanifest_ptr();
+            if(nextSegmentPtr!=nullptr){
+                NS_LOG_DEBUG("Wait.. There are more manifests remaining!");
+                SendInterest(nextSegmentPtr.get()->toUri());
+            }
+            
+            //TODO: Need to queue interests...
+            //This currently works for just one manifest
+            for(uint8_t i=0; i<subManifestCatalog.size(); i++)
+            {
+                SendInterest(subManifestCatalog.at(i).toUri());
+            }
             break;
         }
         case ndn_ntorrent::IoUtil::DATA_PACKET:
