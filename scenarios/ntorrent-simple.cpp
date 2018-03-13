@@ -69,9 +69,9 @@ main(int argc, char *argv[])
   Config::SetDefault("ns3::PointToPointChannel::Delay", StringValue("10ms"));
 
   //defaults for command line arguments
-  uint32_t namesPerSegment = 2;
-  uint32_t namesPerManifest = 64;
-  uint32_t dataPacketSize = 1024;
+  uint32_t namesPerSegment = 1;
+  uint32_t namesPerManifest = 1;
+  uint32_t dataPacketSize = 64;
   
   // Read optional command-line parameters (e.g., enable visualizer with ./waf --run=<> --visualize
   CommandLine cmd;
@@ -125,6 +125,11 @@ main(int argc, char *argv[])
 
   Simulator::Stop(Seconds(60.0));
 
+  std::cout << "Running with parameters: " << std::endl;
+  std::cout << "namesPerSegment: " << namesPerSegment << std::endl;
+  std::cout << "namesPerManifest: " << namesPerManifest << std::endl;
+  std::cout << "dataPacketSize: " << dataPacketSize << std::endl;
+  
   Simulator::Run();
   Simulator::Destroy();
   
