@@ -185,7 +185,11 @@ NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
         {
             //TODO: Handle incoming data packets
             Data d(data->wireEncode());
-            const Block& content = d.getContent();
+            Block content = d.getContent();
+            //std::vector<char> output(content.value_begin(), content.value_end());
+            std::string output(content.value_begin(), content.value_end());
+            NS_LOG_DEBUG("Got the data! ");
+            NS_LOG_DEBUG(output);
             break;
         }
         case ndn_ntorrent::IoUtil::UNKNOWN:
