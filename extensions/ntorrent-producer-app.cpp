@@ -87,6 +87,8 @@ NTorrentProducerApp::StopApplication()
 void
 NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
 {
+    ndn::App::OnInterest(interest); 
+    const auto& interestName = interest->getName();
     uint8_t r = rand() % 100;
     //Simulate a bad producer (Satisfies only m_probability% of all requests)
     if(r > m_probability)
@@ -95,8 +97,6 @@ NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
         return;
     }
     
-    ndn::App::OnInterest(interest); 
-    const auto& interestName = interest->getName();
     ndn_ntorrent::IoUtil::NAME_TYPE interestType = ndn_ntorrent::IoUtil::findType(interestName);
     
     Name dataName(interestName);
