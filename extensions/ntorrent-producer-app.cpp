@@ -43,6 +43,8 @@ NTorrentProducerApp::GetTypeId(void)
                     MakeIntegerAccessor(&NTorrentProducerApp::m_namesPerManifest), MakeIntegerChecker<int32_t>())
       .AddAttribute("dataPacketSize", "Size of each data packet", IntegerValue(64),
                     MakeIntegerAccessor(&NTorrentProducerApp::m_dataPacketSize), MakeIntegerChecker<int32_t>())
+      .AddAttribute("probability", "Probability that the producer has the data", IntegerValue(100),
+                    MakeIntegerAccessor(&NTorrentProducerApp::m_probability), MakeIntegerChecker<int32_t>())
       .AddAttribute("PayloadSize", "Virtual payload size for Content packets", IntegerValue(1024),
               MakeIntegerAccessor(&NTorrentProducerApp::m_virtualPayloadSize),
               MakeIntegerChecker<uint32_t>())
@@ -85,8 +87,16 @@ NTorrentProducerApp::StopApplication()
 void
 NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
 {
+    uint8_t r = rand() % 100;
+    //Simulate a bad producer (Satisfies only m_probability% of all requests)
+    if(r > m_probability)
+    {
+        NS_LOG_DEBUG(GetId() << " I don't have the data for this :::" << interestName);
+        return;
+    }
+    
     ndn::App::OnInterest(interest); 
-    const auto& interestName = interest->getName();  
+    const auto& interestName = interest->getName();
     ndn_ntorrent::IoUtil::NAME_TYPE interestType = ndn_ntorrent::IoUtil::findType(interestName);
     
     Name dataName(interestName);

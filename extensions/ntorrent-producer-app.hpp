@@ -69,6 +69,8 @@ private:
   uint32_t m_namesPerSegment;
   uint32_t m_namesPerManifest;
   uint32_t m_dataPacketSize;
+  
+  uint32_t m_probability;
     
   std::vector<ndn_ntorrent::TorrentFile> m_torrentSegments;
   std::vector<ndn_ntorrent::FileManifest> manifests;
