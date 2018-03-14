@@ -1,7 +1,39 @@
 ===TODO==
+Remove code from sharedConstants.hpp in ntorrent file, add it to scenarios instead
 Make "number of files" a command-line parameter instead of hardcoding it in sharedConstants.hpp
-Try adding more consumers/producers ?
-Use interestQueue to support multiple interests at the same time?
+Try adding more consumers/producers ??
+Make consumer act as producer
+
+===FUTURE==
+OnInterest method for consumers
+Announce prefix to the network after you have a file/prefix.. 
+
+If you don't have a packet, you send a NACK
+Forwarding strategy (deal with this later)
+
+To register prefix (one of these ways)
+    RIBManager
+        RIBManager (Routing information base) interacts with routing protocol - send command interest to RIBManager and say "Add this prefix"
+        Prefix propagation - once you register a prefix to a local NFD, the neighbors will announce it to all neighbors and so on..
+        RIBManager adds it to FIB
+
+        Look at helper/fibHelper, helper/strategy-choice-helper
+        look at sendCommand, addNextHop, removeNextHop
+
+        How are you going to get access to RIBManager?
+
+        Pointer to rib manager
+        Get access to the node ID, get an object, downcast to layer 3 protocol and use this to get the manager
+        Look at NFD test cases for some ideas...
+
+    Other way:
+        ndn-global-routing-helper.cpp (calculate routes)
+        Add origin
+        Mimic from global routing helper class if needed
+        Just go ahead and try it...
+
+
+After this, move to the forwarding strategy...
 
 ===DONE===
 Producer: 
