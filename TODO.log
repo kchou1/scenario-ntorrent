@@ -1,6 +1,5 @@
 ===TODO==
-Remove code from sharedConstants.hpp in ntorrent file, add it to scenarios instead
-Make "number of files" a command-line parameter instead of hardcoding it in sharedConstants.hpp
+Make "number of files" a command-line parameter instead of hardcoding it in a header file
 Try adding more consumers/producers ??
 Make consumer act as producer
 
