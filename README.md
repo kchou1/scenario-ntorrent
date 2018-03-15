@@ -107,7 +107,7 @@ Available simulations
 =====================
 
 ntorrent-simple
-ntorrent-bad-producer-example
+ntorrent-bad-producer
 ---------------
 
 A work in progress...
