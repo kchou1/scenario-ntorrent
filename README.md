@@ -25,7 +25,7 @@ The code should also work with the latest version of ndnSIM, but it is not guara
     # sudo ldconfig -a
 
     cd ..
-    git clone https://github.com/AkshayRaman/scenario-ntorrent.git scenario-ntorrent
+    git clone --recursive https://github.com/AkshayRaman/scenario-ntorrent.git scenario-ntorrent
     cd scenario-ntorrent
 
     ./waf configure
