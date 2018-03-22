@@ -87,7 +87,8 @@ main(int argc, char *argv[])
   AnimationInterface::SetConstantPosition (nodes.Get(0), 20, 20);
   AnimationInterface::SetConstantPosition (nodes.Get(1), 60, 60);
   
-  //TODO: Why doesn't this work???
+  //This stuff needs NetAnim to run. 
+  //NetAnim takes the xml file as input.
   //AnimationInterface anim ("/var/tmp/test.xml");
   //anim.UpdateNodeDescription (nodes.Get (0), "Producer"); 
   //anim.UpdateNodeDescription (nodes.Get (1), "Consumer");
