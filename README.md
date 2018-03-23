@@ -106,8 +106,8 @@ or
 Available simulations
 =====================
 
-ntorrent-simple
-ntorrent-bad-producer
+    ntorrent-simple
+    ntorrent-bad-producer
 ---------------
 
 A work in progress...
