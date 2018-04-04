@@ -26,6 +26,7 @@
 #include "ns3/integer.h"
 #include "ns3/string.h"
 #include "apps/ndn-app.hpp"
+#include "NFD/rib/rib-manager.hpp"
 
 #include "src/torrent-file.hpp"
 #include "src/torrent-manager.hpp"

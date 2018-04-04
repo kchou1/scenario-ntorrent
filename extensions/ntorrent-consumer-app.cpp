@@ -139,7 +139,6 @@ NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
             manifests.insert(manifests.end(), manifestCatalog.begin(), manifestCatalog.end());
             shared_ptr<Name> nextSegmentPtr = file.getTorrentFilePtr();
             if(nextSegmentPtr!=nullptr){
-                //NS_LOG_DEBUG("Wait.. There are more torrent segments remaining!");
                 SendInterest(nextSegmentPtr.get()->toUri());
             }
             else
@@ -180,10 +179,10 @@ NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
             Data d(data->wireEncode());
             Block content = d.getContent();
             std::string output(content.value_begin(), content.value_end());
-            NS_LOG_DEBUG("DATA RECEIVED");
-            NS_LOG_DEBUG("===BEGIN===");
+            NS_LOG_DEBUG("DATA RECEIVED:");
+            NS_LOG_DEBUG("=== BEGIN ===");
             std::cout << output << std::endl;
-            NS_LOG_DEBUG("===END===");
+            NS_LOG_DEBUG("=== END ===");
             break;
         }
         case ndn_ntorrent::IoUtil::UNKNOWN:
