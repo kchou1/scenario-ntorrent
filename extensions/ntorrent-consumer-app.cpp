@@ -150,7 +150,6 @@ NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
                 NS_LOG_DEBUG("W00t! Torrent file is done!");
             }
             
-            //TODO: Need to queue interests...
             for(uint8_t i=0; i<manifestCatalog.size(); i++)
             {
                 SendInterest(manifestCatalog.at(i).toUri());
@@ -167,7 +166,6 @@ NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
                 SendInterest(nextSegmentPtr.get()->toUri());
             }
             
-            //TODO: Need to queue interests...
             for(uint8_t i=0; i<subManifestCatalog.size(); i++)
             {
                 SendInterest(subManifestCatalog.at(i).toUri());
