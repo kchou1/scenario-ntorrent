@@ -148,6 +148,7 @@ NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
             else
             {
                 NS_LOG_DEBUG("W00t! Torrent file is done!");
+                //TODO: Announce prefix - RibManager
             }
             
             for(uint8_t i=0; i<manifestCatalog.size(); i++)
@@ -164,6 +165,11 @@ NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
             shared_ptr<Name> nextSegmentPtr = fm.submanifest_ptr();
             if(nextSegmentPtr!=nullptr){
                 SendInterest(nextSegmentPtr.get()->toUri());
+            }
+            else
+            {
+                NS_LOG_DEBUG("W00t! File manifest is done!");
+                //TODO: Announce prefix - RibManager
             }
             
             for(uint8_t i=0; i<subManifestCatalog.size(); i++)
