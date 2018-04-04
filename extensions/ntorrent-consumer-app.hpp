@@ -35,6 +35,7 @@
 #include "src/util/io-util.hpp"
 
 namespace ndn_ntorrent = ndn::ntorrent;
+namespace nfd_rib = nfd::rib;
 
 namespace ns3 {
 namespace ndn {

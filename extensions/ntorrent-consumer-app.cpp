@@ -22,7 +22,6 @@
 #include "ntorrent-consumer-app.hpp"
 
 NS_LOG_COMPONENT_DEFINE("NTorrentConsumerApp");
-namespace ndn_ntorrent = ndn::ntorrent;
 
 namespace ns3 {
 namespace ndn {
@@ -138,7 +137,8 @@ NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
             std::vector<Name> manifestCatalog = file.getCatalog();
             manifests.insert(manifests.end(), manifestCatalog.begin(), manifestCatalog.end());
             shared_ptr<Name> nextSegmentPtr = file.getTorrentFilePtr();
-            if(nextSegmentPtr!=nullptr){
+            if(nextSegmentPtr!=nullptr)
+            {
                 SendInterest(nextSegmentPtr.get()->toUri());
             }
             else
@@ -159,7 +159,8 @@ NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
             
             std::vector<Name> subManifestCatalog = fm.catalog();
             shared_ptr<Name> nextSegmentPtr = fm.submanifest_ptr();
-            if(nextSegmentPtr!=nullptr){
+            if(nextSegmentPtr!=nullptr)
+            {
                 SendInterest(nextSegmentPtr.get()->toUri());
             }
             else
