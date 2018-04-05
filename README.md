@@ -18,11 +18,13 @@ The code should also work with the latest version of ndnSIM, but it is not guara
     ./waf
     sudo ./waf install
 
-    # When using Linux, run
-    # sudo ldconfig
-
-    # When using Freebsd, run
-    # sudo ldconfig -a
+    if [[ `uname -a | grep Linux` ]]; then
+        #When using Linux
+        sudo ldconfig;
+    elif [[ `uname -a | grep FreeBSD` ]]; then
+        #When using FreeBSD
+        sudo ldconfig -a;
+    fi
 
     cd ..
     git clone --recursive https://github.com/AkshayRaman/scenario-ntorrent.git scenario-ntorrent
