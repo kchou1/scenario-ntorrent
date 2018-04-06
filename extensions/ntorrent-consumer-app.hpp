@@ -27,6 +27,7 @@
 #include "ns3/string.h"
 #include "apps/ndn-app.hpp"
 #include "NFD/rib/rib-manager.hpp"
+#include "ns3/ndnSIM/helper/ndn-strategy-choice-helper.hpp"
 
 #include "src/torrent-file.hpp"
 #include "src/torrent-manager.hpp"
