@@ -144,7 +144,9 @@ NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
             else
             {
                 NS_LOG_DEBUG("W00t! Torrent file is done!");
+                
                 //TODO: Announce prefix - RibManager
+                shared_ptr<nfd::Forwarder> m_forwarder = GetNode()->GetObject<L3Protocol>()->getForwarder();
             }
             
             for(uint8_t i=0; i<manifestCatalog.size(); i++)
