@@ -39,27 +39,6 @@ const char * ndn_ntorrent::SharedConstants::commonPrefix = "";
 namespace ns3 {
 namespace ndn {
 
-/**
- * This scenario simulates a very simple network topology:
- *
- *
- *      +----------+     1Mbps      +--------+     1Mbps      +----------+
- *      | consumer | <------------> | router | <------------> | producer |
- *      +----------+         10ms   +--------+          10ms  +----------+
- *
- *
- * Consumer requests data from producer with frequency 10 interests per second
- * (interests contain constantly increasing sequence number).
- *
- * For every received interest, producer replies with a data packet, containing
- * 1024 bytes of virtual payload.
- *
- * To run scenario and see what is happening, use the following command:
- *
- *     ./waf --run=ntorrent-simple
- */
-
-
 int
 main(int argc, char *argv[])
 {
