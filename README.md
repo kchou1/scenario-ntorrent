@@ -110,6 +110,7 @@ Available simulations
 
     ntorrent-simple
     ntorrent-bad-producer
+    ntorrent-multi-consumer
 ---------------
 
 A work in progress...
