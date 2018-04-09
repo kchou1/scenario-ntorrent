@@ -37,6 +37,7 @@
 
 namespace ndn_ntorrent = ndn::ntorrent;
 namespace nfd_rib = nfd::rib;
+namespace nfd_fw = nfd::fw;
 
 namespace ns3 {
 namespace ndn {
@@ -87,7 +88,8 @@ private:
   std::vector<ndn_ntorrent::TorrentFile> m_torrentSegments;
   std::vector<Name> manifests;
   std::vector<Data> dataPackets;
-  shared_ptr<ndn_ntorrent::InterestQueue> m_interestQueue;
+                
+  nfd_rib::Rib m_rib;
 
 };
 

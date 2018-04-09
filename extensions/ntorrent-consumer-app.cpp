@@ -67,7 +67,6 @@ NTorrentConsumerApp::StartApplication()
     
     //Send interest for initial torrent segment
     SendInterest(m_initialSegment.getFullName().toUri());
-    m_interestQueue = make_shared<ndn_ntorrent::InterestQueue>();
 }
 
 void
@@ -129,10 +128,15 @@ NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
 {
     NS_LOG_DEBUG("RECEIVED: " << data->getFullName());
     ndn_ntorrent::IoUtil::NAME_TYPE interestType = ndn_ntorrent::IoUtil::findType(data->getFullName());
+    
+    shared_ptr<nfd::Forwarder> m_forwarder = GetNode()->GetObject<L3Protocol>()->getForwarder();
+    nfd::Fib& fib = m_forwarder.get()->getFib();
+    
     switch(interestType)
     {
         case ndn_ntorrent::IoUtil::TORRENT_FILE:
         {
+            //TODO: Announce prefix - RibManager
             ndn_ntorrent::TorrentFile file(data->wireEncode());
             std::vector<Name> manifestCatalog = file.getCatalog();
             manifests.insert(manifests.end(), manifestCatalog.begin(), manifestCatalog.end());
@@ -144,9 +148,6 @@ NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
             else
             {
                 NS_LOG_DEBUG("W00t! Torrent file is done!");
-                
-                //TODO: Announce prefix - RibManager
-                shared_ptr<nfd::Forwarder> m_forwarder = GetNode()->GetObject<L3Protocol>()->getForwarder();
             }
             
             for(uint8_t i=0; i<manifestCatalog.size(); i++)
@@ -157,6 +158,7 @@ NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
         }
         case ndn_ntorrent::IoUtil::FILE_MANIFEST:
         {
+            //TODO: Announce prefix - RibManager
             ndn_ntorrent::FileManifest fm(data->wireEncode());
             
             std::vector<Name> subManifestCatalog = fm.catalog();
@@ -168,7 +170,6 @@ NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
             else
             {
                 NS_LOG_DEBUG("W00t! File manifest is done!");
-                //TODO: Announce prefix - RibManager
             }
             
             for(uint8_t i=0; i<subManifestCatalog.size(); i++)
@@ -179,6 +180,7 @@ NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
         }
         case ndn_ntorrent::IoUtil::DATA_PACKET:
         {
+            //TODO: Announce prefix - RibManager
             Data d(data->wireEncode());
             Block content = d.getContent();
             std::string output(content.value_begin(), content.value_end());
