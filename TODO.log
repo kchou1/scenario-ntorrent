@@ -41,8 +41,9 @@ CalculateAllPossibleRoutes
 
 Abilene topology
 
-Local FIB, routing helper
-Just Routing helper
+(Option 1 is most likely to work)
+1 Local FIB, routing helper
+2 Just Routing helper
 
 Proposal:
 Routing announcements
