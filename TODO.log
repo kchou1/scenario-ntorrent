@@ -34,6 +34,23 @@ To register prefix (one of these ways)
 
 After this, move to the forwarding strategy...
 
+4/10
+AddOrigin
+CalculateRoutes
+CalculateAllPossibleRoutes
+
+Abilene topology
+
+Local FIB, routing helper
+Just Routing helper
+
+Proposal:
+Routing announcements
+Forwarding strategy
+Announce torrent, manifest, data
+Run experiments
+Evaluation
+
 ===DONE===
 Producer: 
 torrent prefix
