@@ -77,7 +77,6 @@ private:
   Time m_freshness;
   uint32_t m_signature;
   Name m_keyLocator;
-  uint32_t m_probability;
   
   //The 3 below variables store information related to the simulation
   uint32_t m_namesPerSegment;
