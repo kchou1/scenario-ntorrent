@@ -65,7 +65,7 @@ public:
   copyTorrentFile();
   
   virtual void
-  OnData(shared_ptr<const Data> contentObject);
+  OnData(shared_ptr<const Data> data);
 
   virtual void
   SendInterest();

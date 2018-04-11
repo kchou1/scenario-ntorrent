@@ -117,7 +117,7 @@ NTorrentConsumerApp::copyTorrentFile()
     const auto& content = ndn_ntorrent::TorrentFile::generate(ndn_ntorrent::DUMMY_FILE_PATH, 
             m_namesPerSegment, m_namesPerManifest, m_dataPacketSize, true);
    
-    //Copy only initial segment...
+    //Copy only initial segment. Nothing else will be used.
     //This will be used to make future requests
     m_initialSegment = content.first.at(0);
 }
