@@ -86,7 +86,6 @@ NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
 {
     ndn::App::OnInterest(interest); 
     const auto& interestName = interest->getName();
-    uint8_t r = rand() % 100;
     
     ndn_ntorrent::IoUtil::NAME_TYPE interestType = ndn_ntorrent::IoUtil::findType(interestName);
     
