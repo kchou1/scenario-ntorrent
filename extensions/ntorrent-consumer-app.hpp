@@ -30,6 +30,7 @@
 #include "ns3/ndnSIM/helper/ndn-strategy-choice-helper.hpp"
 
 #include "src/torrent-file.hpp"
+#include "src/file-manifest.hpp"
 #include "src/torrent-manager.hpp"
 #include "src/util/shared-constants.hpp"
 #include "src/util/simulation-constants.hpp"
@@ -58,24 +59,34 @@ public:
   StopApplication();
 
   virtual void
-  OnInterest(std::shared_ptr<const Interest> interest);
-
-  virtual void
-  OnData(std::shared_ptr<const Data> contentObject);
-
-  virtual void
-  SendInterest(const string& interestName);
+  OnInterest(shared_ptr<const Interest> interest);
 
   virtual void
   copyTorrentFile();
+  
+  virtual void
+  OnData(shared_ptr<const Data> contentObject);
+
+  virtual void
+  SendInterest();
+  
+  virtual void
+  SendInterest(const string& interestName);
+
 
 private:
-  void
-  SendInterest();
+  std::vector<ndn_ntorrent::TorrentFile> m_torrentSegments;
+  std::vector<Name> manifests;
+  std::vector<Data> dataPackets;
+                
+  nfd_rib::Rib m_rib;
 
+  //Specific to consumer
   uint32_t m_seq; 
   Name m_interestName;
   Time m_interestLifeTime;
+  
+  ndn_ntorrent::TorrentFile m_initialSegment;
   
   //The 3 below variables aren't needed by the consumer
   //They are just there to "generate" the torrent
@@ -83,15 +94,6 @@ private:
   uint32_t m_namesPerSegment;
   uint32_t m_namesPerManifest;
   uint32_t m_dataPacketSize;
-    
-  ndn_ntorrent::TorrentFile m_initialSegment;
-  std::vector<ndn_ntorrent::TorrentFile> m_torrentSegments;
-  //std::vector<ndn_ntorrent::FileManifest> manifests;
-  std::vector<Name> manifests;
-  std::vector<Data> dataPackets;
-                
-  nfd_rib::Rib m_rib;
-
 };
 
 } // namespace ndn

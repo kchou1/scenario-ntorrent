@@ -102,9 +102,8 @@ NTorrentConsumerApp::SendInterest(const string& interestName)
 }
 
 void
-NTorrentConsumerApp::OnInterest(std::shared_ptr<const Interest> interest)
+NTorrentConsumerApp::OnInterest(shared_ptr<const Interest> interest)
 {
-  //We don't have to process interests on the consumer-end for now
 }
 
 void
@@ -124,7 +123,7 @@ NTorrentConsumerApp::copyTorrentFile()
 }
 
 void
-NTorrentConsumerApp::OnData(std::shared_ptr<const Data> data)
+NTorrentConsumerApp::OnData(shared_ptr<const Data> data)
 {
     NS_LOG_DEBUG("RECEIVED: " << data->getFullName());
     ndn_ntorrent::IoUtil::NAME_TYPE interestType = ndn_ntorrent::IoUtil::findType(data->getFullName());
