@@ -173,7 +173,7 @@ NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
         m_appLink->onReceiveData(*data);*/
     }
 }
-    
+
 void
 NTorrentProducerApp::generateTorrentFile()
 {
