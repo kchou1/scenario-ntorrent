@@ -101,10 +101,10 @@ NTorrentConsumerApp::SendInterest(const string& interestName)
   m_appLink->onReceiveInterest(*interest);
 }
 
+//TODO: Implement this method better...
 void
 NTorrentConsumerApp::OnInterest(shared_ptr<const Interest> interest)
 {
-    //TODO: Implement this method better...
     ndn::App::OnInterest(interest);
 }
 

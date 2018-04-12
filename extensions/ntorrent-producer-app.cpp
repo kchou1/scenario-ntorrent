@@ -141,9 +141,6 @@ NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
 
     if(nullptr != data && interestType != ndn_ntorrent::IoUtil::UNKNOWN)
     {
-        data->wireEncode();
-        m_transmittedDatas(data, this, m_face);
-        m_appLink->onReceiveData(*data);
         /*Signature signature;
         SignatureInfo signatureInfo(static_cast< ::ndn::tlv::SignatureTypeValue>(255));
 
@@ -155,11 +152,11 @@ NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
         signature.setValue(::ndn::makeNonNegativeIntegerBlock(::ndn::tlv::SignatureValue, m_signature));
 
         data->setSignature(signature);
-        NS_LOG_INFO("node(" << GetNode()->GetId() << ") responding with Data: " << data->getName());
+        NS_LOG_INFO("node(" << GetNode()->GetId() << ") responding with Data: " << data->getName());*/
         
         data->wireEncode();
         m_transmittedDatas(data, this, m_face);
-        m_appLink->onReceiveData(*data);*/
+        m_appLink->onReceiveData(*data);
     }
 }
 
