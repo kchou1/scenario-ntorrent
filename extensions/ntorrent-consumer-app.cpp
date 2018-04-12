@@ -61,7 +61,7 @@ NTorrentConsumerApp::~NTorrentConsumerApp()
 void
 NTorrentConsumerApp::StartApplication()
 {
-    ndn::App::StartApplication();
+    App::StartApplication();
     ndn::FibHelper::AddRoute(GetNode(), "/", m_face, 0);
     copyTorrentFile();
     
@@ -72,7 +72,7 @@ NTorrentConsumerApp::StartApplication()
 void
 NTorrentConsumerApp::StopApplication()
 {
-    ndn::App::StopApplication();
+    App::StopApplication();
 }
 
 void
@@ -135,13 +135,13 @@ NTorrentConsumerApp::OnData(shared_ptr<const Data> data)
     //TODO: Insert only if data is valid (Torrent file, file manifest, data packet)
     ndn::FibHelper::AddRoute(GetNode(), data->getFullName(), m_face, 0);
     
-    //Verify FIB entries
+    /*Verify FIB entries
     uint32_t fib_size = fib.size();
     uint32_t c=0;
     for(nfd::Fib::const_iterator it = fib.begin(); it != fib.end(); it++)
     {
         NS_LOG_DEBUG("Fib entry: [" << ++c << "/" << fib_size << "] " << it->getPrefix());
-    }
+    }*/
     
     
     //TODO: Write to these data structures...
@@ -153,8 +153,9 @@ NTorrentConsumerApp::OnData(shared_ptr<const Data> data)
         {
             //TODO: Announce prefix - RibManager
             ndn_ntorrent::TorrentFile file(data->wireEncode());
+            m_torrentSegments.push_back(file);
+            
             std::vector<Name> manifestCatalog = file.getCatalog();
-            manifests.insert(manifests.end(), manifestCatalog.begin(), manifestCatalog.end());
             shared_ptr<Name> nextSegmentPtr = file.getTorrentFilePtr();
             if(nextSegmentPtr!=nullptr)
             {
@@ -175,6 +176,7 @@ NTorrentConsumerApp::OnData(shared_ptr<const Data> data)
         {
             //TODO: Announce prefix - RibManager
             ndn_ntorrent::FileManifest fm(data->wireEncode());
+            manifests.push_back(fm);
             
             std::vector<Name> subManifestCatalog = fm.catalog();
             shared_ptr<Name> nextSegmentPtr = fm.submanifest_ptr();
@@ -197,6 +199,7 @@ NTorrentConsumerApp::OnData(shared_ptr<const Data> data)
         {
             //TODO: Announce prefix - RibManager
             Data d(data->wireEncode());
+            dataPackets.push_back(d);
             Block content = d.getContent();
             std::string output(content.value_begin(), content.value_end());
             NS_LOG_DEBUG("DATA RECEIVED:");
