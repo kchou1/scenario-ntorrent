@@ -105,7 +105,6 @@ NTorrentConsumerApp::SendInterest(const string& interestName)
 void
 NTorrentConsumerApp::OnInterest(shared_ptr<const Interest> interest)
 {
-    ndn::App::OnInterest(interest);
 }
 
 void
@@ -144,6 +143,9 @@ NTorrentConsumerApp::OnData(shared_ptr<const Data> data)
         NS_LOG_DEBUG("Fib entry: [" << ++c << "/" << fib_size << "] " << it->getPrefix());
     }
     
+    
+    //TODO: Write to these data structures...
+    //m_torrentSegments, manifests, dataPackets
     
     switch(interestType)
     {
