@@ -83,16 +83,20 @@ main(int argc, char *argv[])
   p2p.Install(nodes.Get(0), nodes.Get(1));
   p2p.Install(nodes.Get(1), nodes.Get(2));
   p2p.Install(nodes.Get(2), nodes.Get(3));
+  
   p2p.Install(nodes.Get(2), nodes.Get(5));
   p2p.Install(nodes.Get(3), nodes.Get(4));
   
   // Install NDN stack on all nodes
   StackHelper ndnHelper;
-  ndnHelper.SetDefaultRoutes(true);
+  //ndnHelper.SetDefaultRoutes(true);
   ndnHelper.InstallAll();
 
   // Choosing forwarding strategy
   ndn::StrategyChoiceHelper::InstallAll("/", "/localhost/nfd/strategy/multicast");
+
+  ndn::GlobalRoutingHelper ndnGlobalRoutingHelper;
+  ndnGlobalRoutingHelper.InstallAll();
 
   // Installing applications
   // Producer
@@ -116,7 +120,7 @@ main(int argc, char *argv[])
   consumerHelper1.SetAttribute("namesPerSegment", IntegerValue(namesPerSegment));
   consumerHelper1.SetAttribute("namesPerManifest", IntegerValue(namesPerManifest));
   consumerHelper1.SetAttribute("dataPacketSize", IntegerValue(dataPacketSize));
-  consumerHelper1.Install(nodes.Get(4)).Start(Seconds(20.0));
+  consumerHelper1.Install(nodes.Get(4)).Start(Seconds(10.0));
 
   Simulator::Stop(Seconds(60.0));
 
@@ -125,6 +129,8 @@ main(int argc, char *argv[])
   std::cout << "namesPerManifest: " << namesPerManifest << std::endl;
   std::cout << "dataPacketSize: " << dataPacketSize << std::endl;
   
+  ndnGlobalRoutingHelper.AddOrigins("/NTORRENT", nodes.Get(0));
+  GlobalRoutingHelper::CalculateRoutes();
   Simulator::Run();
   Simulator::Destroy();
   
