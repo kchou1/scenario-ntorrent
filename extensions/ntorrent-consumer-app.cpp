@@ -203,8 +203,8 @@ NTorrentConsumerApp::OnData(shared_ptr<const Data> data)
     NS_LOG_DEBUG("RECEIVED: " << data->getFullName());
     ndn_ntorrent::IoUtil::NAME_TYPE interestType = ndn_ntorrent::IoUtil::findType(data->getFullName());
 
-    shared_ptr<nfd::Forwarder> m_forwarder = GetNode()->GetObject<L3Protocol>()->getForwarder();
-    nfd::Fib& fib = m_forwarder.get()->getFib();
+    //shared_ptr<nfd::Forwarder> m_forwarder = GetNode()->GetObject<L3Protocol>()->getForwarder();
+    //nfd::Fib& fib = m_forwarder.get()->getFib();
 
     //TODO: Insert only if data is valid (Torrent file, file manifest, data packet)
     ndn::FibHelper::AddRoute(GetNode(), data->getFullName(), m_face, 0);
