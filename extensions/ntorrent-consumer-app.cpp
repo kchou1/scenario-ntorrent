@@ -105,6 +105,80 @@ NTorrentConsumerApp::SendInterest(const string& interestName)
 void
 NTorrentConsumerApp::OnInterest(shared_ptr<const Interest> interest)
 {
+    ndn::App::OnInterest(interest);
+    const auto& interestName = interest->getName();
+
+    ndn_ntorrent::IoUtil::NAME_TYPE interestType = ndn_ntorrent::IoUtil::findType(interestName);
+
+    std::shared_ptr<Data> data = nullptr;
+
+    auto cmp = [&interestName](const Data& t){return t.getFullName() == interestName;};
+
+    switch(interestType)
+    {
+        case ndn_ntorrent::IoUtil::TORRENT_FILE:
+        {
+            NS_LOG_DEBUG("RECIEVED INTEREST (torrent-file):::" << interestName);
+            auto torrent_it =  std::find_if(m_torrentSegments.begin(), m_torrentSegments.end(), cmp);
+
+            if (m_torrentSegments.end() != torrent_it) {
+                data = std::make_shared<Data>(*torrent_it);
+            }
+            else{
+                NS_LOG_INFO("Don't have this torrent...");
+            }
+            break;
+        }
+        case ndn_ntorrent::IoUtil::FILE_MANIFEST:
+        {
+            NS_LOG_DEBUG("RECIEVED INTEREST (file-manifest):::" << interestName);
+            auto manifest_it = std::find_if(manifests.begin(), manifests.end(), cmp);
+            if (manifests.end() != manifest_it) {
+                data = std::make_shared<Data>(*manifest_it) ;
+            }
+            else{
+                NS_LOG_INFO("Don't have this manifest...");
+            }
+            break;
+        }
+        case ndn_ntorrent::IoUtil::DATA_PACKET:
+        {
+            NS_LOG_DEBUG("RECIEVED INTEREST (data-packet):::" << interestName);
+            auto data_it = std::find_if(dataPackets.begin(), dataPackets.end(), cmp);
+            if (dataPackets.end() != data_it) {
+                data = std::make_shared<Data>(*data_it) ;
+            }
+            else{
+                NS_LOG_INFO("Don't have this data...");
+            }
+            break;
+        }
+        case ndn_ntorrent::IoUtil::UNKNOWN:
+        {
+            //This should never happen
+            break;
+        }
+    }
+
+    if(nullptr != data && interestType != ndn_ntorrent::IoUtil::UNKNOWN)
+    {
+        /*Signature signature;
+        SignatureInfo signatureInfo(static_cast< ::ndn::tlv::SignatureTypeValue>(255));
+
+        if (m_keyLocator.size() > 0) {
+            signatureInfo.setKeyLocator(m_keyLocator);
+        }
+
+        signature.setInfo(signatureInfo);
+        signature.setValue(::ndn::makeNonNegativeIntegerBlock(::ndn::tlv::SignatureValue, m_signature));
+
+        data->setSignature(signature);
+        NS_LOG_INFO("node(" << GetNode()->GetId() << ") responding with Data: " << data->getName());*/
+
+        data->wireEncode();
+        m_transmittedDatas(data, this, m_face);
+        m_appLink->onReceiveData(*data);
+    }
 }
 
 void
