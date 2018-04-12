@@ -76,6 +76,7 @@ public:
 
 private:
   std::vector<ndn_ntorrent::TorrentFile> m_torrentSegments;
+  //std::vector<ndn_ntorrent::FileManifest> manifests;
   std::vector<Name> manifests;
   std::vector<Data> dataPackets;
                 

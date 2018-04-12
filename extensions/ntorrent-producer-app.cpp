@@ -89,7 +89,6 @@ NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
     
     ndn_ntorrent::IoUtil::NAME_TYPE interestType = ndn_ntorrent::IoUtil::findType(interestName);
     
-    Name dataName(interestName);
     std::shared_ptr<Data> data = nullptr;
    
     auto cmp = [&interestName](const Data& t){return t.getFullName() == interestName;};

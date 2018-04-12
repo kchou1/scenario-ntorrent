@@ -104,6 +104,8 @@ NTorrentConsumerApp::SendInterest(const string& interestName)
 void
 NTorrentConsumerApp::OnInterest(shared_ptr<const Interest> interest)
 {
+    //TODO: Implement this method better...
+    ndn::App::OnInterest(interest);
 }
 
 void
