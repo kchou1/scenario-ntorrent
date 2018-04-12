@@ -134,8 +134,9 @@ NTorrentConsumerApp::OnData(shared_ptr<const Data> data)
     nfd::Fib& fib = m_forwarder.get()->getFib();
     
     //TODO: Insert only if data is valid (Torrent file, file manifest, data packet)
-    fib.insert(data->getFullName());
+    ndn::FibHelper::AddRoute(GetNode(), data->getFullName(), m_face, 0);
     
+    //Verify FIB entries
     uint32_t fib_size = fib.size();
     uint32_t c=0;
     for(nfd::Fib::const_iterator it = fib.begin(); it != fib.end(); it++)
