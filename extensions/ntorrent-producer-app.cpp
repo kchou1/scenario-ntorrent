@@ -84,13 +84,13 @@ NTorrentProducerApp::StopApplication()
 void
 NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
 {
-    ndn::App::OnInterest(interest); 
+    ndn::App::OnInterest(interest);
     const auto& interestName = interest->getName();
-    
+
     ndn_ntorrent::IoUtil::NAME_TYPE interestType = ndn_ntorrent::IoUtil::findType(interestName);
-    
+
     std::shared_ptr<Data> data = nullptr;
-   
+
     auto cmp = [&interestName](const Data& t){return t.getFullName() == interestName;};
 
     switch(interestType)
@@ -99,7 +99,7 @@ NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
         {
             NS_LOG_DEBUG("RECIEVED INTEREST (torrent-file):::" << interestName);
             auto torrent_it =  std::find_if(m_torrentSegments.begin(), m_torrentSegments.end(), cmp);
-            
+
             if (m_torrentSegments.end() != torrent_it) {
                 data = std::make_shared<Data>(*torrent_it);
             }
@@ -153,7 +153,7 @@ NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
 
         data->setSignature(signature);
         NS_LOG_INFO("node(" << GetNode()->GetId() << ") responding with Data: " << data->getName());*/
-        
+
         data->wireEncode();
         m_transmittedDatas(data, this, m_face);
         m_appLink->onReceiveData(*data);
@@ -164,16 +164,16 @@ void
 NTorrentProducerApp::generateTorrentFile()
 {
     NS_LOG_DEBUG("Creating torrent file!");
-    const auto& content = ndn_ntorrent::TorrentFile::generate(ndn_ntorrent::DUMMY_FILE_PATH, 
+    const auto& content = ndn_ntorrent::TorrentFile::generate(ndn_ntorrent::DUMMY_FILE_PATH,
             m_namesPerSegment, m_namesPerManifest, m_dataPacketSize, true);
-    
+
     m_torrentSegments = content.first;
-    
+
     for (const auto& ms : content.second) {
         manifests.insert(manifests.end(), ms.first.begin(), ms.first.end());
         dataPackets.insert(dataPackets.end(), ms.second.begin(), ms.second.end());
     }
-    
+
     for(const auto& t : m_torrentSegments)
         NS_LOG_DEBUG("Torrent segment name: " << t.getFullName());
     for(uint32_t i=0;i<manifests.size();i++)

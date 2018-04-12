@@ -64,7 +64,7 @@ NTorrentConsumerApp::StartApplication()
     App::StartApplication();
     ndn::FibHelper::AddRoute(GetNode(), "/", m_face, 0);
     copyTorrentFile();
-    
+
     //Send interest for initial torrent segment
     SendInterest(m_initialSegment.getFullName().toUri());
 }
@@ -78,7 +78,7 @@ NTorrentConsumerApp::StopApplication()
 void
 NTorrentConsumerApp::SendInterest()
 {
-  //This function is just for testing for testing, not really going to be used.. 
+  //This function is just for testing for testing, not really going to be used..
   std::string interestName = std::string(ndn_ntorrent::SharedConstants::commonPrefix) + "/NTORRENT/" + to_string(m_seq++);
   auto interest = std::make_shared<Interest>(interestName);
   Ptr<UniformRandomVariable> rand = CreateObject<UniformRandomVariable>();
@@ -113,11 +113,11 @@ NTorrentConsumerApp::copyTorrentFile()
     //This is "technically" the same as what the producer does
     //In a real world application, both parties will have a torrent file
     //Since that isn't possible here, just generate the same torrent file on producer and consumer
-    
+
     NS_LOG_DEBUG("Copying torrent file!");
-    const auto& content = ndn_ntorrent::TorrentFile::generate(ndn_ntorrent::DUMMY_FILE_PATH, 
+    const auto& content = ndn_ntorrent::TorrentFile::generate(ndn_ntorrent::DUMMY_FILE_PATH,
             m_namesPerSegment, m_namesPerManifest, m_dataPacketSize, true);
-   
+
     //Copy only initial segment. Nothing else will be used.
     //This will be used to make future requests
     m_initialSegment = content.first.at(0);
@@ -128,13 +128,13 @@ NTorrentConsumerApp::OnData(shared_ptr<const Data> data)
 {
     NS_LOG_DEBUG("RECEIVED: " << data->getFullName());
     ndn_ntorrent::IoUtil::NAME_TYPE interestType = ndn_ntorrent::IoUtil::findType(data->getFullName());
-    
+
     shared_ptr<nfd::Forwarder> m_forwarder = GetNode()->GetObject<L3Protocol>()->getForwarder();
     nfd::Fib& fib = m_forwarder.get()->getFib();
-    
+
     //TODO: Insert only if data is valid (Torrent file, file manifest, data packet)
     ndn::FibHelper::AddRoute(GetNode(), data->getFullName(), m_face, 0);
-    
+
     /*Verify FIB entries
     uint32_t fib_size = fib.size();
     uint32_t c=0;
@@ -142,11 +142,11 @@ NTorrentConsumerApp::OnData(shared_ptr<const Data> data)
     {
         NS_LOG_DEBUG("Fib entry: [" << ++c << "/" << fib_size << "] " << it->getPrefix());
     }*/
-    
-    
+
+
     //TODO: Write to these data structures...
     //m_torrentSegments, manifests, dataPackets
-    
+
     switch(interestType)
     {
         case ndn_ntorrent::IoUtil::TORRENT_FILE:
@@ -154,7 +154,7 @@ NTorrentConsumerApp::OnData(shared_ptr<const Data> data)
             //TODO: Announce prefix - RibManager
             ndn_ntorrent::TorrentFile file(data->wireEncode());
             m_torrentSegments.push_back(file);
-            
+
             std::vector<Name> manifestCatalog = file.getCatalog();
             shared_ptr<Name> nextSegmentPtr = file.getTorrentFilePtr();
             if(nextSegmentPtr!=nullptr)
@@ -165,7 +165,7 @@ NTorrentConsumerApp::OnData(shared_ptr<const Data> data)
             {
                 NS_LOG_DEBUG("W00t! Torrent file is done!");
             }
-            
+
             for(uint8_t i=0; i<manifestCatalog.size(); i++)
             {
                 SendInterest(manifestCatalog.at(i).toUri());
@@ -177,7 +177,7 @@ NTorrentConsumerApp::OnData(shared_ptr<const Data> data)
             //TODO: Announce prefix - RibManager
             ndn_ntorrent::FileManifest fm(data->wireEncode());
             manifests.push_back(fm);
-            
+
             std::vector<Name> subManifestCatalog = fm.catalog();
             shared_ptr<Name> nextSegmentPtr = fm.submanifest_ptr();
             if(nextSegmentPtr!=nullptr)
@@ -188,7 +188,7 @@ NTorrentConsumerApp::OnData(shared_ptr<const Data> data)
             {
                 NS_LOG_DEBUG("W00t! File manifest is done!");
             }
-            
+
             for(uint8_t i=0; i<subManifestCatalog.size(); i++)
             {
                 SendInterest(subManifestCatalog.at(i).toUri());
