@@ -125,7 +125,7 @@ NTorrentConsumerApp::OnInterest(shared_ptr<const Interest> interest)
                 data = std::make_shared<Data>(*torrent_it);
             }
             else{
-                NS_LOG_INFO("Don't have this torrent...");
+                NS_LOG_ERROR("Don't have this torrent...");
             }
             break;
         }
@@ -137,7 +137,7 @@ NTorrentConsumerApp::OnInterest(shared_ptr<const Interest> interest)
                 data = std::make_shared<Data>(*manifest_it) ;
             }
             else{
-                NS_LOG_INFO("Don't have this manifest...");
+                NS_LOG_ERROR("Don't have this manifest...");
             }
             break;
         }
@@ -149,7 +149,7 @@ NTorrentConsumerApp::OnInterest(shared_ptr<const Interest> interest)
                 data = std::make_shared<Data>(*data_it) ;
             }
             else{
-                NS_LOG_INFO("Don't have this data...");
+                NS_LOG_ERROR("Don't have this data...");
             }
             break;
         }
@@ -216,10 +216,6 @@ NTorrentConsumerApp::OnData(shared_ptr<const Data> data)
     {
         NS_LOG_DEBUG("Fib entry: [" << ++c << "/" << fib_size << "] " << it->getPrefix());
     }*/
-
-
-    //TODO: Write to these data structures...
-    //m_torrentSegments, manifests, dataPackets
 
     switch(interestType)
     {
