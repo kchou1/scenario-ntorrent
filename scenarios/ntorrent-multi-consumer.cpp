@@ -105,7 +105,7 @@ main(int argc, char *argv[])
   producerHelper.SetAttribute("namesPerSegment", IntegerValue(namesPerSegment));
   producerHelper.SetAttribute("namesPerManifest", IntegerValue(namesPerManifest));
   producerHelper.SetAttribute("dataPacketSize", IntegerValue(dataPacketSize));
-  producerHelper.Install(nodes.Get(0)).Start(Seconds(1.0));
+  producerHelper.Install(nodes.Get(0)).Start(Seconds(0.0));
 
   // Consumer
   ndn::AppHelper consumerHelper0("NTorrentConsumerApp");
@@ -113,7 +113,7 @@ main(int argc, char *argv[])
   consumerHelper0.SetAttribute("namesPerSegment", IntegerValue(namesPerSegment));
   consumerHelper0.SetAttribute("namesPerManifest", IntegerValue(namesPerManifest));
   consumerHelper0.SetAttribute("dataPacketSize", IntegerValue(dataPacketSize));
-  consumerHelper0.Install(nodes.Get(5)).Start(Seconds(3.0));
+  consumerHelper0.Install(nodes.Get(5)).Start(Seconds(1.0));
 
   ndn::AppHelper consumerHelper1("NTorrentConsumerApp");
   consumerHelper1.SetAttribute("Prefix", StringValue("/"));
@@ -131,6 +131,7 @@ main(int argc, char *argv[])
   
   ndnGlobalRoutingHelper.AddOrigins("/NTORRENT", nodes.Get(0));
   GlobalRoutingHelper::CalculateRoutes();
+
   Simulator::Run();
   Simulator::Destroy();
   
