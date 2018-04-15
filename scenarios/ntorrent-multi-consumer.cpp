@@ -61,7 +61,7 @@ main(int argc, char *argv[])
 
   // Creating nodes
   NodeContainer nodes;
-  nodes.Create(6);
+  nodes.Create(7);
   
   AnimationInterface::SetConstantPosition (nodes.Get(0), 200, 50);
   AnimationInterface::SetConstantPosition (nodes.Get(1), 150, 50);
@@ -69,6 +69,7 @@ main(int argc, char *argv[])
   AnimationInterface::SetConstantPosition (nodes.Get(3), 50, 50);
   AnimationInterface::SetConstantPosition (nodes.Get(4), 30, 0);
   AnimationInterface::SetConstantPosition (nodes.Get(5), 75, 100);
+  AnimationInterface::SetConstantPosition (nodes.Get(6), 10, 30);
   
   //This stuff needs NetAnim to run. 
   //NetAnim takes the xml file as input.
@@ -86,6 +87,8 @@ main(int argc, char *argv[])
   
   p2p.Install(nodes.Get(2), nodes.Get(5));
   p2p.Install(nodes.Get(3), nodes.Get(4));
+  
+  p2p.Install(nodes.Get(4), nodes.Get(6));
   
   // Install NDN stack on all nodes
   StackHelper ndnHelper;
@@ -120,9 +123,16 @@ main(int argc, char *argv[])
   consumerHelper1.SetAttribute("namesPerSegment", IntegerValue(namesPerSegment));
   consumerHelper1.SetAttribute("namesPerManifest", IntegerValue(namesPerManifest));
   consumerHelper1.SetAttribute("dataPacketSize", IntegerValue(dataPacketSize));
-  consumerHelper1.Install(nodes.Get(4)).Start(Seconds(10.0));
+  consumerHelper1.Install(nodes.Get(4)).Start(Seconds(8.5));
+  
+  ndn::AppHelper consumerHelper2("NTorrentConsumerApp");
+  consumerHelper2.SetAttribute("Prefix", StringValue("/"));
+  consumerHelper2.SetAttribute("namesPerSegment", IntegerValue(namesPerSegment));
+  consumerHelper2.SetAttribute("namesPerManifest", IntegerValue(namesPerManifest));
+  consumerHelper2.SetAttribute("dataPacketSize", IntegerValue(dataPacketSize));
+  consumerHelper2.Install(nodes.Get(6)).Start(Seconds(16.0));
 
-  Simulator::Stop(Seconds(60.0));
+  Simulator::Stop(Seconds(120.0));
 
   std::cout << "Running with parameters: " << std::endl;
   std::cout << "namesPerSegment: " << namesPerSegment << std::endl;
