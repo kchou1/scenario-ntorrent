@@ -39,6 +39,17 @@ const char * ndn_ntorrent::SharedConstants::commonPrefix = "";
 namespace ns3 {
 namespace ndn {
 
+
+void createAndInstall(ndn::AppHelper x, uint32_t namesPerSegment, uint32_t namesPerManifest, 
+        uint32_t dataPacketSize, std::string type, Ptr<Node> n, float start_time)
+{
+  x.SetAttribute("Prefix", StringValue("/"));
+  x.SetAttribute("namesPerSegment", IntegerValue(namesPerSegment));
+  x.SetAttribute("namesPerManifest", IntegerValue(namesPerManifest));
+  x.SetAttribute("dataPacketSize", IntegerValue(dataPacketSize));
+  x.Install(n).Start(Seconds(start_time));
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -102,35 +113,17 @@ main(int argc, char *argv[])
   ndnGlobalRoutingHelper.InstallAll();
 
   // Installing applications
-  // Producer
-  ndn::AppHelper producerHelper("NTorrentProducerApp");
-  producerHelper.SetAttribute("Prefix", StringValue("/"));
-  producerHelper.SetAttribute("namesPerSegment", IntegerValue(namesPerSegment));
-  producerHelper.SetAttribute("namesPerManifest", IntegerValue(namesPerManifest));
-  producerHelper.SetAttribute("dataPacketSize", IntegerValue(dataPacketSize));
-  producerHelper.Install(nodes.Get(0)).Start(Seconds(0.0));
-
-  // Consumer
-  ndn::AppHelper consumerHelper0("NTorrentConsumerApp");
-  consumerHelper0.SetAttribute("Prefix", StringValue("/"));
-  consumerHelper0.SetAttribute("namesPerSegment", IntegerValue(namesPerSegment));
-  consumerHelper0.SetAttribute("namesPerManifest", IntegerValue(namesPerManifest));
-  consumerHelper0.SetAttribute("dataPacketSize", IntegerValue(dataPacketSize));
-  consumerHelper0.Install(nodes.Get(5)).Start(Seconds(1.0));
-
-  ndn::AppHelper consumerHelper1("NTorrentConsumerApp");
-  consumerHelper1.SetAttribute("Prefix", StringValue("/"));
-  consumerHelper1.SetAttribute("namesPerSegment", IntegerValue(namesPerSegment));
-  consumerHelper1.SetAttribute("namesPerManifest", IntegerValue(namesPerManifest));
-  consumerHelper1.SetAttribute("dataPacketSize", IntegerValue(dataPacketSize));
-  consumerHelper1.Install(nodes.Get(4)).Start(Seconds(8.5));
+  ndn::AppHelper p1("NTorrentProducerApp");
+  createAndInstall(p1, namesPerSegment, namesPerManifest, dataPacketSize, "producer", nodes.Get(0), 0.0f);
   
-  ndn::AppHelper consumerHelper2("NTorrentConsumerApp");
-  consumerHelper2.SetAttribute("Prefix", StringValue("/"));
-  consumerHelper2.SetAttribute("namesPerSegment", IntegerValue(namesPerSegment));
-  consumerHelper2.SetAttribute("namesPerManifest", IntegerValue(namesPerManifest));
-  consumerHelper2.SetAttribute("dataPacketSize", IntegerValue(dataPacketSize));
-  consumerHelper2.Install(nodes.Get(6)).Start(Seconds(16.0));
+  ndn::AppHelper c1("NTorrentConsumerApp");
+  createAndInstall(c1, namesPerSegment, namesPerManifest, dataPacketSize, "consumer", nodes.Get(5), 1.0f);
+  
+  ndn::AppHelper c2("NTorrentConsumerApp");
+  createAndInstall(c2, namesPerSegment, namesPerManifest, dataPacketSize, "consumer", nodes.Get(4), 8.5f);
+  
+  ndn::AppHelper c3("NTorrentConsumerApp");
+  createAndInstall(c3, namesPerSegment, namesPerManifest, dataPacketSize, "consumer", nodes.Get(6), 16.0f);
 
   Simulator::Stop(Seconds(120.0));
 
