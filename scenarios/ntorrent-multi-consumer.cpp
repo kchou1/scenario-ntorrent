@@ -29,6 +29,8 @@
 #include "../extensions/ntorrent-consumer-app.hpp"
 #include "../extensions/ntorrent-producer-app.hpp"
 
+#include "ntorrent-simulation-common.hpp"
+
 namespace ndn_ntorrent = ndn::ntorrent;
 namespace ndn{
 namespace ntorrent{
@@ -38,17 +40,6 @@ const char * ndn_ntorrent::SharedConstants::commonPrefix = "";
 
 namespace ns3 {
 namespace ndn {
-
-
-void createAndInstall(ndn::AppHelper x, uint32_t namesPerSegment, uint32_t namesPerManifest, 
-        uint32_t dataPacketSize, std::string type, Ptr<Node> n, float start_time)
-{
-  x.SetAttribute("Prefix", StringValue("/"));
-  x.SetAttribute("namesPerSegment", IntegerValue(namesPerSegment));
-  x.SetAttribute("namesPerManifest", IntegerValue(namesPerManifest));
-  x.SetAttribute("dataPacketSize", IntegerValue(dataPacketSize));
-  x.Install(n).Start(Seconds(start_time));
-}
 
 int
 main(int argc, char *argv[])
