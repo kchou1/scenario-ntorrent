@@ -29,7 +29,7 @@
 #include "../extensions/ntorrent-consumer-app.hpp"
 #include "../extensions/ntorrent-producer-app.hpp"
 
-#include "ntorrent-simulation-common.hpp"
+#include "simulation-common.hpp"
 
 namespace ndn_ntorrent = ndn::ntorrent;
 namespace ndn{
