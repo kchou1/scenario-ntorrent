@@ -31,6 +31,7 @@
 #include "../extensions/ntorrent-consumer-app.hpp"
 #include "../extensions/ntorrent-producer-app.hpp"
 
+#include "simulation-common.hpp"
 #define PI 3.14159
 
 namespace ndn_ntorrent = ndn::ntorrent;
@@ -43,7 +44,6 @@ const char * ndn_ntorrent::SharedConstants::commonPrefix = "";
 namespace ns3 {
 namespace ndn {
 
-
 int
 main(int argc, char *argv[])
 {
@@ -55,7 +55,7 @@ main(int argc, char *argv[])
   //defaults for command line arguments
   uint32_t namesPerSegment = 2;
   uint32_t namesPerManifest = 2;
-  uint32_t dataPacketSize = 128;
+  uint32_t dataPacketSize = 64;
   
   // Read optional command-line parameters (e.g., enable visualizer with ./waf --run=<> --visualize
   CommandLine cmd;
@@ -64,7 +64,7 @@ main(int argc, char *argv[])
   cmd.AddValue("dataPacketSize", "Data Packet size", dataPacketSize);
   cmd.Parse(argc, argv);
 
-  int nodeCount = 3;
+  int nodeCount = 6;
   int radius = 50;
   
   // Creating nodes
@@ -90,21 +90,18 @@ main(int argc, char *argv[])
   
   // Install NDN stack on all nodes
   StackHelper ndnHelper;
-  ndnHelper.SetDefaultRoutes(true);
   ndnHelper.InstallAll();
 
   // Choosing forwarding strategy
-  ndn::StrategyChoiceHelper::InstallAll("/", "/localhost/nfd/strategy/multicast");
+  StrategyChoiceHelper::InstallAll("/", "/localhost/nfd/strategy/multicast");
+
+  GlobalRoutingHelper ndnGlobalRoutingHelper;
+  ndnGlobalRoutingHelper.InstallAll();
 
   // Installing applications
-  // Producer
-  ndn::AppHelper producerHelper("NTorrentProducerApp");
-  producerHelper.SetAttribute("Prefix", StringValue("/"));
-  producerHelper.SetAttribute("namesPerSegment", IntegerValue(namesPerSegment));
-  producerHelper.SetAttribute("namesPerManifest", IntegerValue(namesPerManifest));
-  producerHelper.SetAttribute("dataPacketSize", IntegerValue(dataPacketSize));
-  producerHelper.Install(nodes.Get(0)).Start(Seconds(1.0));
-
+  ndn::AppHelper p1("NTorrentProducerApp");
+  createAndInstall(p1, namesPerSegment, namesPerManifest, dataPacketSize, "producer", nodes.Get(0), 1.0f);
+  
   // Consumer
   for(int i=1; i<nodeCount;i++)
   {
@@ -116,13 +113,16 @@ main(int argc, char *argv[])
       consumerHelper.Install(nodes.Get(i)).Start(Seconds(3.0+i*5));
   }
 
-  Simulator::Stop(Seconds(60.0));
+  Simulator::Stop(Seconds(120.0));
 
   std::cout << "Running with parameters: " << std::endl;
   std::cout << "namesPerSegment: " << namesPerSegment << std::endl;
   std::cout << "namesPerManifest: " << namesPerManifest << std::endl;
   std::cout << "dataPacketSize: " << dataPacketSize << std::endl;
   
+  ndnGlobalRoutingHelper.AddOrigins("/NTORRENT", nodes.Get(0));
+  GlobalRoutingHelper::CalculateRoutes();
+
   Simulator::Run();
   Simulator::Destroy();
   
