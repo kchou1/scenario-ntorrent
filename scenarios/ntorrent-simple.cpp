@@ -29,6 +29,8 @@
 #include "../extensions/ntorrent-consumer-app.hpp"
 #include "../extensions/ntorrent-producer-app.hpp"
 
+#include "simulation-common.hpp"
+
 namespace ndn_ntorrent = ndn::ntorrent;
 namespace ndn{
 namespace ntorrent{
@@ -111,22 +113,12 @@ main(int argc, char *argv[])
   ndnGlobalRoutingHelper.InstallAll();
 
   // Installing applications
-  // Producer
-  ndn::AppHelper producerHelper("NTorrentProducerApp");
-  producerHelper.SetAttribute("Prefix", StringValue("/"));
-  producerHelper.SetAttribute("namesPerSegment", IntegerValue(namesPerSegment));
-  producerHelper.SetAttribute("namesPerManifest", IntegerValue(namesPerManifest));
-  producerHelper.SetAttribute("dataPacketSize", IntegerValue(dataPacketSize));
-  producerHelper.Install(nodes.Get(0)).Start(Seconds(1.0));
-
-  // Consumer
-  ndn::AppHelper consumerHelper("NTorrentConsumerApp");
-  consumerHelper.SetAttribute("Prefix", StringValue("/"));
-  consumerHelper.SetAttribute("namesPerSegment", IntegerValue(namesPerSegment));
-  consumerHelper.SetAttribute("namesPerManifest", IntegerValue(namesPerManifest));
-  consumerHelper.SetAttribute("dataPacketSize", IntegerValue(dataPacketSize));
-  consumerHelper.Install(nodes.Get(1)).Start(Seconds(3.0));
-
+  ndn::AppHelper p1("NTorrentProducerApp");
+  createAndInstall(p1, namesPerSegment, namesPerManifest, dataPacketSize, "producer", nodes.Get(0), 1.0f);
+  
+  ndn::AppHelper c1("NTorrentConsumerApp");
+  createAndInstall(c1, namesPerSegment, namesPerManifest, dataPacketSize, "consumer", nodes.Get(1), 3.0f);
+  
   Simulator::Stop(Seconds(60.0));
 
   std::cout << "Running with parameters: " << std::endl;
