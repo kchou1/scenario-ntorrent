@@ -205,12 +205,11 @@ NTorrentConsumerApp::OnData(shared_ptr<const Data> data)
 
     //shared_ptr<nfd::Forwarder> m_forwarder = GetNode()->GetObject<L3Protocol>()->getForwarder();
     //nfd::Fib& fib = m_forwarder.get()->getFib();
-
     if(interestType != ndn_ntorrent::IoUtil::UNKNOWN)
     {
         ndn::FibHelper::AddRoute(GetNode(), data->getFullName(), m_face, 0);
         GlobalRoutingHelper ndnGlobalRoutingHelper;
-        ndnGlobalRoutingHelper.AddOrigins(data->getFullName().toUri(), GetNode());
+        ndnGlobalRoutingHelper.AddOrigin(data->getFullName().toUri(), GetNode());
         
         //TODO: This can probably be optimized
         GlobalRoutingHelper::CalculateRoutes();
