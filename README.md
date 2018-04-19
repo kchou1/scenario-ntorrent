@@ -110,6 +110,7 @@ Available simulations
 
     ntorrent-simple
     ntorrent-multi-consumer
+    ntorrent-fully-connected-consumer
 ---------------
 
 A work in progress...
