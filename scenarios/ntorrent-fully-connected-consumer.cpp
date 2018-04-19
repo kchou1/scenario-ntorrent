@@ -105,13 +105,9 @@ main(int argc, char *argv[])
   // Consumer
   for(int i=1; i<=nodeCount/2; i++)
   {
-      ndn::AppHelper consumerHelper("NTorrentConsumerApp");
-      consumerHelper.SetAttribute("Prefix", StringValue("/"));
-      consumerHelper.SetAttribute("namesPerSegment", IntegerValue(namesPerSegment));
-      consumerHelper.SetAttribute("namesPerManifest", IntegerValue(namesPerManifest));
-      consumerHelper.SetAttribute("dataPacketSize", IntegerValue(dataPacketSize));
-      consumerHelper.Install(nodes.Get(i)).Start(Seconds(3.0 + i*5));
-      consumerHelper.Install(nodes.Get(nodeCount-i)).Start(Seconds(3.0 + i*5));
+      ndn::AppHelper c1("NTorrentConsumerApp");
+      createAndInstall(c1, namesPerSegment, namesPerManifest, dataPacketSize, "consumer", nodes.Get(i), 3.0 + i*5);
+      createAndInstall(c1, namesPerSegment, namesPerManifest, dataPacketSize, "consumer", nodes.Get(nodeCount - i), 3.0 + i*5);
   }
 
   Simulator::Stop(Seconds(120.0));
