@@ -64,7 +64,7 @@ main(int argc, char *argv[])
   cmd.AddValue("dataPacketSize", "Data Packet size", dataPacketSize);
   cmd.Parse(argc, argv);
 
-  int nodeCount = 2;
+  int nodeCount = 10;
   int radius = 50;
   
   // Creating nodes
