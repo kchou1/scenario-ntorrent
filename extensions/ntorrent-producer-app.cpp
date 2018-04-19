@@ -93,6 +93,17 @@ NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
 
     auto cmp = [&interestName](const Data& t){return t.getFullName() == interestName;};
 
+    if(interestType != ndn_ntorrent::IoUtil::UNKNOWN)
+    {
+        //ndn::FibHelper::AddRoute(GetNode(), interestName, m_face, 0);
+        GlobalRoutingHelper ndnGlobalRoutingHelper;
+        ndnGlobalRoutingHelper.AddOrigin(interestName.toUri(), GetNode());
+        
+        //TODO: This can probably be optimized
+        GlobalRoutingHelper::CalculateRoutes();
+        //GlobalRoutingHelper::CalculateAllPossibleRoutes();
+    }
+    
     switch(interestType)
     {
         case ndn_ntorrent::IoUtil::TORRENT_FILE:
