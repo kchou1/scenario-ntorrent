@@ -1,11 +1,48 @@
-===TODO==
+===TODO===
 Make "number of files" a command-line parameter instead of hardcoding it in a header file
+
+===FUTURE===
+Forwarding strategy
+
+===PROPOSAL===
+Routing announcements
+Forwarding strategy
+Announce torrent, manifest, data
+Run experiments
+Evaluation
+
+===DONE===
+Producer:
+torrent prefix
+number of files
+number of segments per file
+(Based on args passed in scenario)
+
+private variables:
+    Create torrent file (from torrent-file.cpp)
+    Create a vector of manifests (file-manifest.cpp)
+    Ignore data packets
+
+One torrent file object
+Vector of file manifests
+2s delay
+Check interest for torrent file/manifest/data packet
+
+Consumer:
+Pass torrent prefix
+2.2s delay
+Send interest for torrent file (with torrent file name) this will reach the producer
+After receving the torrent file content, cast it to a torrent file
+Use the torrent API file
+
+Try to generate sha256 on the consumer end to avoid hardcoding...
 Try adding more consumers/producers ??
 Make consumer act as producer
 
-===FUTURE==
+Add report to arxiv
+
 OnInterest method for consumers
-Announce prefix to the network after you have a file/prefix.. 
+Announce prefix to the network after you have a file/prefix..
 
 If you don't have a packet, you send a NACK
 Forwarding strategy (deal with this later)
@@ -31,52 +68,13 @@ To register prefix (one of these ways)
         Mimic from global routing helper class if needed
         Just go ahead and try it...
 
-
-After this, move to the forwarding strategy...
-
 4/10
 AddOrigin
 CalculateRoutes
 CalculateAllPossibleRoutes
 
-Abilene topology
-
 (Option 1 is most likely to work)
 1 Local FIB, routing helper
 2 Just Routing helper
 
-Proposal:
-Routing announcements
-Forwarding strategy
-Announce torrent, manifest, data
-Run experiments
-Evaluation
-
-Add report to arxv
-
-===DONE===
-Producer: 
-torrent prefix
-number of files
-number of segments per file
-(Based on args passed in scenario)
-
-private variables: 
-    Create torrent file (from torrent-file.cpp)
-    Create a vector of manifests (file-manifest.cpp)
-    Ignore data packets
-
-One torrent file object
-Vector of file manifests
-2s delay
-Check interest for torrent file/manifest/data packet
-
-Consumer:
-Pass torrent prefix
-2.2s delay
-Send interest for torrent file (with torrent file name) this will reach the producer
-After receving the torrent file content, cast it to a torrent file
-Use the torrent API file
-
-Try to generate sha256 on the consumer end to avoid hardcoding...
 
