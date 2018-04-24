@@ -27,7 +27,7 @@ The code should also work with the latest version of ndnSIM, but it is not guara
     fi
 
     cd ..
-    git clone --recursive https://github.com/AkshayRaman/scenario-ntorrent.git scenario-ntorrent
+    git clone --recursive https://github.com/kchou1/scenario-ntorrent.git scenario-ntorrent
     cd scenario-ntorrent
 
     ./waf configure
