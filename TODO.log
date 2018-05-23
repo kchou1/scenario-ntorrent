@@ -1,15 +1,15 @@
 ===TODO===
-Make "number of files" a command-line parameter instead of hardcoding it in a header file
+Send vector of torrent/file manifests/data names
+Send vector interests periodically
+Delete routing announcements
+ - Use Default Routes
+
 
 ===FUTURE===
-Forwarding strategy
+More Evaluation
 
 ===PROPOSAL===
-Routing announcements
-Forwarding strategy
-Announce torrent, manifest, data
-Run experiments
-Evaluation
+Wireless Ad Hoc Environment
 
 ===DONE===
 Producer:
