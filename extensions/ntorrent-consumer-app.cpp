@@ -63,10 +63,18 @@ NTorrentConsumerApp::StartApplication()
 {
     App::StartApplication();
     ndn::FibHelper::AddRoute(GetNode(), "/", m_face, 0);
+
+    // TODO: Must broadcast/send Vector Interest Packet first
+    // Get Producer's vector Data
+
+    std::string dummy_vinterestName = "/" + ndn_ntorrent::DUMMY_FILE_PATH + "0/vector";
+    NS_LOG_DEBUG("DUMMY VECTOR INTEREST NAME: " << dummy_vinterestName);
+    SendInterest(dummy_vinterestName);
+
     copyTorrentFile();
 
-    //Send interest for initial torrent segment
-    SendInterest(m_initialSegment.getFullName().toUri());
+    // Send interest for initial torrent segment
+    // SendInterest(m_initialSegment.getFullName().toUri());
 }
 
 void
@@ -151,6 +159,11 @@ NTorrentConsumerApp::OnInterest(shared_ptr<const Interest> interest)
             else{
                 NS_LOG_ERROR("Don't have this data...");
             }
+            break;
+        }
+        case ndn_ntorrent::IoUtil::VECTOR:
+        {
+            NS_LOG_DEBUG("RECEIVED INTEREST (vector):::" << interestName);
             break;
         }
         case ndn_ntorrent::IoUtil::UNKNOWN:
@@ -283,6 +296,19 @@ NTorrentConsumerApp::OnData(shared_ptr<const Data> data)
             NS_LOG_DEBUG("=== BEGIN ===");
             std::cout << output << std::endl;
             NS_LOG_DEBUG("=== END ===");
+            break;
+        }
+        case ndn_ntorrent::IoUtil::VECTOR:
+        {
+            NS_LOG_DEBUG("RECEIVED VECTOR!");
+            // TODO: Get/Store missing files/data names
+            std::vector<ndn::Name> missing;
+            /*
+            // Send Interests for missing files/data
+            for (uint8_t i=0; i < missing.size(); ++i) {
+                SendInterest(missing.at(i));
+            }
+            */
             break;
         }
         case ndn_ntorrent::IoUtil::UNKNOWN:

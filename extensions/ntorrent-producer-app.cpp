@@ -72,7 +72,11 @@ NTorrentProducerApp::StartApplication()
 {
     App::StartApplication();
     ndn::FibHelper::AddRoute(GetNode(), "/", m_face, 0);
+
     generateTorrentFile();
+
+    // TODO: Create/Update Vector with all known Torrent Information
+    torrent_list = getTorrentFileList();
 }
 
 void
@@ -143,6 +147,32 @@ NTorrentProducerApp::OnInterest(shared_ptr<const Interest> interest)
             }
             break;
         }
+        case ndn_ntorrent::IoUtil::VECTOR:
+        {
+            NS_LOG_DEBUG("RECEIVED INTEREST (vector):::" << interestName);
+
+            auto vector_it = torrent_list.begin();
+            // NS_LOG_DEBUG(interestName.get(interestName.size() - 2));
+            // TODO: Send vector of torrent items name (Must Encode)
+            // data = std::make_shared<Data>(*vector_it);
+            std::shared_ptr<Data> tmp = std::make_shared<Data>(*vector_it);
+
+            // Dummy (Fake) Signature
+            Signature signature;
+            SignatureInfo signatureInfo(static_cast< ::ndn::tlv::SignatureTypeValue>(255));
+
+            if (m_keyLocator.size() > 0) {
+                signatureInfo.setKeyLocator(m_keyLocator);
+            }
+
+            signature.setInfo(signatureInfo);
+            signature.setValue(::ndn::makeNonNegativeIntegerBlock(::ndn::tlv::SignatureValue, m_signature));
+
+            // data->setSignature(signature);
+            tmp->setSignature(signature);
+
+            break;
+        }
         case ndn_ntorrent::IoUtil::UNKNOWN:
         {
             //This should never happen
@@ -196,6 +226,23 @@ NTorrentProducerApp::generateTorrentFile()
     NS_LOG_DEBUG("Torrent segments: " << m_torrentSegments.size());
     NS_LOG_DEBUG("Manifests: " << manifests.size());
     NS_LOG_DEBUG("Data Packets: " << dataPackets.size());
+}
+
+std::vector<ndn::Name>
+NTorrentProducerApp::getTorrentFileList()
+{
+    std::vector<ndn::Name> torrent_flist;
+
+    NS_LOG_DEBUG("Getting list of torrent file to vector!");
+    // Copy into vector
+    for(const auto& t : m_torrentSegments)
+        torrent_flist.push_back(t.getFullName());
+    for(uint32_t i=0;i<manifests.size();i++)
+        torrent_flist.push_back(manifests.at(i).getFullName());
+    for(uint32_t i=0;i<dataPackets.size();i++)
+        torrent_flist.push_back(dataPackets.at(i).getFullName());
+
+    return torrent_flist;
 }
 
 } // namespace ndn

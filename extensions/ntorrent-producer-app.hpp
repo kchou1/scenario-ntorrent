@@ -36,6 +36,8 @@
 #include "src/util/simulation-constants.hpp"
 #include "src/util/io-util.hpp"
 
+#include <vector>
+
 namespace ndn_ntorrent = ndn::ntorrent;
 namespace nfd_rib = nfd::rib;
 namespace nfd_fw = nfd::fw;
@@ -64,10 +66,15 @@ public:
   virtual void
   generateTorrentFile();
 
+  virtual std::vector<ndn::Name>
+  getTorrentFileList();
+
+
 private:
   std::vector<ndn_ntorrent::TorrentFile> m_torrentSegments;
   std::vector<ndn_ntorrent::FileManifest> manifests;
   std::vector<Data> dataPackets;
+  std::vector<ndn::Name> torrent_list;
                 
   nfd_rib::Rib m_rib;
 

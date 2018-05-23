@@ -78,6 +78,7 @@ private:
   std::vector<ndn_ntorrent::TorrentFile> m_torrentSegments;
   std::vector<ndn_ntorrent::FileManifest> manifests;
   std::vector<Data> dataPackets;
+  std::vector<ndn::Name> torrent_list;
                 
   nfd_rib::Rib m_rib;
 
