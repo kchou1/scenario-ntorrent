@@ -126,28 +126,30 @@ main(int argc, char *argv[])
   ndnHelper.InstallAll();
 
   // Installing applications
-  ndn::AppHelper p1("NTorrentAdHocApp");
+  ndn::AppHelper p1("NTorrentAdHocAppNaive");
   p1.SetAttribute("TorrentPrefix", StringValue("movie1"));
   p1.SetAttribute("NumberOfPackets", StringValue("10"));
   p1.SetAttribute("NodeId", StringValue("0"));
   p1.SetAttribute("BeaconTimer", StringValue("1s"));
-  p1.SetAttribute("RandomTimerRange", StringValue("1s"));
+  p1.SetAttribute("RandomTimerRange", StringValue("20ms"));
   p1.SetAttribute("TorrentProducer", BooleanValue(true));
   ApplicationContainer peer1 = p1.Install(nodes.Get(0));
   peer1.Start(Seconds(0));
   FibHelper::AddRoute(nodes.Get(0), "/beacon", std::numeric_limits<int32_t>::max());
+  FibHelper::AddRoute(nodes.Get(0), "/bitmap", std::numeric_limits<int32_t>::max());
   FibHelper::AddRoute(nodes.Get(0), "/movie1", std::numeric_limits<int32_t>::max());
 
-  ndn::AppHelper p2("NTorrentAdHocApp");
+  ndn::AppHelper p2("NTorrentAdHocAppNaive");
   p2.SetAttribute("TorrentPrefix", StringValue("movie1"));
   p2.SetAttribute("NumberOfPackets", StringValue("10"));
   p2.SetAttribute("NodeId", StringValue("1"));
   p2.SetAttribute("BeaconTimer", StringValue("1s"));
-  p2.SetAttribute("RandomTimerRange", StringValue("1s"));
+  p2.SetAttribute("RandomTimerRange", StringValue("20ms"));
   p2.SetAttribute("TorrentProducer", BooleanValue(false));
   ApplicationContainer peer2 = p2.Install(nodes.Get(1));
   peer2.Start(Seconds(0));
   FibHelper::AddRoute(nodes.Get(1), "/beacon", std::numeric_limits<int32_t>::max());
+  FibHelper::AddRoute(nodes.Get(1), "/bitmap", std::numeric_limits<int32_t>::max());
   FibHelper::AddRoute(nodes.Get(1), "/movie1", std::numeric_limits<int32_t>::max());
 
   Simulator::Stop(Seconds(20.0));
