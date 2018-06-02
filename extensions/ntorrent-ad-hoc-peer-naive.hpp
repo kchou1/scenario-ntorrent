@@ -140,6 +140,9 @@ private:
   ns3::EventId m_beaconSent;
 
   ns3::EventId m_bitmapSent;
+
+  // has this peer downloaded all the data
+  bool m_downloadedAllData;
 };
 
 } // namespace ndn

@@ -69,6 +69,7 @@ NTorrentAdHocAppNaive::NTorrentAdHocAppNaive()
   NS_ASSERT(m_nodeId != -1);
   m_seq = 0;
   m_beaconSeq = 0;
+  m_downloadedAllData = false;
 }
 
 NTorrentAdHocAppNaive::~NTorrentAdHocAppNaive()
@@ -134,7 +135,7 @@ NTorrentAdHocAppNaive::OnInterest(shared_ptr<const Interest> interest)
     if (interestName.get(0).toUri() == "beacon") {
       NS_LOG_DEBUG("Received beacon: " << interestName.toUri());
       // if a beacon sending event has been scheduled, cancel it
-      if (m_beaconSent.IsRunning()) {
+      if (m_beaconSent.IsRunning() && !m_downloadedAllData) {
         Simulator::Cancel(m_beaconSent);
       }
       // if the interest is a beacon, send your bitmap
@@ -144,7 +145,7 @@ NTorrentAdHocAppNaive::OnInterest(shared_ptr<const Interest> interest)
       // this is a bitmap
       NS_LOG_DEBUG("Received bitmap: " << interestName.toUri());
       // if a beacon sending event has been scheduled, cancel it
-      if (m_beaconSent.IsRunning()) {
+      if (m_beaconSent.IsRunning() && !m_downloadedAllData) {
         Simulator::Cancel(m_beaconSent);
       }
       // Decode the bitmap of the neighbor
@@ -175,6 +176,11 @@ NTorrentAdHocAppNaive::OnData(shared_ptr<const Data> data)
     std::string bitmap = DecodeBitmap(data);
     if (!m_scarcity.empty())
       Simulator::Schedule(ns3::MilliSeconds(m_random->GetValue()), &NTorrentAdHocAppNaive::SendInterestForData, this, data->getName().get(2).toUri(), bitmap);
+    else {
+      // if no other beacon event is running, schedule one
+      if (!m_beaconSent.IsRunning())
+        m_beaconSent = Simulator::Schedule(ns3::MilliSeconds(m_randomBeacon->GetValue() + 2000), &NTorrentAdHocAppNaive::SendBeacon, this);
+    }
   }
   else {
     // Logic for receiving a data packet
@@ -188,32 +194,38 @@ NTorrentAdHocAppNaive::OnData(shared_ptr<const Data> data)
     }
     // cancel retransmission, erase scarcity entry
     std::string nodeId;
-    std::string bitmap;
+    std::string bitmap = "\0";
     for (auto it = m_outstandingInterests.begin(); it != m_outstandingInterests.end(); it++) {
       if (data->getName().get(-1).toSequenceNumber() == std::get<0>(*it)) {
         nodeId = std::get<1>(*it);
         bitmap = std::get<2>(*it);
         Simulator::Cancel(std::get<3>(*it));
 
-        // erase scarcity entry
-        for (auto it2 = m_scarcity.begin(); it2 != m_scarcity.end(); it2++) {
-          if (it2->first == std::get<0>(*it)) {
-            m_scarcity.erase(it2);
-            break;
-          }
-        }
-
-        if (m_scarcity.empty()) {
-          // we just finished downloading all the data
-          NS_LOG_DEBUG("Finished downloading torrent data: " << Simulator::Now().GetMilliSeconds() / 1000.0 << " sec");
-        }
-
         m_outstandingInterests.erase(it);
         break;
       }
     }
+
+    // erase scarcity entry
+    for (auto it = m_scarcity.begin(); it != m_scarcity.end(); it++) {
+      if (it->first == data->getName().get(-1).toSequenceNumber()) {
+        m_scarcity.erase(it);
+        break;
+      }
+    }
+
+    if (m_scarcity.empty()) {
+      // we just finished downloading all the data
+      m_downloadedAllData = true;
+      NS_LOG_DEBUG("Finished downloading torrent data: " << Simulator::Now().GetMilliSeconds() / 1000.0 << " sec");
+    }
+
+    // update your own bitmap
+    m_bitmap[data->getName().get(-1).toSequenceNumber()] = 1;
+
     // Send next Interest for data
-    Simulator::Schedule(ns3::MilliSeconds(m_random->GetValue()), &NTorrentAdHocAppNaive::SendInterestForData, this, nodeId, bitmap);
+    if (bitmap != "\0")
+      Simulator::Schedule(ns3::MilliSeconds(m_random->GetValue()), &NTorrentAdHocAppNaive::SendInterestForData, this, nodeId, bitmap);
   }
 }
 
@@ -223,7 +235,8 @@ NTorrentAdHocAppNaive::SendBitmap(uint32_t retransmissions)
   // if we have sent the bitmap 3 times, but still no response
   // then fall back to beacon mode again
   if (retransmissions == 3) {
-    m_beaconSent = Simulator::Schedule(ns3::MilliSeconds(m_randomBeacon->GetValue() + 2000), &NTorrentAdHocAppNaive::SendBeacon, this);
+    if (!m_beaconSent.IsRunning())
+      m_beaconSent = Simulator::Schedule(ns3::MilliSeconds(m_randomBeacon->GetValue() + 2000), &NTorrentAdHocAppNaive::SendBeacon, this);
     return;
   }
   // Send a bitmap
@@ -374,7 +387,8 @@ NTorrentAdHocAppNaive::SendInterestForData(std::string nodeId, std::string bitma
   }
   if (seqNum == -1) {
     NS_LOG_INFO("Could not find a missing piece to fetch from: " << nodeId);
-    m_beaconSent = Simulator::Schedule(ns3::MilliSeconds(m_randomBeacon->GetValue() + 2000), &NTorrentAdHocAppNaive::SendBeacon, this);
+    if (!m_beaconSent.IsRunning())
+      m_beaconSent = Simulator::Schedule(ns3::MilliSeconds(m_randomBeacon->GetValue() + 2000), &NTorrentAdHocAppNaive::SendBeacon, this);
     return;
   }
 
@@ -449,7 +463,8 @@ NTorrentAdHocAppNaive::ResendInterestForData(Name interestName, uint8_t numberOf
         break;
       }
     }
-    m_beaconSent = Simulator::Schedule(ns3::MilliSeconds(m_randomBeacon->GetValue() + 2000), &NTorrentAdHocAppNaive::SendBeacon, this);
+    if (!m_beaconSent.IsRunning())
+      m_beaconSent = Simulator::Schedule(ns3::MilliSeconds(m_randomBeacon->GetValue() + 2000), &NTorrentAdHocAppNaive::SendBeacon, this);
     return;
   }
 
