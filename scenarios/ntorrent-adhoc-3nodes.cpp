@@ -88,7 +88,7 @@ main(int argc, char *argv[])
   Ptr<ListPositionAllocator> posAlloc = CreateObject<ListPositionAllocator>();
   posAlloc->Add(Vector(0.0, 0.0, 0.0));
   posAlloc->Add(Vector(0.0, 50.0, 0.0));
-  posAlloc->Add(Vector(50.0, 75.0, 0.0));
+  posAlloc->Add(Vector(50.0, 150.0, 0.0));
 
   mobility.SetPositionAllocator(posAlloc);
   mobility.SetMobilityModel ("ns3::ConstantPositionMobilityModel");
@@ -129,7 +129,7 @@ main(int argc, char *argv[])
   p2.SetAttribute("NumberOfPackets", StringValue("10"));
   p2.SetAttribute("NodeId", StringValue("1"));
   p2.SetAttribute("BeaconTimer", StringValue("1s"));
-  p2.SetAttribute("RandomTimerRange", StringValue("10ms"));
+  p2.SetAttribute("RandomTimerRange", StringValue("5ms"));
   p2.SetAttribute("TorrentProducer", BooleanValue(false));
   p2.SetAttribute("PureForwarder", BooleanValue(true));
   p2.SetAttribute("ForwardProbability", StringValue("50"));

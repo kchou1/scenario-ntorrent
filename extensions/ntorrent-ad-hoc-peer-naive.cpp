@@ -105,7 +105,9 @@ NTorrentAdHocAppNaive::StartApplication()
     m_randomBeacon->SetAttribute("Min", DoubleValue(0.0));
     m_randomBeacon->SetAttribute("Max", DoubleValue(m_beaconTimer.GetMilliSeconds()));
 
-    m_beaconSent = Simulator::Schedule(ns3::MilliSeconds(m_randomBeacon->GetValue() + 2000), &NTorrentAdHocAppNaive::SendBeacon, this);
+    if (!m_isPureForwarder) {
+        m_beaconSent = Simulator::Schedule(ns3::MilliSeconds(m_randomBeacon->GetValue() + 2000), &NTorrentAdHocAppNaive::SendBeacon, this);
+    }
 }
 
 void
