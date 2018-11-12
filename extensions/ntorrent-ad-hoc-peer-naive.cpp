@@ -60,7 +60,11 @@ NTorrentAdHocAppNaive::GetTypeId(void)
                     MakeTimeAccessor(&NTorrentAdHocAppNaive::m_expirationTimer), MakeTimeChecker())
       // Is this node the original torrent producer or just a peer?
       .AddAttribute("TorrentProducer", "Has this node generated the torrent?", BooleanValue(false),
-                    MakeBooleanAccessor(&NTorrentAdHocAppNaive::m_isTorrentProducer), MakeBooleanChecker());
+                    MakeBooleanAccessor(&NTorrentAdHocAppNaive::m_isTorrentProducer), MakeBooleanChecker())
+      .AddAttribute("PureForwarder", "Is this node a pure forwarding node?", BooleanValue(false),
+                    MakeBooleanAccessor(&NTorrentAdHocAppNaive::m_isPureForwarder), MakeBooleanChecker())
+      .AddAttribute("ForwardProbability", "Probability packet is forwarded.", IntegerValue(0),
+                    MakeIntegerAccessor(&NTorrentAdHocAppNaive::m_forwardProbability), MakeIntegerChecker<int32_t>());
     return tid;
 }
 
@@ -125,6 +129,20 @@ NTorrentAdHocAppNaive::SendInterest(const string& interestName)
 }
 
 void
+NTorrentAdHocAppNaive::ForwardInterest(shared_ptr<const Interest> interest)
+{
+  m_transmittedInterests(interest, this, m_face);
+  m_appLink->onReceiveInterest(*interest);
+}
+
+void
+NTorrentAdHocAppNaive::ForwardData(shared_ptr<const Data> data)
+{
+  m_transmittedDatas(data, this, m_face);
+  m_appLink->onReceiveData(*data);
+}
+
+void
 NTorrentAdHocAppNaive::OnInterest(shared_ptr<const Interest> interest)
 {
     ndn::App::OnInterest(interest);
@@ -132,7 +150,20 @@ NTorrentAdHocAppNaive::OnInterest(shared_ptr<const Interest> interest)
     // 3) Interest for torrent data
     Name interestName = interest->getName();
 
-    if (interestName.get(0).toUri() == "beacon") {
+    if (m_isPureForwarder) {
+      // Decide with some probability. If forward, choose random delay else nothing.
+      NS_LOG_DEBUG("Deciding whether to forward or not. (Interest)");
+      unsigned int prob = rand() % 100 + 1;
+      // NS_LOG_DEBUG("Chosen Probability: " + std::to_string(prob));
+      if (prob <= m_forwardProbability) { // Forward
+        // Forward the Interest with random delay
+        NS_LOG_DEBUG("Forwarding Interest. (" + interestName.toUri() + ")");
+        Simulator::Schedule(ns3::MilliSeconds(m_random->GetValue()), &NTorrentAdHocAppNaive::ForwardInterest, this, interest);
+      } else { // Don't Forward
+        NS_LOG_DEBUG("Not Forwarding Interest. (" + interestName.get(0).toUri() + ")");
+      }
+    } 
+    else if (interestName.get(0).toUri() == "beacon") {
       NS_LOG_DEBUG("Received beacon: " << interestName.toUri());
       // if a beacon sending event has been scheduled, cancel it
       if (m_beaconSent.IsRunning() && !m_downloadedAllData) {
@@ -166,8 +197,20 @@ NTorrentAdHocAppNaive::OnInterest(shared_ptr<const Interest> interest)
 void
 NTorrentAdHocAppNaive::OnData(shared_ptr<const Data> data)
 {
-  // 2 cases: 1. this is an IBF packet, or 2. this is torent data packet
-  if (data->getName().get(0).toUri() == "bitmap") {
+    if (m_isPureForwarder) {
+      // Decide with some probability. If forward, choose random delay else nothing.
+      NS_LOG_DEBUG("Deciding whether to forward or not. (Data)");
+      unsigned int prob = rand() % 100 + 1;
+      // NS_LOG_DEBUG("Chosen Probability: " + std::to_string(prob));
+      if (prob <= m_forwardProbability) { // Forward
+        // Forward the Interest with random delay
+        NS_LOG_DEBUG("Forwarding Data. (" + data->getName().toUri() + ")");
+        Simulator::Schedule(ns3::MilliSeconds(m_random->GetValue()), &NTorrentAdHocAppNaive::ForwardData, this, data);
+      } else { // Don't Forward
+        NS_LOG_DEBUG("Not Forwarding Data. (" + data->getName().toUri() + ")");
+      }
+    // 2 cases: 1. this is an IBF packet, or 2. this is torent data packet
+    } else if (data->getName().get(0).toUri() == "bitmap") {
     // received a bitmap
     if (m_bitmapSent.IsRunning()) {
       Simulator::Cancel(m_bitmapSent);
@@ -217,7 +260,8 @@ NTorrentAdHocAppNaive::OnData(shared_ptr<const Data> data)
     if (m_scarcity.empty()) {
       // we just finished downloading all the data
       m_downloadedAllData = true;
-      NS_LOG_DEBUG("Finished downloading torrent data: " << Simulator::Now().GetMilliSeconds() / 1000.0 << " sec");
+      // NS_LOG_DEBUG("Finished downloading torrent data: " << Simulator::Now().GetMilliSeconds() / 1000.0 << " sec");
+      std::cerr << "Finished downloading torrent data: " << Simulator::Now().GetMilliSeconds() / 1000.0 << " sec" << std::endl;
     }
 
     // update your own bitmap

@@ -72,6 +72,12 @@ public:
   virtual void
   SendInterest(const string& interestName);
 
+  virtual void
+  ForwardInterest(shared_ptr<const Interest> interest);
+
+  virtual void
+  ForwardData(shared_ptr<const Data> data);
+
 private:
   void
   SendBitmap(uint32_t retransmissions = 0);
@@ -102,8 +108,10 @@ private:
 
 private:
   uint32_t m_torrentPacketNum;
+  uint32_t m_forwardProbability;
   Name m_torrentPrefix;
   bool m_isTorrentProducer;
+  bool m_isPureForwarder;
   uint32_t m_nodeId;
 
   Time m_beaconTimer;
