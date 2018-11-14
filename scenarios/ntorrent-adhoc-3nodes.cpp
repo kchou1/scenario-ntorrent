@@ -87,7 +87,7 @@ main(int argc, char *argv[])
   MobilityHelper mobility;
   Ptr<ListPositionAllocator> posAlloc = CreateObject<ListPositionAllocator>();
   posAlloc->Add(Vector(0.0, 0.0, 0.0));
-  posAlloc->Add(Vector(0.0, 50.0, 0.0));
+  posAlloc->Add(Vector(0.0, 30.0, 0.0));
   posAlloc->Add(Vector(50.0, 150.0, 0.0));
 
   mobility.SetPositionAllocator(posAlloc);
@@ -114,8 +114,6 @@ main(int argc, char *argv[])
   p1.SetAttribute("BeaconTimer", StringValue("1s"));
   p1.SetAttribute("RandomTimerRange", StringValue("20ms"));
   p1.SetAttribute("TorrentProducer", BooleanValue(true));
-  p1.SetAttribute("PureForwarder", BooleanValue(false));
-  p1.SetAttribute("ForwardProbability", StringValue("10"));
   //p1.SetAttribute("DataUsefulToAll", BooleanValue(true));
   ApplicationContainer peer1 = p1.Install(nodes.Get(0));
   peer1.Start(Seconds(0));
@@ -124,16 +122,12 @@ main(int argc, char *argv[])
   FibHelper::AddRoute(nodes.Get(0), "/movie1", std::numeric_limits<int32_t>::max());
 
   // ndn::AppHelper p2("NTorrentAdHocNewPrioritization");
-  ndn::AppHelper p2("NTorrentAdHocAppNaive");
-  p2.SetAttribute("TorrentPrefix", StringValue("movie1"));
-  p2.SetAttribute("NumberOfPackets", StringValue("10"));
+  ndn::AppHelper p2("NTorrentAdHocForwarder");
+  // p2.SetAttribute("TorrentPrefix", StringValue("movie1"));
   p2.SetAttribute("NodeId", StringValue("1"));
-  p2.SetAttribute("BeaconTimer", StringValue("1s"));
-  p2.SetAttribute("RandomTimerRange", StringValue("5ms"));
-  p2.SetAttribute("TorrentProducer", BooleanValue(false));
-  p2.SetAttribute("PureForwarder", BooleanValue(true));
+  p2.SetAttribute("RandomTimerRange", StringValue("10ms"));
   p2.SetAttribute("ForwardProbability", StringValue("50"));
-  //p1.SetAttribute("DataUsefulToAll", BooleanValue(true));
+  //p2.SetAttribute("DataUsefulToAll", BooleanValue(true));
   //p2.SetAttribute("DataUsefulToAll", BooleanValue(true));
   //p2.SetAttribute("HasHalfData", BooleanValue(true));
   ApplicationContainer peer2 = p2.Install(nodes.Get(1));
@@ -151,8 +145,6 @@ main(int argc, char *argv[])
   p3.SetAttribute("BeaconTimer", StringValue("1s"));
   p3.SetAttribute("RandomTimerRange", StringValue("20ms"));
   p3.SetAttribute("TorrentProducer", BooleanValue(false));
-  p3.SetAttribute("PureForwarder", BooleanValue(false));
-  p3.SetAttribute("ForwardProbability", StringValue("10"));
   //p3.SetAttribute("DataUsefulToAll", BooleanValue(true));
   ApplicationContainer peer3 = p3.Install(nodes.Get(2));
   peer3.Start(Seconds(0));
