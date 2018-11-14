@@ -113,7 +113,7 @@ NTorrentAdHocForwarder::OnInterest(shared_ptr<const Interest> interest)
   NS_LOG_DEBUG("Deciding whether to forward Interest or not. [" + interestName.toUri() + "]");
   if (chosenProb >= m_forwardProbability) {
     // Forward Interest
-    Simulator::Schedule(ns3::MilliSeconds(m_random->GetValue()), &NTorrentAdHocForwarder::ForwardData, this, interest);
+    Simulator::Schedule(ns3::MilliSeconds(m_random->GetValue()), &NTorrentAdHocForwarder::ForwardInterest, this, interest);
   } else {
     NS_LOG_DEBUG("Nothing to be Done to Interest: " + interestName.toUri());
   }
@@ -125,11 +125,11 @@ NTorrentAdHocForwarder::OnData(shared_ptr<const Data> data)
   // Decide whether to forward or not
   unsigned int chosenProb = rand() % 100 + 1;
 
-  NS_LOG_DEBUG("Deciding whether to forward Data or not. [" + data->getName() + "]");
+  NS_LOG_DEBUG("Deciding whether to forward Data or not. [" + data->getName().toUri() + "]");
   if (chosenProb >= m_forwardProbability) {
     Simulator::Schedule(ns3::MilliSeconds(m_random->GetValue()), &NTorrentAdHocForwarder::ForwardData, this, data);
   } else {
-    NS_LOG_DEBUG("Nothing to be Done to Data: " + data->getName());
+    NS_LOG_DEBUG("Nothing to be Done to Data: " + data->getName().toUri());
   }
 
 }
