@@ -75,20 +75,11 @@ void
 NTorrentAdHocForwarder::StopApplication()
 {
     App::StopApplication();
-
-    // delete the bitmap memory
-    delete(m_bitmap);
 }
 
 void
 NTorrentAdHocForwarder::SendInterest()
 {
-}
-
-void
-NTorrentAdHocForwarder::SendInterest(const string& interestName)
-{
-
 }
 
 void
@@ -112,16 +103,34 @@ NTorrentAdHocForwarder::ForwardData(shared_ptr<const Data> data)
 void
 NTorrentAdHocForwarder::OnInterest(shared_ptr<const Interest> interest)
 {
-    ndn::App::OnInterest(interest);
+  ndn::App::OnInterest(interest);
 
-    Name interestName = interest->getName();
+  Name interestName = interest->getName();
 
+  // Decide whether to forward or not
+  unsigned int chosenProb = rand() % 100 + 1;
+
+  NS_LOG_DEBUG("Deciding whether to forward Interest or not. [" + interestName.toUri() + "]");
+  if (chosenProb >= m_forwardProbability) {
+    // Forward Interest
+    Simulator::Schedule(ns3::MilliSeconds(m_random->GetValue()), &NTorrentAdHocForwarder::ForwardData, this, interest);
+  } else {
+    NS_LOG_DEBUG("Nothing to be Done to Interest: " + interestName.toUri());
+  }
 }
 
 void
 NTorrentAdHocForwarder::OnData(shared_ptr<const Data> data)
 {
+  // Decide whether to forward or not
+  unsigned int chosenProb = rand() % 100 + 1;
 
+  NS_LOG_DEBUG("Deciding whether to forward Data or not. [" + data->getName() + "]");
+  if (chosenProb >= m_forwardProbability) {
+    Simulator::Schedule(ns3::MilliSeconds(m_random->GetValue()), &NTorrentAdHocForwarder::ForwardData, this, data);
+  } else {
+    NS_LOG_DEBUG("Nothing to be Done to Data: " + data->getName());
+  }
 
 }
 

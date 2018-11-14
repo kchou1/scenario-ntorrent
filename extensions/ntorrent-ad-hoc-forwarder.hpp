@@ -66,9 +66,6 @@ public:
   SendInterest();
 
   virtual void
-  SendInterest(const string& interestName);
-
-  virtual void
   ForwardInterest(shared_ptr<const Interest> interest);
 
   virtual void
