@@ -47,6 +47,7 @@ namespace ndn {
 int
 main(int argc, char *argv[])
 {
+  uint32_t prngSeed = 1;
 
   // setting default parameters for PointToPoint links and channels
   Config::SetDefault("ns3::PointToPointNetDevice::DataRate", StringValue("32kbps"));
@@ -54,7 +55,10 @@ main(int argc, char *argv[])
 
   // Read optional command-line parameters (e.g., enable visualizer with ./waf --run=<> --visualize
   CommandLine cmd;
+  cmd.AddValue("prngSeed", "PRNG Seed", prngSeed);
   cmd.Parse(argc, argv);
+
+  ns3::RngSeedManager::SetSeed(prngSeed);
 
   // Creating nodes
   NodeContainer nodes;
@@ -105,6 +109,11 @@ main(int argc, char *argv[])
   ndnHelper.SetDefaultRoutes(true);
   ndnHelper.InstallAll();
 
+  // Choose Strategy for Pure Forwarder
+  StrategyChoiceHelper::Install(nodes.Get(1), "/beacon", "/localhost/nfd/strategy/broadcast/%FD%01");
+  StrategyChoiceHelper::Install(nodes.Get(1), "/bitmap", "/localhost/nfd/strategy/broadcast/%FD%01");
+  StrategyChoiceHelper::Install(nodes.Get(1), "/movie1", "/localhost/nfd/strategy/broadcast/%FD%01");
+
   // Installing applications
   // ndn::AppHelper p1("NTorrentAdHocNewPrioritization");
   ndn::AppHelper p1("NTorrentAdHocAppNaive");
@@ -120,6 +129,7 @@ main(int argc, char *argv[])
   FibHelper::AddRoute(nodes.Get(0), "/beacon", std::numeric_limits<int32_t>::max());
   FibHelper::AddRoute(nodes.Get(0), "/bitmap", std::numeric_limits<int32_t>::max());
   FibHelper::AddRoute(nodes.Get(0), "/movie1", std::numeric_limits<int32_t>::max());
+  FibHelper::AddRoute(nodes.Get(0), "/movie2", std::numeric_limits<int32_t>::max());
 
   // ndn::AppHelper p2("NTorrentAdHocNewPrioritization");
   ndn::AppHelper p2("NTorrentAdHocForwarder");
@@ -135,6 +145,25 @@ main(int argc, char *argv[])
   FibHelper::AddRoute(nodes.Get(1), "/beacon", std::numeric_limits<int32_t>::max());
   FibHelper::AddRoute(nodes.Get(1), "/bitmap", std::numeric_limits<int32_t>::max());
   FibHelper::AddRoute(nodes.Get(1), "/movie1", std::numeric_limits<int32_t>::max());
+/*
+  // ndn::AppHelper p2("NTorrentAdHocNewPrioritization");
+  ndn::AppHelper p2("NTorrentAdHocAppNaive");
+  p2.SetAttribute("TorrentPrefix", StringValue("movie2"));
+  p2.SetAttribute("NumberOfPackets", StringValue("10"));
+  p2.SetAttribute("NodeId", StringValue("1"));
+  p2.SetAttribute("BeaconTimer", StringValue("1s"));
+  p2.SetAttribute("RandomTimerRange", StringValue("20ms"));
+  p2.SetAttribute("TorrentProducer", BooleanValue(false));
+  //p2.SetAttribute("DataUsefulToAll", BooleanValue(true));
+  //p2.SetAttribute("DataUsefulToAll", BooleanValue(true));
+  //p2.SetAttribute("HasHalfData", BooleanValue(true));
+  ApplicationContainer peer2 = p2.Install(nodes.Get(1));
+  peer2.Start(Seconds(0));
+  FibHelper::AddRoute(nodes.Get(1), "/beacon", std::numeric_limits<int32_t>::max());
+  FibHelper::AddRoute(nodes.Get(1), "/bitmap", std::numeric_limits<int32_t>::max());
+  FibHelper::AddRoute(nodes.Get(1), "/movie1", std::numeric_limits<int32_t>::max());
+  FibHelper::AddRoute(nodes.Get(1), "/movie2", std::numeric_limits<int32_t>::max());
+*/
 
   // Installing applications
   // ndn::AppHelper p3("NTorrentAdHocNewPrioritization");
@@ -151,8 +180,9 @@ main(int argc, char *argv[])
   FibHelper::AddRoute(nodes.Get(2), "/beacon", std::numeric_limits<int32_t>::max());
   FibHelper::AddRoute(nodes.Get(2), "/bitmap", std::numeric_limits<int32_t>::max());
   FibHelper::AddRoute(nodes.Get(2), "/movie1", std::numeric_limits<int32_t>::max());
+  FibHelper::AddRoute(nodes.Get(2), "/movie2", std::numeric_limits<int32_t>::max());
 
-  Simulator::Stop(Seconds(5.0));
+  Simulator::Stop(Seconds(10.0));
 
   Simulator::Run();
   Simulator::Destroy();
