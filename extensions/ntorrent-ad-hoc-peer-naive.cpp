@@ -85,6 +85,11 @@ NTorrentAdHocAppNaive::StartApplication()
     ndn::FibHelper::AddRoute(GetNode(), "bitmap", m_face, 0);
     ndn::FibHelper::AddRoute(GetNode(), "beacon", m_face, 0);
 
+    if (m_torrentPrefix == "movie1") {
+      ndn::FibHelper::AddRoute(GetNode(), "movie2", m_face, 0);
+    } else {
+      ndn::FibHelper::AddRoute(GetNode(), "movie1", m_face, 0);
+    }
     // malloc to dynamically allocate the bitmap memory based on the
     // number of torrent pieces
     // The array will be initialized in PopulateBitmap
@@ -102,6 +107,8 @@ NTorrentAdHocAppNaive::StartApplication()
     m_randomBeacon->SetAttribute("Max", DoubleValue(m_beaconTimer.GetMilliSeconds()));
 
     m_beaconSent = Simulator::Schedule(ns3::MilliSeconds(m_randomBeacon->GetValue() + 2000), &NTorrentAdHocAppNaive::SendBeacon, this);
+
+    m_expireTime = 200000000; // ns
 }
 
 void
@@ -127,25 +134,12 @@ NTorrentAdHocAppNaive::SendInterest(const string& interestName)
 void
 NTorrentAdHocAppNaive::ForwardInterest(shared_ptr<const Interest> interest)
 {
-  // Send a beacon
-  Name beaconName = Name("beacon");
-  beaconName.append("/node" + std::to_string(2));
-  beaconName.appendSequenceNumber(m_beaconSeq);
-  m_beaconSeq++;
-  NS_LOG_DEBUG("Sending beacon: " << beaconName.toUri());
-
-  shared_ptr<Interest> beacon = make_shared<Interest>(beaconName);
-
-  m_transmittedInterests(beacon, this, m_face);
-  m_appLink->onReceiveInterest(*beacon);
-
   Name interestName = interest->getName();
   shared_ptr<Interest> interestForwarded = make_shared<Interest>(interestName);
   NS_LOG_DEBUG("Forwarding Interest. (" + interestName.toUri() + ")");
-/*
+
   m_transmittedInterests(interestForwarded, this, m_face);
   m_appLink->onReceiveInterest(*interestForwarded);
-*/
 }
 
 void
@@ -179,15 +173,76 @@ NTorrentAdHocAppNaive::OnInterest(shared_ptr<const Interest> interest)
       if (m_beaconSent.IsRunning() && !m_downloadedAllData) {
         Simulator::Cancel(m_beaconSent);
       }
-      // Decode the bitmap of the neighbor
-      std::string bitmap = DecodeBitmap(interest);
-      Simulator::Schedule(ns3::MilliSeconds(m_random->GetValue()), &NTorrentAdHocAppNaive::CreateAndSendBitmap, this, interest);
-      if (!m_scarcity.empty())
-        Simulator::Schedule(ns3::MilliSeconds(m_random->GetValue()), &NTorrentAdHocAppNaive::SendInterestForData, this, interestName.get(2).toUri(), bitmap);
+      // TODO: Check if the bitmap is for the desired torrent file
+      // Decide what to do with received Interest
+      bool overheardInterest = false;
+      for (auto it = m_overheard.begin(); it != m_overheard.end(); it++) {
+        if (it->first == interestName.get(1).toUri()) {
+          NS_LOG_DEBUG("Interest Desires Other Torrent File (seen before): " << interestName.get(1).toUri());
+          if (it->second > Simulator::Now()) { // entry hasn't expired, refresh expire time
+            overheardInterest = true;
+            // Update Expire Time for torrent file if already in overheardInterest
+            it->second = Simulator::Now() + m_expireTime;
+            break;
+          } else { // only one entry per prefix in overheard at a time
+            m_overheard.erase(it);
+            break;
+          }
+        }
+      }
+
+      if ('/' + interestName.get(1).toUri() != m_torrentPrefix.toUri()) {
+        if (overheardInterest) {
+          // std::string bitmap = DecodeBitmap(interest);
+          Simulator::Schedule(ns3::MilliSeconds(m_random->GetValue()), &NTorrentAdHocAppNaive::ForwardInterest, this, interest);
+        } else { // Haven't overheard
+          // Only input if torrent prefix does not match node's desired Torrent File
+          m_overheard.push_back(std::make_pair(interestName.get(1).toUri(), Simulator::Now() + m_expireTime));
+          NS_LOG_DEBUG("Time Entry Expires: " << m_overheard.back().second);
+        }
+
+        // Go back to sending beacons
+        if (!m_beaconSent.IsRunning()) {
+          m_beaconSent = Simulator::Schedule(ns3::MilliSeconds(m_randomBeacon->GetValue() + 2000), &NTorrentAdHocAppNaive::SendBeacon, this);
+        }
+      } else {
+        // Decode the bitmap of the neighbor
+        std::string bitmap = DecodeBitmap(interest);
+        Simulator::Schedule(ns3::MilliSeconds(m_random->GetValue()), &NTorrentAdHocAppNaive::CreateAndSendBitmap, this, interest);
+        if (!m_scarcity.empty())
+          Simulator::Schedule(ns3::MilliSeconds(m_random->GetValue()), &NTorrentAdHocAppNaive::SendInterestForData, this, interestName.get(2).toUri(), bitmap);
+      }
     }
     else {
+      // TODO: Check if the Interest for torrent data is for the desired torrent file
+      // Decide what to do with received Interest
+      bool overheardInterest = false;
+      for (auto it = m_overheard.begin(); it != m_overheard.end(); it++) {
+        if (it->first == interestName.get(0).toUri()) {
+          NS_LOG_DEBUG("Interest Desires Other Torrent File: " << interestName.get(0).toUri());
+          if (it->second > Simulator::Now()) {
+            overheardInterest = true;
+            // Update Expire Time for torrent file if already in overheardInterest
+            it->second = Simulator::Now() + m_expireTime;
+            break;
+          } else {
+            m_overheard.erase(it);
+            break;
+          }
+        }
+      }
+
+      if ('/' + interestName.get(0).toUri() != m_torrentPrefix.toUri()) {
+        // If overheard other nodes wanting this torrent prefix
+        if (overheardInterest) {
+          Simulator::Schedule(ns3::MilliSeconds(m_random->GetValue()), &NTorrentAdHocAppNaive::ForwardInterest, this, interest);
+        } else {
+          // Only input if torrent prefix does not match node's desired Torrent File
+          m_overheard.push_back(std::make_pair(interestName.get(0).toUri(), Simulator::Now() + m_expireTime));
+          NS_LOG_DEBUG("Time Entry Expires: " << m_overheard.back().second << " for " << interestName.toUri());
+        }
       // this is an Interest for torrent data
-      if (std::get<1>(m_downloadedData[interestName.get(-1).toSequenceNumber()]) == 1) {
+      } else if (std::get<1>(m_downloadedData[interestName.get(-1).toSequenceNumber()]) == 1) {
         Simulator::Schedule(ns3::MilliSeconds(m_random->GetValue()), &NTorrentAdHocAppNaive::SendData, this, interestName);
       }
     }
@@ -197,6 +252,9 @@ NTorrentAdHocAppNaive::OnInterest(shared_ptr<const Interest> interest)
 void
 NTorrentAdHocAppNaive::OnData(shared_ptr<const Data> data)
 {
+    // TODO: Check if bitmap or data packet is for the desired torrent file
+    // Decide what to do with received Data
+
     // 2 cases: 1. this is an IBF packet, or 2. this is torent data packet
     if (data->getName().get(0).toUri() == "bitmap") {
     // received a bitmap
@@ -205,9 +263,32 @@ NTorrentAdHocAppNaive::OnData(shared_ptr<const Data> data)
     }
     NS_LOG_DEBUG("Received Bitmap in data packet: " << data->getName().toUri());
     std::string bitmap = DecodeBitmap(data);
-    if (!m_scarcity.empty())
+
+    bool overheardInterest = false;
+    for (auto it = m_overheard.begin(); it != m_overheard.end(); it++) {
+        if (it->first == data->getName().get(1).toUri()) {
+            NS_LOG_DEBUG("Received Bitmap Data Wants Other File: " << data->getName().get(1).toUri());
+          if (it->second > Simulator::Now()) { // check if still not expired
+            overheardInterest = true;
+            // Update Expire Time for torrent file if already in overheardInterest
+            it->second = Simulator::Now() + m_expireTime;
+            break;
+          } else {
+            m_overheard.erase(it);
+            break;
+          }
+        }
+    }
+
+    // Request for torrent data if incoming bitmap shares same torrent file prefix
+    if (!m_scarcity.empty() && '/' + data->getName().get(1).toUri() == m_torrentPrefix.toUri()) {
       Simulator::Schedule(ns3::MilliSeconds(m_random->GetValue()), &NTorrentAdHocAppNaive::SendInterestForData, this, data->getName().get(2).toUri(), bitmap);
-    else {
+    } else {
+      if (overheardInterest) {
+        // Forward since already heard bitmap interest for that torrent file
+        NS_LOG_DEBUG("Forwarding Data Bitmap (overheard previously)." << data->getName().toUri());
+        Simulator::Schedule(ns3::MilliSeconds(m_random->GetValue()), &NTorrentAdHocAppNaive::ForwardData, this, data);
+      }
       // if no other beacon event is running, schedule one
       if (!m_beaconSent.IsRunning())
         m_beaconSent = Simulator::Schedule(ns3::MilliSeconds(m_randomBeacon->GetValue() + 2000), &NTorrentAdHocAppNaive::SendBeacon, this);
@@ -216,8 +297,9 @@ NTorrentAdHocAppNaive::OnData(shared_ptr<const Data> data)
   else {
     // Logic for receiving a data packet
     NS_LOG_DEBUG("Received torrent data: " << data->getName().toUri());
-    if (m_scarcity.empty()) {
-      // if we have downloaded all the torrent data, avoid doing all the rest
+    if (m_scarcity.empty() || '/' + data->getName().get(0).toUri() != m_torrentPrefix.toUri()) {
+      // if we have downloaded all the torrent data or not the corrent torrent file
+      // avoid doing all the rest
       return;
     }
     if (std::get<1>(m_downloadedData[data->getName().get(-1).toSequenceNumber()]) == 0) {

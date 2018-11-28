@@ -39,6 +39,7 @@
 #include "ns3/ndnSIM/helper/ndn-strategy-choice-helper.hpp"
 
 #include <tuple>
+#include <unordered_map>
 
 #define MAX_PACKETS_TO_FETCH 5
 
@@ -113,6 +114,7 @@ private:
   bool m_isTorrentProducer;
   bool m_isPureForwarder;
   uint32_t m_nodeId;
+  int64x64_t m_expireTime;
 
   Time m_beaconTimer;
   Time m_randomTimerRange;
@@ -144,6 +146,10 @@ private:
   // data packet has not been received yet
   // tuple of <seq number, nodeid, bitmap, Interest sending event>
   std::vector<std::tuple<uint32_t, std::string, std::string, ns3::EventId>> m_outstandingInterests;
+
+  // overheard Torrent file names and time it stays in vector that want them
+  // std::vector<std::tuple<std:string, int64x64_t>> m_overheard;
+  std::vector<std::pair<std::string, int64x64_t>> m_overheard;
 
   ns3::EventId m_beaconSent;
 
