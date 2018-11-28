@@ -90,11 +90,11 @@ main(int argc, char *argv[])
 
   MobilityHelper mobility;
   Ptr<ListPositionAllocator> posAlloc = CreateObject<ListPositionAllocator>();
-  posAlloc->Add(Vector(0.0, 0.0, 0.0));
-  posAlloc->Add(Vector(0.0, 30.0, 0.0));
-  posAlloc->Add(Vector(50.0, 150.0, 0.0));
-  posAlloc->Add(Vector(60.0, 30.0, 0.0));
-  posAlloc->Add(Vector(150.0, 50.0, 0.0));
+  posAlloc->Add(Vector(0.0, 0.0, 0.0)); // movie1
+  posAlloc->Add(Vector(0.0, 30.0, 0.0)); // movie2
+  posAlloc->Add(Vector(50.0, 150.0, 0.0)); // movie1
+  posAlloc->Add(Vector(150.0, 30.0, 0.0)); // pure
+  posAlloc->Add(Vector(200.0, 50.0, 0.0)); // movie2
 
   mobility.SetPositionAllocator(posAlloc);
   mobility.SetMobilityModel ("ns3::ConstantPositionMobilityModel");
@@ -164,7 +164,7 @@ main(int argc, char *argv[])
   p4.SetAttribute("NodeId", StringValue("1"));
   p4.SetAttribute("RandomTimerRange", StringValue("10ms"));
   p4.SetAttribute("ForwardProbability", StringValue("50"));
-  ApplicationContainer peer4 = p4.Install(nodes.Get(2));
+  ApplicationContainer peer4 = p4.Install(nodes.Get(3));
   peer4.Start(Seconds(0));
   FibHelper::AddRoute(nodes.Get(3), "/beacon", std::numeric_limits<int32_t>::max());
   FibHelper::AddRoute(nodes.Get(3), "/bitmap", std::numeric_limits<int32_t>::max());
