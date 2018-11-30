@@ -28,6 +28,10 @@ The code should also work with the latest version of ndnSIM, but it is not guara
 
     cd ..
     git clone --recursive https://github.com/kchou1/scenario-ntorrent.git scenario-ntorrent
+
+    # Replace and Add files to ndnSim
+    cp scenario-ntorrent/dapis/{forwarder.cpp,strategy.*,broadcast-strategy.*} ns-3/src/ndnSIM/NFD/daemon/fw
+
     cd scenario-ntorrent
 
     ./waf configure
@@ -111,6 +115,8 @@ Available simulations
     ntorrent-simple
     ntorrent-multi-consumer
     ntorrent-fully-connected-consumer
+    ntorrent-adhoc-sim
+    ntorrent-adhoc-3nodes
 ---------------
 
 A work in progress...
