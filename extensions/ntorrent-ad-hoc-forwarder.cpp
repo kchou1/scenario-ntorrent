@@ -63,6 +63,7 @@ NTorrentAdHocForwarder::StartApplication()
     NS_LOG_DEBUG("Starting application for node: " << m_nodeId);
     App::StartApplication();
     ndn::FibHelper::AddRoute(GetNode(), "movie1", m_face, 0);
+    ndn::FibHelper::AddRoute(GetNode(), "movie2", m_face, 0);
     ndn::FibHelper::AddRoute(GetNode(), "bitmap", m_face, 0);
     ndn::FibHelper::AddRoute(GetNode(), "beacon", m_face, 0);
 
